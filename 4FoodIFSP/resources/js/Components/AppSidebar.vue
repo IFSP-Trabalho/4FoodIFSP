@@ -17,6 +17,7 @@ const items = [
     { key: 'cadastros', label: 'Cadastros', icon: 'cadastros', route: null },
     { key: 'finance', label: 'Financeiro', icon: 'finance', route: null },
     { key: 'reports', label: 'Relatorios', icon: 'reports', route: null },
+    { key: 'whatsapp', label: 'Atendimento', icon: 'whatsapp', route: '/whatsapp/inbox' },
 ];
 
 const cadastrosOptions = [
@@ -173,6 +174,9 @@ onBeforeUnmount(() => {
                 </svg>
                 <svg v-else-if="item.icon === 'finance'" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M4 17h16v3H4zM6 9h3v8H6zm5-4h3v12h-3zm5 6h3v6h-3z" />
+                </svg>
+                <svg v-else-if="item.icon === 'whatsapp'" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.37 5.07L2 22l5.09-1.34A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2Zm5.2 14.2c-.22.62-1.3 1.18-1.8 1.22-.46.04-.9.2-3.05-.64-2.6-1.03-4.26-3.67-4.39-3.84-.13-.17-1.07-1.42-1.07-2.71 0-1.29.67-1.93.91-2.19.24-.26.52-.33.7-.33l.5.01c.16 0 .38-.06.6.46l.77 1.87c.06.15.1.32.01.5l-.29.52-.44.45c-.13.13-.27.27-.12.53.15.26.68 1.12 1.46 1.81.99.88 1.84 1.16 2.1 1.29.26.13.41.11.56-.07l.72-.85c.19-.22.37-.14.62-.05l1.77.83c.26.12.43.18.49.28.07.1.07.56-.15 1.11Z" />
                 </svg>
                 <svg v-else viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z" />

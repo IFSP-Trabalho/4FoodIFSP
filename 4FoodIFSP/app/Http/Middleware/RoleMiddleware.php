@@ -13,7 +13,9 @@ class RoleMiddleware
     {
         $user = Auth::user();
 
-        if (! $user || $user->role !== $role) {
+        $allowed = explode('|', $role);
+
+        if (! $user || ! in_array($user->role, $allowed, true)) {
             abort(Response::HTTP_FORBIDDEN, 'Acesso negado para este perfil.');
         }
 

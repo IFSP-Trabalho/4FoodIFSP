@@ -14,7 +14,19 @@
       "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Gabriel Henrique\\\\Desktop\\\\4Foods\\\\4FoodIFSP\\\\4FoodIFSP\\\\public\\\\sounds\")",
       "Bash(Out-Null)",
       "Bash(Write-Host \"done\")",
-      "PowerShell(New-Item *)"
+      "PowerShell(New-Item *)",
+      "Bash(cmd /c \"dir /b C:\\\\Users\\\\DELL\\\\Downloads\\\\4FoodIFSP\\\\4FoodIFSP\\\\.env* & dir /b C:\\\\Users\\\\DELL\\\\Downloads\\\\4FoodIFSP\\\\4FoodIFSP\\\\docker-compose*\")",
+      "Bash(cmd /c \"dir /b /a C:\\\\Users\\\\DELL\\\\Downloads\\\\4FoodIFSP\\\\4FoodIFSP\")",
+      "Bash(powershell -Command:*)",
+      "Bash(php artisan migrate:status:*)",
+      "Bash(php artisan migrate:*)",
+      "Bash(php artisan db:seed:*)",
+      "Bash(docker exec:*)",
+      "Bash(php artisan:*)",
+      "Bash(docker ps:*)",
+      "Bash(findstr:*)",
+      "Bash(Get-ChildItem -Path resources\\\\js\\\\Pages -Recurse -File)",
+      "Bash(Select-Object FullName)"
     ]
   }
 }

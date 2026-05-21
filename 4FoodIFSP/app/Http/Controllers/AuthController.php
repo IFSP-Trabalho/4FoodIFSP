@@ -139,6 +139,7 @@ class AuthController extends Controller
             'kitchen' => redirect()->route('kitchen.dashboard'),
             'finance' => redirect()->route('finance.dashboard'),
             'waiter' => redirect()->route('waiter.dashboard'),
+            'whatsapp_agent' => redirect()->route('whatsapp.inbox'),
             default => redirect()
                 ->route('login')
                 ->withErrors(['email' => 'Perfil sem rota de acesso configurada.']),

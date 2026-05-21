@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Tablet\TabletOrderController;
+use App\Http\Controllers\WhatsApp\InboxController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -55,5 +56,9 @@ Route::middleware('firebase.auth')->group(function () {
         Route::get('/waiter/dashboard', function () {
             return Inertia::render('Waiter/Dashboard');
         })->name('waiter.dashboard');
+
+        Route::middleware(['role:admin|whatsapp_agent'])->prefix('whatsapp')->name('whatsapp.')->group(function () {
+            Route::get('/inbox', [InboxController::class, 'index'])->name('inbox');
+        });
     });
 });
