@@ -79,6 +79,13 @@ function extractTextBody(message) {
 
 async function _startSocketBackground(id) {
     const session = getOrCreate(id);
+
+    // Evita criar dois sockets simultâneos
+    if (session.socket) {
+        console.log(`[baileys] _startSocketBackground ignorado — sessão ${id} já tem socket ativo`);
+        return;
+    }
+
     session.status = 'pairing';
     session.manualDisconnect = false;
 
@@ -230,20 +237,30 @@ export function deleteSession(id) {
 export async function sendMessage(id, to, body) {
     const session = sessions.get(id);
     if (!session || !session.socket) {
-        throw new Error('Sessão não encontrada ou socket inexistente.');
+        throw new Error('Sessão não encontrada. Aguarde a reconexão.');
     }
     if (session.status !== 'connected') {
-        throw new Error(`Sessão não conectada (status: ${session.status}).`);
+        throw new Error(`Sessão não conectada (status: ${session.status}). Aguarde reconexão.`);
     }
+
+    // Detecta WS morto pelo readyState interno do Baileys
+    const wsState = session.socket.ws?.readyState;
+    if (wsState !== undefined && wsState !== 1 /* WebSocket.OPEN */) {
+        console.warn(`[baileys] WS morto (readyState=${wsState}) — forçando reconexão da sessão ${id}`);
+        session.status = 'disconnected';
+        session.socket = null;
+        _startSocketBackground(id);
+        throw new Error('Conexão WhatsApp fechada, reconectando. Tente novamente em alguns segundos.');
+    }
+
     const jid = to.includes('@') ? to : `${to}@s.whatsapp.net`;
     try {
         await session.socket.sendMessage(jid, { text: body });
     } catch (err) {
-        // socket morto — força reconexão silenciosa
         console.warn(`[baileys] sendMessage falhou para ${id}:`, err.message, '— forçando reconexão');
         session.status = 'disconnected';
         session.socket = null;
         _startSocketBackground(id);
-        throw new Error('Socket fechado, reconectando. Tente novamente em alguns segundos.');
+        throw new Error('Falha ao enviar, reconectando. Tente novamente em alguns segundos.');
     }
 }
