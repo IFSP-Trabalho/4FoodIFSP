@@ -111,16 +111,20 @@ async function _startSocketBackground(id) {
                 if (!msg.message) continue;
 
                 const remoteJid = msg.key.remoteJid ?? '';
-                if (remoteJid.endsWith('@g.us') || remoteJid === 'status@broadcast') continue;
+                if (
+                    remoteJid.endsWith('@g.us') ||
+                    remoteJid === 'status@broadcast' ||
+                    remoteJid.endsWith('@newsletter') ||
+                    remoteJid.endsWith('@broadcast')
+                ) continue;
 
-                const phone = remoteJid.split('@')[0].replace(/\D/g, '');
-                const body  = extractTextBody(msg.message);
+                const body = extractTextBody(msg.message);
                 if (!body) continue;
 
                 await notifyLaravelMessage({
                     connection_id:  id,
                     wa_message_id:  msg.key.id,
-                    phone_number:   phone,
+                    phone_number:   remoteJid,
                     customer_name:  msg.pushName ?? null,
                     body,
                     sent_at: new Date(Number(msg.messageTimestamp) * 1000).toISOString(),

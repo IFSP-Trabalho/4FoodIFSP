@@ -15,8 +15,14 @@ class IncomingWhatsAppMessageService
                 return;
             }
 
+            // Busca pelo JID completo OU pelo número local (compatibilidade com formato antigo)
+            $localPart = explode('@', $data['phone_number'])[0];
+
             $openTicket = DB::table('wa_tickets')
-                ->where('phone_number', $data['phone_number'])
+                ->where(function ($q) use ($data, $localPart) {
+                    $q->where('phone_number', $data['phone_number'])
+                      ->orWhere('phone_number', $localPart);
+                })
                 ->whereIn('status', ['triage', 'in_progress'])
                 ->orderByDesc('updated_at')
                 ->first();
@@ -24,10 +30,23 @@ class IncomingWhatsAppMessageService
             if ($openTicket) {
                 $ticketId = $openTicket->id;
 
+                $ticketUpdate = [];
+
+                // Migra phone_number para o formato JID completo
+                if ($openTicket->phone_number !== $data['phone_number']) {
+                    $ticketUpdate['phone_number'] = $data['phone_number'];
+                }
+
                 if (empty($openTicket->customer_name) && ! empty($data['customer_name'])) {
-                    DB::table('wa_tickets')->where('id', $ticketId)->update([
-                        'customer_name' => $data['customer_name'],
-                    ]);
+                    $ticketUpdate['customer_name'] = $data['customer_name'];
+                }
+
+                if (empty($openTicket->wa_connection_id) && ! empty($data['connection_id'])) {
+                    $ticketUpdate['wa_connection_id'] = $data['connection_id'];
+                }
+
+                if (! empty($ticketUpdate)) {
+                    DB::table('wa_tickets')->where('id', $ticketId)->update($ticketUpdate);
                 }
             } else {
                 $ticketId = (string) Str::uuid();

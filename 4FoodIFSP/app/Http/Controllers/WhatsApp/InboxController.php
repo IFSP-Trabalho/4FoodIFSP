@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\WhatsApp;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -44,7 +45,7 @@ class InboxController extends Controller
                 'id'        => $m->id,
                 'direction' => $m->direction,
                 'body'      => $m->body,
-                'sent_at'   => $m->sent_at,
+                'sent_at'   => $m->sent_at ? Carbon::parse($m->sent_at)->toIso8601String() : null,
             ])
             ->all();
 
@@ -68,8 +69,12 @@ class InboxController extends Controller
         abort_if($record->status !== 'in_progress', 422, 'Ticket não está em atendimento.');
         abort_unless($record->wa_connection_id, 422, 'Conexão WhatsApp não vinculada ao ticket.');
 
+        $connection = DB::table('wa_connections')->where('id', (string) $record->wa_connection_id)->first();
+        abort_unless($connection, 422, 'Conexão WhatsApp não encontrada.');
+        abort_unless($connection->baileys_session_id, 422, 'Sessão Baileys não configurada na conexão.');
+
         $baileysUrl = rtrim(config('services.baileys.url', 'http://127.0.0.1:3001'), '/');
-        $response = Http::post("{$baileysUrl}/sessions/{$record->wa_connection_id}/send", [
+        $response = Http::post("{$baileysUrl}/sessions/{$connection->baileys_session_id}/send", [
             'to'   => $record->phone_number,
             'body' => $request->body,
         ]);
