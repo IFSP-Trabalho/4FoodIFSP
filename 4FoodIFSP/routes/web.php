@@ -4,10 +4,18 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\WhatsApp\ConnectionsController;
 use App\Http\Controllers\Tablet\TabletOrderController;
+use App\Http\Controllers\Webhooks\BaileysMessageWebhookController;
+use App\Http\Controllers\Webhooks\BaileysWebhookController;
 use App\Http\Controllers\WhatsApp\InboxController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::post('/webhooks/baileys/status', [BaileysWebhookController::class, 'handle'])
+    ->name('webhooks.baileys.status');
+Route::post('/webhooks/baileys/messages', [BaileysMessageWebhookController::class, 'handle'])
+    ->name('webhooks.baileys.messages');
 
 Route::redirect('/', '/login');
 
@@ -43,6 +51,16 @@ Route::middleware('firebase.auth')->group(function () {
                 Route::delete('/users/{user}', [UsersController::class, 'destroy'])->name('users.destroy');
                 Route::put('/users/{user}/departments', [UsersController::class, 'syncDepartments'])->name('users.syncDepartments');
             });
+
+            Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
+                Route::get('/conexoes', [ConnectionsController::class, 'index'])->name('conexoes.index');
+                Route::post('/conexoes', [ConnectionsController::class, 'store'])->name('conexoes.store');
+                Route::patch('/conexoes/{connection}/disconnect', [ConnectionsController::class, 'disconnect'])->name('conexoes.disconnect');
+                Route::delete('/conexoes/{connection}', [ConnectionsController::class, 'destroy'])->name('conexoes.destroy');
+                Route::post('/conexoes/{connection}/request-qr', [ConnectionsController::class, 'requestQr'])->name('conexoes.requestQr');
+                Route::get('/conexoes/{connection}/status', [ConnectionsController::class, 'status'])->name('conexoes.status');
+                Route::post('/conexoes/{connection}/cancel-pairing', [ConnectionsController::class, 'cancelPairing'])->name('conexoes.cancelPairing');
+            });
         });
 
         Route::get('/kitchen/dashboard', function () {
@@ -59,6 +77,10 @@ Route::middleware('firebase.auth')->group(function () {
 
         Route::middleware(['role:admin|whatsapp_agent'])->prefix('whatsapp')->name('whatsapp.')->group(function () {
             Route::get('/inbox', [InboxController::class, 'index'])->name('inbox');
+            Route::get('/inbox/poll', [InboxController::class, 'poll'])->name('inbox.poll');
+            Route::get('/inbox/tickets/{ticket}/messages', [InboxController::class, 'messages'])->name('inbox.messages');
+            Route::patch('/inbox/tickets/{ticket}/accept', [InboxController::class, 'accept'])->name('inbox.accept');
+            Route::post('/inbox/tickets/{ticket}/send', [InboxController::class, 'send'])->name('inbox.send');
         });
     });
 });

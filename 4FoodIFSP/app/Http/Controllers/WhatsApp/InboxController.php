@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\WhatsApp;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -11,62 +15,151 @@ class InboxController extends Controller
     public function index(): Response
     {
         return Inertia::render('WhatsApp/Inbox', [
-            'tickets' => $this->getTickets(),
-            'date'    => now()->format('d/m/Y'),
+            'tickets'    => $this->buildTicketsGrouped(),
+            'date'       => now()->format('d/m/Y'),
+            'authUserId' => auth()->id(),
         ]);
     }
 
-    private function getTickets(): array
+    public function poll()
     {
+        return response()->json([
+            'triage_ids'      => DB::table('wa_tickets')->where('status', 'triage')->orderBy('created_at')->pluck('id'),
+            'in_progress_ids' => DB::table('wa_tickets')->where('status', 'in_progress')->orderByDesc('updated_at')->pluck('id'),
+            'updated_at_max'  => DB::table('wa_tickets')->max('updated_at'),
+            'server_time'     => now()->toIso8601String(),
+        ]);
+    }
+
+    public function messages(string $ticket)
+    {
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+
+        $messages = DB::table('wa_messages')
+            ->where('wa_ticket_id', $ticket)
+            ->orderByRaw('COALESCE(sent_at, created_at) ASC')
+            ->get(['id', 'direction', 'body', 'sent_at'])
+            ->map(fn($m) => [
+                'id'        => $m->id,
+                'direction' => $m->direction,
+                'body'      => $m->body,
+                'sent_at'   => $m->sent_at,
+            ])
+            ->all();
+
+        return response()->json([
+            'ticket' => [
+                'id'            => $record->id,
+                'customer_name' => $record->customer_name,
+                'phone_number'  => $record->phone_number,
+                'status'        => $record->status,
+            ],
+            'messages' => $messages,
+        ]);
+    }
+
+    public function send(string $ticket, Request $request)
+    {
+        $request->validate(['body' => 'required|string|max:4096']);
+
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+        abort_if($record->status !== 'in_progress', 422, 'Ticket não está em atendimento.');
+        abort_unless($record->wa_connection_id, 422, 'Conexão WhatsApp não vinculada ao ticket.');
+
+        $baileysUrl = rtrim(config('services.baileys.url', 'http://127.0.0.1:3001'), '/');
+        $response = Http::post("{$baileysUrl}/sessions/{$record->wa_connection_id}/send", [
+            'to'   => $record->phone_number,
+            'body' => $request->body,
+        ]);
+
+        abort_unless($response->successful(), 502, $response->json('message') ?? 'Falha ao enviar mensagem.');
+
+        $messageId = (string) Str::uuid();
+        $now = now();
+
+        DB::table('wa_messages')->insert([
+            'id'            => $messageId,
+            'wa_ticket_id'  => $ticket,
+            'direction'     => 'outbound',
+            'body'          => $request->body,
+            'wa_message_id' => null,
+            'sent_at'       => $now,
+            'created_at'    => $now,
+            'updated_at'    => $now,
+        ]);
+
+        DB::table('wa_tickets')->where('id', $ticket)->update(['updated_at' => $now]);
+
+        return response()->json([
+            'message' => [
+                'id'        => $messageId,
+                'direction' => 'outbound',
+                'body'      => $request->body,
+                'sent_at'   => $now->toIso8601String(),
+            ],
+        ]);
+    }
+
+    public function accept(string $ticket)
+    {
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+        abort_if($record->status !== 'triage', 422, 'Ticket não está em triagem.');
+
+        DB::table('wa_tickets')->where('id', $ticket)->update([
+            'status'     => 'in_progress',
+            'agent_id'   => auth()->id(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['ok' => true, 'status' => 'in_progress']);
+    }
+
+    private function buildTicketsGrouped(): array
+    {
+        $rows = DB::table('wa_tickets as t')
+            ->select([
+                't.id',
+                't.customer_name',
+                't.phone_number',
+                't.status',
+                't.agent_id',
+                't.updated_at',
+                't.created_at',
+                DB::raw('(
+                    SELECT m.body FROM wa_messages m
+                    WHERE m.wa_ticket_id = t.id
+                    ORDER BY COALESCE(m.sent_at, m.created_at) DESC
+                    LIMIT 1
+                ) as last_message'),
+            ])
+            ->where(function ($q) {
+                $q->whereIn('t.status', ['triage', 'in_progress'])
+                  ->orWhere(function ($q2) {
+                      $q2->where('t.status', 'closed')
+                         ->whereDate('t.updated_at', today());
+                  });
+            })
+            ->get();
+
+        $format = fn($row) => [
+            'id'            => $row->id,
+            'customer_name' => $row->customer_name,
+            'phone_number'  => $row->phone_number,
+            'last_message'  => $row->last_message
+                ? mb_strimwidth($row->last_message, 0, 60, '…')
+                : null,
+            'updated_at'    => $row->updated_at,
+            'status'        => $row->status,
+            'agent_id'      => $row->agent_id,
+        ];
+
         return [
-            'in_progress' => [
-                [
-                    'id'            => 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-                    'customer_name' => 'Maria Silva',
-                    'phone_number'  => '+5511999887766',
-                    'last_message'  => 'Pode confirmar se o pedido já saiu?',
-                    'updated_at'    => now()->subMinutes(12)->toIso8601String(),
-                ],
-                [
-                    'id'            => 'b2c3d4e5-f6a7-8901-bcde-f12345678901',
-                    'customer_name' => 'Carlos Mendes',
-                    'phone_number'  => '+5511988776655',
-                    'last_message'  => 'Quero alterar o endereço de entrega',
-                    'updated_at'    => now()->subHour()->toIso8601String(),
-                ],
-            ],
-            'triage' => [
-                [
-                    'id'            => 'c3d4e5f6-a7b8-9012-cdef-123456789012',
-                    'customer_name' => 'Ana Costa',
-                    'phone_number'  => '+5511977665544',
-                    'last_message'  => 'Oi, quero fazer um pedido de delivery',
-                    'updated_at'    => now()->subMinutes(3)->toIso8601String(),
-                ],
-                [
-                    'id'            => 'd4e5f6a7-b8c9-0123-defa-234567890123',
-                    'customer_name' => null,
-                    'phone_number'  => '+5511966554433',
-                    'last_message'  => 'Vocês estão abertos agora?',
-                    'updated_at'    => now()->subMinutes(25)->toIso8601String(),
-                ],
-                [
-                    'id'            => 'e5f6a7b8-c9d0-1234-efab-345678901234',
-                    'customer_name' => 'Pedro Lima',
-                    'phone_number'  => '+5511955443322',
-                    'last_message'  => 'Tem promoção hoje?',
-                    'updated_at'    => now()->subHours(2)->toIso8601String(),
-                ],
-            ],
-            'closed' => [
-                [
-                    'id'            => 'f6a7b8c9-d0e1-2345-fabc-456789012345',
-                    'customer_name' => 'Juliana Rocha',
-                    'phone_number'  => '+5511944332211',
-                    'last_message'  => 'Obrigada! Pedido recebido.',
-                    'updated_at'    => now()->subHours(4)->toIso8601String(),
-                ],
-            ],
+            'triage'      => $rows->where('status', 'triage')->sortBy('created_at')->values()->map($format)->values()->all(),
+            'in_progress' => $rows->where('status', 'in_progress')->sortByDesc('updated_at')->values()->map($format)->values()->all(),
+            'closed'      => $rows->where('status', 'closed')->sortByDesc('updated_at')->values()->map($format)->values()->all(),
         ];
     }
 }

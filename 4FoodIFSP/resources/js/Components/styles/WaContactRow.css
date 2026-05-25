@@ -1,20 +1,26 @@
+.contact-row-item {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid #eef0f2;
+}
+
+.contact-row-item:last-child {
+    border-bottom: 0;
+}
+
 .contact-row {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     display: flex;
     gap: 12px;
     padding: 12px 14px;
     border: 0;
-    border-bottom: 1px solid #eef0f2;
     border-left: 3px solid transparent;
     background: #fff;
     text-align: left;
     cursor: pointer;
     box-sizing: border-box;
     transition: background 0.1s;
-}
-
-.contact-row:last-child {
-    border-bottom: 0;
 }
 
 .contact-row:hover {
@@ -94,4 +100,24 @@
     font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
+}
+
+.btn-atender-inline {
+    flex-shrink: 0;
+    align-self: center;
+    margin-right: 12px;
+    padding: 5px 12px;
+    background: #378ADD;
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+
+.btn-atender-inline:hover {
+    background: #2a6fb0;
 }

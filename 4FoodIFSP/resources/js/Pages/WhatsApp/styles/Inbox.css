@@ -181,10 +181,17 @@
     justify-content: center;
 }
 
+.detail-panel--chat {
+    align-items: stretch;
+    justify-content: stretch;
+}
+
 .detail-empty {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 16px;
     text-align: center;
 }
@@ -210,4 +217,112 @@
     max-width: 200px;
     line-height: 1.5;
     margin: 0;
+}
+
+/* ── painel de triagem ── */
+.triage-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 480px;
+    padding: 32px 24px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #eceef0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+.triage-detail-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.triage-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #E6F1FB;
+    color: #0C447C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.triage-contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.triage-contact-info strong {
+    font-size: 15px;
+    font-weight: 700;
+    color: #17181e;
+}
+
+.triage-contact-info span {
+    font-size: 13px;
+    color: #7b7f89;
+}
+
+.triage-preview {
+    background: #f6f7f9;
+    border-radius: 8px;
+    padding: 12px 14px;
+}
+
+.triage-preview-label {
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #7b7f89;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.triage-preview-text {
+    margin: 0;
+    font-size: 14px;
+    color: #17181e;
+    line-height: 1.5;
+}
+
+.triage-error {
+    margin: 0;
+    font-size: 13px;
+    color: #c0392b;
+    background: #fdf3f2;
+    border-radius: 6px;
+    padding: 8px 12px;
+}
+
+.triage-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-atender-detail {
+    padding: 10px 28px;
+    background: #378ADD;
+    color: #fff;
+    border: 0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-atender-detail:hover:not(:disabled) {
+    background: #2a6fb0;
+}
+
+.btn-atender-detail:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

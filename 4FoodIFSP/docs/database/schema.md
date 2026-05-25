@@ -285,6 +285,41 @@ Schema::create('wa_messages', function (Blueprint $table) {
 
 ---
 
+### `wa_connections`
+
+Canais WhatsApp configurados pelo admin. Cada registro representa uma instância WhatsApp (ex.: "Comercial 1").
+
+```php
+Schema::create('wa_connections', function (Blueprint $table) {
+    $table->uuid('id')->primary();
+    $table->string('name')->unique();
+    $table->string('channel_type')->default('whatsapp');   // extensível para outros canais
+    $table->string('phone_number')->nullable();            // E.164 — preenchido após pareamento Baileys (Fase 2)
+    $table->string('connection_status')->default('disconnected'); // connected|disconnected|pairing
+    $table->timestamp('last_status_at')->nullable();
+    $table->string('baileys_session_id')->nullable();      // ID da sessão no serviço Node (Fase 2)
+    $table->timestamps();
+});
+```
+
+**Índices / constraints:**
+
+| Item | Regra |
+|------|-------|
+| `name` | `unique()` — evita duplicata no MVP single-tenant |
+| `connection_status` | Valores válidos: `connected`, `disconnected`, `pairing` |
+| `channel_type` | Valores válidos: `whatsapp` (extensível) |
+
+**Valores de `connection_status`:**
+
+| Valor | Significado |
+|-------|-------------|
+| `disconnected` | Sem sessão ativa; aguardando QR Code |
+| `pairing` | QR Code gerado, aguardando scan (Fase 2) |
+| `connected` | Sessão WhatsApp ativa no Baileys (Fase 2) |
+
+---
+
 ## Relacionamentos (resumo)
 
 ```

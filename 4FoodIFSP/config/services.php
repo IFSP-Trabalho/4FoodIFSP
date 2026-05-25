@@ -41,4 +41,9 @@ return [
         'project_id' => env('VITE_FIREBASE_PROJECT_ID'),
     ],
 
+    'baileys' => [
+        'url' => env('BAILEYS_SERVICE_URL', 'http://127.0.0.1:3001'),
+        'webhook_secret' => env('BAILEYS_WEBHOOK_SECRET'),
+    ],
+
 ];

@@ -4,12 +4,13 @@ defineProps({
         type: Object,
         required: true,
     },
-    selected: { type: Boolean, default: false },
-    showNovoBadge: { type: Boolean, default: false },
-    timeLabel: { type: String, required: true },
+    selected:           { type: Boolean, default: false },
+    showNovoBadge:      { type: Boolean, default: false },
+    showAtenderButton:  { type: Boolean, default: false },
+    timeLabel:          { type: String, required: true },
 });
 
-const emit = defineEmits(['select']);
+const emit = defineEmits(['select', 'accept']);
 
 function displayName(ticket) {
     if (ticket.customer_name) return ticket.customer_name;
@@ -33,7 +34,7 @@ function initials(ticket) {
 </script>
 
 <template>
-    <li>
+    <li class="contact-row-item">
         <button
             type="button"
             class="contact-row"
@@ -51,6 +52,14 @@ function initials(ticket) {
                 </span>
                 <span class="preview">{{ ticket.last_message }}</span>
             </span>
+        </button>
+        <button
+            v-if="showAtenderButton"
+            type="button"
+            class="btn-atender-inline"
+            @click.stop="emit('accept', ticket.id)"
+        >
+            Atender
         </button>
     </li>
 </template>

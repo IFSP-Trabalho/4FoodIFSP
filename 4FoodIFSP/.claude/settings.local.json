@@ -26,7 +26,19 @@
       "Bash(docker ps:*)",
       "Bash(findstr:*)",
       "Bash(Get-ChildItem -Path resources\\\\js\\\\Pages -Recurse -File)",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Bash(Select-Object -First 20)",
+      "PowerShell($secret = -join \\(\\(65..90\\) + \\(97..122\\) + \\(48..57\\) | Get-Random -Count 48 | ForEach-Object { [char]$_ }\\); Write-Output $secret)",
+      "PowerShell(Start-Sleep -Seconds 3; Invoke-RestMethod -Uri \"http://127.0.0.1:3001/health\" -Method GET 2>&1)",
+      "PowerShell(try { $r = Invoke-RestMethod -Uri \"http://127.0.0.1:3001/health\" -Method GET -TimeoutSec 3; Write-Output \"OK: $\\($r.ok\\)\" } catch { Write-Output \"Serviço offline: $_\" })",
+      "PowerShell(Get-NetTCPConnection *)",
+      "PowerShell(try { $r = Invoke-RestMethod -Uri \"http://127.0.0.1:3001/health\" -Method GET -TimeoutSec 3; Write-Output \"OK: $\\($r.ok\\)\" } catch { Write-Output \"Offline: $\\($_.Exception.Message\\)\" })",
+      "PowerShell($body = '{\"connection_id\":\"test-123\"}'; try { $r = Invoke-RestMethod -Uri \"http://127.0.0.1:3001/sessions\" -Method POST -Body $body -ContentType \"application/json\" -TimeoutSec 5; $r | ConvertTo-Json } catch { Write-Output \"Erro: $\\($_.Exception.Message\\)\" })",
+      "PowerShell(try { $r = Invoke-RestMethod -Uri \"http://127.0.0.1:3001/sessions/test-123/start\" -Method POST -TimeoutSec 20; $r | ConvertTo-Json } catch { Write-Output \"Erro status $\\($_.Exception.Response.StatusCode\\): $\\($_.Exception.Message\\)\" })",
+      "PowerShell($log = Get-Content \"C:\\\\Users\\\\Gabriel Henrique\\\\Desktop\\\\4Foods\\\\4FoodIFSP\\\\4FoodIFSP\\\\storage\\\\logs\\\\laravel.log\" -Raw; $lines = $log -split \"`n\"; $start = \\($lines | Select-String \"BaileysService|requestQr|request-qr|indisponível|ConnectionException|startSession|Baileys\" | Select-Object -Last 5\\).LineNumber; if \\($start\\) { $lines[\\([Math]::Max\\(0,$start[0]-5\\)\\)..\\([Math]::Min\\($lines.Count-1,$start[0]+10\\)\\)] })",
+      "PowerShell($id = \"5a36ea05-6ea7-4b93-83ad-e59deee2ff82\"; $body = \"{`\"connection_id`\": `\"$id`\"}\"; $r = Invoke-RestMethod -Uri \"http://127.0.0.1:3001/sessions\" -Method POST -Body $body -ContentType \"application/json\" -TimeoutSec 5; Write-Output \"createSession: $\\($r | ConvertTo-Json -Compress\\)\")",
+      "PowerShell($id = \"5a36ea05-6ea7-4b93-83ad-e59deee2ff82\"; try { $r = Invoke-RestMethod -Uri \"http://127.0.0.1:3001/sessions/$id/start\" -Method POST -TimeoutSec 25; $qr = if \\($r.qr_base64\\) { \"presente\" } else { \"null\" }; Write-Output \"Status: $\\($r.status\\) QR: $qr\" } catch { $code = $_.Exception.Response.StatusCode.value__; Write-Output \"ERRO HTTP $code\" })",
+      "Bash(Get-Content *)"
     ]
   }
 }

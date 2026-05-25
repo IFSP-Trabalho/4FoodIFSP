@@ -1,0 +1,190 @@
+.wa-qr-modal {
+    width: min(460px, calc(100vw - 32px));
+}
+
+.wa-qr-modal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.wa-qr-close {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: #7b7f89;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 4px;
+    margin-top: -2px;
+    transition: color 0.12s ease;
+}
+
+.wa-qr-close:hover {
+    color: #1f242e;
+}
+
+.wa-qr-close svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+}
+
+/* Body */
+
+.wa-qr-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0 4px;
+}
+
+/* QR image */
+
+.wa-qr-image-wrap {
+    width: 260px;
+    height: 260px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #fafafa;
+}
+
+.wa-qr-image {
+    width: 240px;
+    height: 240px;
+    object-fit: contain;
+}
+
+.wa-qr-expired,
+.wa-qr-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+}
+
+.wa-qr-expired svg {
+    width: 36px;
+    height: 36px;
+    fill: #9ca3af;
+}
+
+.wa-qr-expired p {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* Steps */
+
+.wa-qr-steps {
+    margin: 0;
+    padding-left: 18px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.wa-qr-steps li {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* Countdown */
+
+.wa-qr-countdown {
+    margin: 0;
+    font-size: 12px;
+    color: #6b7280;
+    align-self: flex-start;
+}
+
+.wa-qr-countdown.expired {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+/* Loading spinner */
+
+.wa-qr-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 0;
+}
+
+.wa-qr-loading p {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.wa-qr-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #993c1d;
+    border-radius: 50%;
+    animation: wa-spin 0.7s linear infinite;
+}
+
+/* Error state */
+
+.wa-qr-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 32px 0;
+    text-align: center;
+}
+
+.wa-qr-error-state svg {
+    width: 32px;
+    height: 32px;
+    fill: #dc2626;
+}
+
+.wa-qr-error-state p {
+    margin: 0;
+    font-size: 13px;
+    color: #dc2626;
+}
+
+.wa-qr-btn-retry {
+    border: 1px solid #993c1d;
+    border-radius: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    color: #993c1d;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.wa-qr-btn-retry:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+@keyframes wa-spin {
+    to { transform: rotate(360deg); }
+}
