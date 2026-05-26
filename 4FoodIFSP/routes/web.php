@@ -3,10 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrdersController;
+use App\Http\Controllers\Admin\TablesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\WaClosureReasonsController;
 use App\Http\Controllers\Admin\WhatsApp\ConnectionsController;
 use App\Http\Controllers\Tablet\TabletOrderController;
+use App\Http\Controllers\Tablet\TabletSessionController;
 use App\Http\Controllers\Webhooks\BaileysMessageWebhookController;
 use App\Http\Controllers\Webhooks\BaileysWebhookController;
 use App\Http\Controllers\WhatsApp\InboxController;
@@ -21,6 +23,7 @@ Route::post('/webhooks/baileys/messages', [BaileysMessageWebhookController::clas
 Route::redirect('/', '/login');
 
 Route::get('/tablet', [TabletOrderController::class, 'index'])->name('tablet.order');
+Route::post('/tablet/session/start', [TabletSessionController::class, 'store'])->name('tablet.session.start');
 Route::post('/tablet/orders', [TabletOrderController::class, 'store'])->name('tablet.orders.store');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -58,6 +61,16 @@ Route::middleware('firebase.auth')->group(function () {
                 Route::delete('/wa-motivos/{reason}', [WaClosureReasonsController::class, 'destroy'])->name('wa-motivos.destroy');
             });
 
+            Route::prefix('mesas')->name('mesas.')->group(function () {
+                Route::get('/', [TablesController::class, 'index'])->name('index');
+                Route::get('/operacional', [TablesController::class, 'indexOperacional'])->name('operacional');
+                Route::post('/', [TablesController::class, 'store'])->name('store');
+                Route::put('/{table}', [TablesController::class, 'update'])->name('update');
+                Route::delete('/{table}', [TablesController::class, 'destroy'])->name('destroy');
+                Route::post('/{table}/release', [TablesController::class, 'release'])->name('release');
+                Route::post('/{table}/close-account', [TablesController::class, 'closeAccount'])->name('closeAccount');
+            });
+
             Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
                 Route::get('/conexoes', [ConnectionsController::class, 'index'])->name('conexoes.index');
                 Route::post('/conexoes', [ConnectionsController::class, 'store'])->name('conexoes.store');
@@ -88,6 +101,8 @@ Route::middleware('firebase.auth')->group(function () {
             Route::patch('/inbox/tickets/{ticket}/accept', [InboxController::class, 'accept'])->name('inbox.accept');
             Route::patch('/inbox/tickets/{ticket}/close', [InboxController::class, 'close'])->name('inbox.close');
             Route::patch('/inbox/tickets/{ticket}/reopen', [InboxController::class, 'reopen'])->name('inbox.reopen');
+            Route::patch('/inbox/tickets/{ticket}/triage', [InboxController::class, 'returnTriage'])->name('inbox.returnTriage');
+            Route::patch('/inbox/tickets/{ticket}/unread', [InboxController::class, 'markUnread'])->name('inbox.markUnread');
             Route::post('/inbox/tickets/{ticket}/send', [InboxController::class, 'send'])->name('inbox.send');
         });
     });

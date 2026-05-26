@@ -28,6 +28,8 @@ const closeSummary    = ref('');
 const closeError      = ref(null);
 const isClosing       = ref(false);
 
+const localClearedIds = ref([]);
+
 const POLL_MS = 5000;
 let pollTimer           = null;
 let lastSnapshot        = null;
@@ -53,12 +55,19 @@ const currentList = computed(() => props.tickets[activeTab.value] ?? []);
 
 const filteredList = computed(() => {
     const term = search.value.trim().toLowerCase();
-    if (!term) return currentList.value;
-    return currentList.value.filter((t) => {
-        const name  = (t.customer_name ?? '').toLowerCase();
-        const phone = (t.phone_number  ?? '').toLowerCase();
-        return name.includes(term) || phone.includes(term);
-    });
+    let list = currentList.value;
+    if (term) {
+        list = list.filter((t) => {
+            const name  = (t.customer_name ?? '').toLowerCase();
+            const phone = (t.phone_number  ?? '').toLowerCase();
+            return name.includes(term) || phone.includes(term);
+        });
+    }
+    return list.map((t) =>
+        localClearedIds.value.includes(t.id)
+            ? { ...t, unread_count: 0, is_unread: false }
+            : t
+    );
 });
 
 function tabCount(key) {
@@ -74,6 +83,9 @@ function onTabChange(key) {
 async function onSelect(id) {
     selectedId.value = id;
     acceptError.value = null;
+    if (!localClearedIds.value.includes(id)) {
+        localClearedIds.value = [...localClearedIds.value, id];
+    }
     const ticket = allTickets.value.find((t) => t.id === id);
     if (ticket && (ticket.status === 'in_progress' || ticket.status === 'closed')) {
         await fetchMessages(id);
@@ -152,6 +164,30 @@ async function handleReopen(ticketId) {
         router.reload({ only: ['tickets'], preserveScroll: true });
     } catch (e) {
         window.alert(e.response?.data?.message ?? 'Erro ao reabrir atendimento.');
+    }
+}
+
+async function handleReturnTriage(ticketId) {
+    try {
+        await axios.patch(`/whatsapp/inbox/tickets/${ticketId}/triage`);
+        activeTab.value    = 'triage';
+        selectedId.value   = null;
+        chatMessages.value = [];
+        router.reload({ only: ['tickets'], preserveScroll: true });
+    } catch (e) {
+        window.alert(e.response?.data?.message ?? 'Erro ao retornar ticket à triagem.');
+    }
+}
+
+async function handleMarkUnread(ticketId) {
+    try {
+        await axios.patch(`/whatsapp/inbox/tickets/${ticketId}/unread`);
+        localClearedIds.value = localClearedIds.value.filter((id) => id !== ticketId);
+        selectedId.value   = null;
+        chatMessages.value = [];
+        router.reload({ only: ['tickets'], preserveScroll: true });
+    } catch (e) {
+        window.alert(e.response?.data?.message ?? 'Erro ao marcar como não lido.');
     }
 }
 
@@ -258,37 +294,39 @@ onUnmounted(() => {
                 </button>
             </nav>
 
-            <div class="search-wrap">
-                <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M10.5 3a7.5 7.5 0 1 1 4.47 13.58l4.19 4.19-1.41 1.41-4.19-4.19A7.5 7.5 0 0 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z" />
-                </svg>
-                <input
-                    v-model="search"
-                    type="search"
-                    class="search-input"
-                    placeholder="Pesquisar por nome ou número..."
-                    aria-label="Pesquisar nome"
-                />
-            </div>
+            <div class="inbox-body">
+                <label class="wa-search">
+                    <svg class="wa-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M10.5 3a7.5 7.5 0 1 1 4.47 13.58l4.19 4.19-1.41 1.41-4.19-4.19A7.5 7.5 0 0 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z" />
+                    </svg>
+                    <input
+                        v-model="search"
+                        type="search"
+                        class="wa-search-input"
+                        placeholder="Pesquisar por nome ou número..."
+                        aria-label="Pesquisar nome"
+                    />
+                </label>
 
-            <div v-if="filteredList.length === 0" class="empty-list">
-                <p v-if="search.trim()">Nenhum contato encontrado para "{{ search.trim() }}"</p>
-                <p v-else>Nenhum chamado nesta aba</p>
-            </div>
+                <div v-if="filteredList.length === 0" class="empty-list">
+                    <p v-if="search.trim()">Nenhum contato encontrado para "{{ search.trim() }}"</p>
+                    <p v-else>Nenhum chamado nesta aba</p>
+                </div>
 
-            <ul v-else class="contact-list">
-                <WaContactRow
-                    v-for="ticket in filteredList"
-                    :key="ticket.id"
-                    :ticket="ticket"
-                    :selected="selectedId === ticket.id"
-                    :show-novo-badge="activeTab === 'triage'"
-                    :show-atender-button="activeTab === 'triage'"
-                    :time-label="formatTime(ticket.updated_at)"
-                    @select="onSelect"
-                    @accept="handleAccept"
-                />
-            </ul>
+                <ul v-else class="contact-list">
+                    <WaContactRow
+                        v-for="ticket in filteredList"
+                        :key="ticket.id"
+                        :ticket="ticket"
+                        :selected="selectedId === ticket.id"
+                        :show-novo-badge="activeTab === 'triage'"
+                        :show-atender-button="activeTab === 'triage'"
+                        :time-label="formatTime(ticket.updated_at)"
+                        @select="onSelect"
+                        @accept="handleAccept"
+                    />
+                </ul>
+            </div>
         </div>
 
         <!-- painel direito: detalhe -->
@@ -340,6 +378,8 @@ onUnmounted(() => {
                 @message-sent="(msg) => chatMessages.push(msg)"
                 @close="handleClose(selectedTicket.id)"
                 @reopen="handleReopen(selectedTicket.id)"
+                @return-triage="handleReturnTriage(selectedTicket.id)"
+                @mark-unread="handleMarkUnread(selectedTicket.id)"
             />
         </div>
     </div>

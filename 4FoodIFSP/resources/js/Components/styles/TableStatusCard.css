@@ -1,0 +1,91 @@
+.table-card {
+    appearance: none;
+    width: 100%;
+    text-align: left;
+    background: #fafbfc;
+    border: 1.5px solid #eceef0;
+    border-radius: 14px;
+    padding: 14px 14px 12px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 118px;
+}
+
+.table-card:hover:not(:disabled) {
+    background: #fff;
+    border-color: #d9dde3;
+    box-shadow: 0 4px 14px rgb(23 24 30 / 6%);
+}
+
+.table-card--selected {
+    background: #fff;
+    border-color: #17181e;
+    box-shadow: 0 0 0 3px rgb(23 24 30 / 8%);
+}
+
+.table-card:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.table-card--available       { background: #f8fdfa; }
+.table-card--open_bill       { background: #fffaf7; border-color: #f5ddd0; }
+.table-card--open_bill.table-card--selected { border-color: #d85a30; box-shadow: 0 0 0 3px rgb(216 90 48 / 12%); }
+
+.tc-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.tc-prefix {
+    font-size: 11px;
+    font-weight: 500;
+    color: #9aa1ad;
+    line-height: 1.2;
+}
+
+.tc-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #17181e;
+    line-height: 1;
+    letter-spacing: -0.5px;
+}
+
+.tc-label {
+    font-size: 12px;
+    color: #7b7f89;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: -4px;
+}
+
+.tc-status {
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: auto;
+}
+
+.tc-status--available       { color: #0f766e; }
+.tc-status--in_use          { color: #b45309; }
+.tc-status--open_bill       { color: #c4451a; }
+.tc-status--pending_release { color: #6b7280; }
+.tc-status--inactive        { color: #9ca3af; }
+
+.tc-total {
+    font-size: 15px;
+    font-weight: 700;
+    color: #c4451a;
+    margin-top: auto;
+}
+
+.tc-meta {
+    font-size: 11px;
+    color: #b0b6c2;
+    margin-top: auto;
+}

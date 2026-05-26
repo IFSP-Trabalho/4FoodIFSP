@@ -39,7 +39,11 @@
       "PowerShell($id = \"5a36ea05-6ea7-4b93-83ad-e59deee2ff82\"; $body = \"{`\"connection_id`\": `\"$id`\"}\"; $r = Invoke-RestMethod -Uri \"http://127.0.0.1:3001/sessions\" -Method POST -Body $body -ContentType \"application/json\" -TimeoutSec 5; Write-Output \"createSession: $\\($r | ConvertTo-Json -Compress\\)\")",
       "PowerShell($id = \"5a36ea05-6ea7-4b93-83ad-e59deee2ff82\"; try { $r = Invoke-RestMethod -Uri \"http://127.0.0.1:3001/sessions/$id/start\" -Method POST -TimeoutSec 25; $qr = if \\($r.qr_base64\\) { \"presente\" } else { \"null\" }; Write-Output \"Status: $\\($r.status\\) QR: $qr\" } catch { $code = $_.Exception.Response.StatusCode.value__; Write-Output \"ERRO HTTP $code\" })",
       "Bash(Get-Content *)",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\DELL\\\\Downloads\\\\4FoodIFSP\\\\4FoodIFSP\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "Bash(npx vite *)"
     ]
   }
 }

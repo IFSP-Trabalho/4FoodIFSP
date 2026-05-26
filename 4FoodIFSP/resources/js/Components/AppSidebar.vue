@@ -17,7 +17,7 @@ const items = [
     { key: 'home', label: 'Home', icon: 'home', route: '/admin/dashboard' },
     { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', route: null },
     { key: 'orders', label: 'Orders', icon: 'orders', route: '/admin/orders' },
-    { key: 'tables', label: 'Mesas', icon: 'tables', route: null },
+    { key: 'tables', label: 'Mesas', icon: 'tables', route: '/admin/mesas', adminOnly: true },
     { key: 'cadastros', label: 'Cadastros', icon: 'cadastros', route: null },
     { key: 'finance', label: 'Financeiro', icon: 'finance', route: null },
     { key: 'reports', label: 'Relatorios', icon: 'reports', route: null },

@@ -44,6 +44,11 @@ class InboxController extends Controller
         $record = DB::table('wa_tickets')->where('id', $ticket)->first();
         abort_unless($record, 404);
 
+        DB::table('wa_tickets')->where('id', $ticket)->where('is_unread', true)->update([
+            'is_unread'    => false,
+            'unread_count' => 0,
+        ]);
+
         $messages = DB::table('wa_messages')
             ->where('wa_ticket_id', $ticket)
             ->orderByRaw('COALESCE(sent_at, created_at) ASC')
@@ -167,6 +172,35 @@ class InboxController extends Controller
         ]);
     }
 
+    public function returnTriage(string $ticket)
+    {
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+        abort_if($record->status !== 'in_progress', 422, 'Ticket não está em atendimento.');
+
+        DB::table('wa_tickets')->where('id', $ticket)->update([
+            'status'     => 'triage',
+            'agent_id'   => null,
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['ok' => true, 'status' => 'triage', 'id' => $ticket]);
+    }
+
+    public function markUnread(string $ticket)
+    {
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+        abort_if(!in_array($record->status, ['in_progress', 'closed']), 422, 'Ação não permitida.');
+
+        DB::table('wa_tickets')->where('id', $ticket)->update([
+            'is_unread'    => true,
+            'unread_count' => DB::raw('GREATEST(unread_count, 1)'),
+        ]);
+
+        return response()->json(['ok' => true]);
+    }
+
     public function accept(string $ticket)
     {
         $record = DB::table('wa_tickets')->where('id', $ticket)->first();
@@ -191,6 +225,8 @@ class InboxController extends Controller
                 't.phone_number',
                 't.status',
                 't.agent_id',
+                't.is_unread',
+                't.unread_count',
                 't.updated_at',
                 't.created_at',
                 DB::raw('(
@@ -219,6 +255,8 @@ class InboxController extends Controller
             'updated_at'    => $row->updated_at,
             'status'        => $row->status,
             'agent_id'      => $row->agent_id,
+            'is_unread'     => (bool) $row->is_unread,
+            'unread_count'  => (int) $row->unread_count,
         ];
 
         return [

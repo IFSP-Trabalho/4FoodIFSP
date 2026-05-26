@@ -20,9 +20,10 @@ class RestaurantTableSeeder extends Seeder
 
             if ($existing === null) {
                 DB::table('tables')->insert([
-                    'id' => Str::uuid()->toString(),
-                    'number' => $number,
-                    'label' => 'Mesa ' . $number,
+                    'id'         => Str::uuid()->toString(),
+                    'number'     => $number,
+                    'label'      => 'Mesa ' . $number,
+                    'active'     => true,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

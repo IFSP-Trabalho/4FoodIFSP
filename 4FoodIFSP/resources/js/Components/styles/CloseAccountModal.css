@@ -1,0 +1,145 @@
+/* ── totals block ─────────────────────────────────── */
+.cam-totals {
+    background: #fafbfc;
+    border: 1px solid #eceef0;
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cam-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.cam-total-label {
+    font-size: 13px;
+    color: #7b7f89;
+}
+
+.cam-total-value {
+    font-size: 13px;
+    color: #17181e;
+    font-weight: 500;
+}
+
+.cam-total-row--discount .cam-total-value { color: #1d9e75; }
+.cam-total-row--tip      .cam-total-value { color: #ef9f27; }
+
+.cam-total-row--final {
+    padding-top: 8px;
+    border-top: 1px solid #e2e5ea;
+    margin-top: 2px;
+}
+
+.cam-total-row--final .cam-total-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #17181e;
+}
+
+.cam-total-row--final .cam-total-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #993c1d;
+    letter-spacing: -0.3px;
+}
+
+/* ── fieldsets ───────────────────────────────────── */
+.cam-fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cam-legend {
+    font-size: 12px;
+    font-weight: 600;
+    color: #5c6370;
+    letter-spacing: 0.03em;
+    margin-bottom: 2px;
+}
+
+.cam-required { color: #c53030; }
+
+.cam-hint {
+    font-weight: 400;
+    color: #9aa1ad;
+}
+
+/* ── payment method chips ────────────────────────── */
+.cam-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.cam-method {
+    height: 36px;
+    padding: 0 16px;
+    border: 1px solid #d9dde3;
+    border-radius: 999px;
+    background: #fff;
+    color: #5c6370;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.cam-method:hover {
+    border-color: #993c1d;
+    color: #993c1d;
+}
+
+.cam-method--active {
+    background: #993c1d;
+    border-color: #993c1d;
+    color: #fff;
+}
+
+/* ── discount row ────────────────────────────────── */
+.cam-discount-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.cam-type-toggle {
+    display: flex;
+    border: 1px solid #d9dde3;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.cam-toggle-btn {
+    width: 40px;
+    border: 0;
+    background: #fff;
+    color: #5c6370;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.cam-toggle-btn + .cam-toggle-btn {
+    border-left: 1px solid #d9dde3;
+}
+
+.cam-toggle-btn--active {
+    background: #17181e;
+    color: #fff;
+}
+
+.cam-input-wrap {
+    flex: 1;
+}

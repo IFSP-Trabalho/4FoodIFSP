@@ -47,10 +47,11 @@ function initials(ticket) {
                     <span class="name">{{ displayName(ticket) }}</span>
                     <span class="meta">
                         <span v-if="showNovoBadge" class="badge-novo">Novo</span>
-                        <span class="time">{{ timeLabel }}</span>
+                        <span v-if="ticket.unread_count > 0" class="badge-unread">{{ ticket.unread_count }}</span>
+                        <span class="time" :class="{ 'time--unread': ticket.unread_count > 0 }">{{ timeLabel }}</span>
                     </span>
                 </span>
-                <span class="preview">{{ ticket.last_message }}</span>
+                <span class="preview" :class="{ 'preview--unread': ticket.unread_count > 0 }">{{ ticket.last_message }}</span>
             </span>
         </button>
         <button

@@ -10,9 +10,10 @@ import TabletItemNoteModal from '../../Components/TabletItemNoteModal.vue';
 import { formatPriceBRL } from '../../utils/formatPrice.js';
 
 const props = defineProps({
-    mesa: { type: Number, required: true },
-    categories: { type: Array, required: true },
-    dishes: { type: Array, required: true },
+    mesa:       { type: Number, required: true },
+    session_id: { type: String, default: null },
+    categories: { type: Array,  required: true },
+    dishes:     { type: Array,  required: true },
 });
 
 const cart = ref([]);

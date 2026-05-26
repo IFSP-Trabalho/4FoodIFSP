@@ -24,8 +24,29 @@ class TabletOrderController extends Controller
 
         $mesa = (int) $mesa;
 
+        $table = DB::table('tables')->where('number', $mesa)->first();
+
+        if (!$table || !$table->active) {
+            return Inertia::render('Tablet/TableUnavailable', [
+                'mesa' => $mesa,
+            ]);
+        }
+
+        $session = DB::table('table_sessions')
+            ->where('table_id', $table->id)
+            ->whereNull('closed_at')
+            ->first();
+
+        if (!$session) {
+            return Inertia::render('Tablet/Welcome', [
+                'mesa'       => $mesa,
+                'mesa_label' => $table->label ?? 'Mesa ' . $mesa,
+            ]);
+        }
+
         return Inertia::render('Tablet/Order', [
             'mesa'       => $mesa,
+            'session_id' => $session->id,
             'categories' => $this->getTabletMenuCategories(),
             'dishes'     => $this->getTabletMenuDishes(),
         ]);
@@ -41,12 +62,27 @@ class TabletOrderController extends Controller
             'items.*.note'     => ['nullable', 'string', 'max:200'],
         ]);
 
-        $table = DB::table('tables')->where('number', $validated['mesa'])->first();
+        $table = DB::table('tables')
+            ->where('number', $validated['mesa'])
+            ->where('active', true)
+            ->first();
 
         if (!$table) {
             return response()->json([
-                'message' => 'Mesa não encontrada',
-                'errors'  => ['mesa' => ['Mesa não encontrada']],
+                'message' => 'Mesa não encontrada ou inativa.',
+                'errors'  => ['mesa' => ['Mesa não encontrada ou inativa.']],
+            ], 422);
+        }
+
+        $session = DB::table('table_sessions')
+            ->where('table_id', $table->id)
+            ->whereNull('closed_at')
+            ->first();
+
+        if (!$session) {
+            return response()->json([
+                'message' => 'Inicie o pedido na mesa antes de enviar itens.',
+                'errors'  => ['mesa' => ['Sessão de mesa não encontrada. Toque em INICIAR PEDIDO.']],
             ], 422);
         }
 
@@ -63,17 +99,18 @@ class TabletOrderController extends Controller
             }
         }
 
-        $orderId = DB::transaction(function () use ($validated, $table, $dishes) {
+        $orderId = DB::transaction(function () use ($validated, $table, $session, $dishes) {
             $orderId = (string) Str::uuid();
 
             DB::table('orders')->insert([
-                'id'         => $orderId,
-                'table_id'   => $table->id,
-                'origin'     => 'table',
-                'status'     => 'pending',
-                'paid'       => false,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'id'               => $orderId,
+                'table_id'         => $table->id,
+                'table_session_id' => $session->id,
+                'origin'           => 'table',
+                'status'           => 'pending',
+                'paid'             => false,
+                'created_at'       => now(),
+                'updated_at'       => now(),
             ]);
 
             foreach ($validated['items'] as $item) {

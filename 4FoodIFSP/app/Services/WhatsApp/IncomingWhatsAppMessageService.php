@@ -77,7 +77,12 @@ class IncomingWhatsAppMessageService
                 'updated_at'    => now(),
             ]);
 
-            DB::table('wa_tickets')->where('id', $ticketId)->update(['updated_at' => now()]);
+            $ticketFinalUpdate = ['updated_at' => now()];
+            if ($openTicket && $openTicket->status === 'in_progress') {
+                $ticketFinalUpdate['is_unread']    = true;
+                $ticketFinalUpdate['unread_count'] = DB::raw('unread_count + 1');
+            }
+            DB::table('wa_tickets')->where('id', $ticketId)->update($ticketFinalUpdate);
         });
     }
 }

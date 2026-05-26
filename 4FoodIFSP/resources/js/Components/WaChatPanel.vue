@@ -9,7 +9,19 @@ const props = defineProps({
     loading:  { type: Boolean, default: false },
 });
 
-const emit = defineEmits(['message-sent', 'close', 'reopen']);
+const emit = defineEmits(['message-sent', 'close', 'reopen', 'return-triage', 'mark-unread']);
+
+const menuOpen = ref(false);
+
+function toggleMenu() {
+    menuOpen.value = !menuOpen.value;
+}
+
+function menuAction(action) {
+    menuOpen.value = false;
+    if (action === 'triage') emit('return-triage');
+    if (action === 'unread')  emit('mark-unread');
+}
 
 const messagesEl = ref(null);
 const inputText  = ref('');
@@ -66,10 +78,11 @@ function onKeydown(e) {
 
 watch(() => props.messages, scrollToBottom, { deep: true, immediate: true });
 watch(() => props.loading, (v) => { if (!v) scrollToBottom(); });
+watch(() => props.ticket, () => { menuOpen.value = false; });
 </script>
 
 <template>
-    <div class="chat-panel">
+    <div class="chat-panel" @click="menuOpen = false">
         <header class="chat-head">
             <span class="chat-avatar">{{ initials(ticket.customer_name) }}</span>
             <div class="chat-contact">
@@ -86,6 +99,7 @@ watch(() => props.loading, (v) => { if (!v) scrollToBottom(); });
                 >
                     Reabrir
                 </button>
+
                 <button
                     v-if="ticket.status === 'in_progress'"
                     type="button"
@@ -97,6 +111,41 @@ watch(() => props.loading, (v) => { if (!v) scrollToBottom(); });
                         <path d="M18 6 6 18M6 6l12 12"/>
                     </svg>
                 </button>
+
+                <!-- menu 3 pontos verticais -->
+                <div class="chat-menu-wrap">
+                    <button
+                        type="button"
+                        class="chat-menu-btn"
+                        aria-label="Mais opções"
+                        @click.stop="toggleMenu"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="5"  r="1.5"/>
+                            <circle cx="12" cy="12" r="1.5"/>
+                            <circle cx="12" cy="19" r="1.5"/>
+                        </svg>
+                    </button>
+                    <div v-if="menuOpen" class="chat-menu-dropdown" @click.stop>
+                        <button
+                            v-if="ticket.status === 'in_progress'"
+                            type="button"
+                            class="chat-menu-item"
+                            @click="menuAction('triage')"
+                        >
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2Z"/>
+                            </svg>
+                            Retornar à triagem
+                        </button>
+                        <button type="button" class="chat-menu-item" @click="menuAction('unread')">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/>
+                            </svg>
+                            Marcar como não lido
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
 
