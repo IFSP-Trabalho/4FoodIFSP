@@ -16,9 +16,15 @@ class InboxController extends Controller
     public function index(): Response
     {
         return Inertia::render('WhatsApp/Inbox', [
-            'tickets'    => $this->buildTicketsGrouped(),
-            'date'       => now()->format('d/m/Y'),
-            'authUserId' => auth()->id(),
+            'tickets'        => $this->buildTicketsGrouped(),
+            'date'           => now()->format('d/m/Y'),
+            'authUserId'     => auth()->id(),
+            'closureReasons' => DB::table('wa_closure_reasons')
+                ->where('active', true)
+                ->orderBy('name')
+                ->get(['id', 'name'])
+                ->map(fn($r) => ['id' => (string) $r->id, 'name' => (string) $r->name])
+                ->all(),
         ]);
     }
 
@@ -27,6 +33,7 @@ class InboxController extends Controller
         return response()->json([
             'triage_ids'      => DB::table('wa_tickets')->where('status', 'triage')->orderBy('created_at')->pluck('id'),
             'in_progress_ids' => DB::table('wa_tickets')->where('status', 'in_progress')->orderByDesc('updated_at')->pluck('id'),
+            'closed_ids'      => DB::table('wa_tickets')->where('status', 'closed')->whereDate('updated_at', today())->orderByDesc('updated_at')->pluck('id'),
             'updated_at_max'  => DB::table('wa_tickets')->max('updated_at'),
             'server_time'     => now()->toIso8601String(),
         ]);
@@ -104,6 +111,59 @@ class InboxController extends Controller
                 'body'      => $request->body,
                 'sent_at'   => $now->toIso8601String(),
             ],
+        ]);
+    }
+
+    public function close(string $ticket, Request $request)
+    {
+        $request->validate([
+            'closure_reason_id' => ['required', 'uuid', 'exists:wa_closure_reasons,id'],
+            'summary'           => ['nullable', 'string', 'max:4096'],
+        ], [
+            'closure_reason_id.required' => 'Selecione um motivo de fechamento.',
+            'closure_reason_id.exists'   => 'Motivo de fechamento inválido.',
+        ]);
+
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+        abort_if($record->status !== 'in_progress', 422, 'Ticket não está em atendimento.');
+
+        $reasonActive = DB::table('wa_closure_reasons')
+            ->where('id', $request->closure_reason_id)
+            ->where('active', true)
+            ->exists();
+        abort_unless($reasonActive, 422, 'Motivo de fechamento inativo.');
+
+        DB::table('wa_tickets')->where('id', $ticket)->update([
+            'status'            => 'closed',
+            'closure_reason_id' => $request->closure_reason_id,
+            'summary'           => $request->summary ?: null,
+            'updated_at'        => now(),
+        ]);
+
+        return response()->json([
+            'ok'     => true,
+            'status' => 'closed',
+            'id'     => $ticket,
+        ]);
+    }
+
+    public function reopen(string $ticket)
+    {
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+        abort_if($record->status !== 'closed', 422, 'Ticket não está fechado.');
+
+        DB::table('wa_tickets')->where('id', $ticket)->update([
+            'status'     => 'in_progress',
+            'agent_id'   => auth()->id(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json([
+            'ok'     => true,
+            'status' => 'in_progress',
+            'id'     => $ticket,
         ]);
     }
 

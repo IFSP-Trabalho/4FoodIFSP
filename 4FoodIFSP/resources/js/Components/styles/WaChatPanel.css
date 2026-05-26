@@ -49,6 +49,13 @@
     color: #7b7f89;
 }
 
+.chat-head-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
 .chat-closed-badge {
     font-size: 11px;
     font-weight: 700;
@@ -56,6 +63,50 @@
     border-radius: 10px;
     background: #f3f4f6;
     color: #6b7280;
+}
+
+.chat-close-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #DC2626;
+    transition: background 0.15s;
+}
+
+.chat-close-btn:hover {
+    background: #FEE2E2;
+}
+
+.chat-close-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+}
+
+.chat-reopen-btn {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid #378ADD;
+    color: #378ADD;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.chat-reopen-btn:hover {
+    background: #E6F1FB;
 }
 
 /* loading */

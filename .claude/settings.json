@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(netstat -ano)"
+      "PowerShell(netstat -ano)",
+      "Bash(Get-ChildItem \"c:\\\\Users\\\\DELL\\\\Downloads\\\\4FoodIFSP\\\\4FoodIFSP\\\\database\\\\migrations\" -Name)",
+      "Bash(Sort-Object)"
     ]
   }
 }

@@ -326,3 +326,140 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+/* ── modal fechar atendimento ── */
+.close-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: rgb(20 26 35 / 52%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.close-modal-dialog {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgb(14 20 31 / 22%);
+    padding: 28px 24px 22px;
+    width: min(460px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.close-modal-dialog h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1b1f29;
+}
+
+.close-modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.close-modal-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #5f6572;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.close-modal-required {
+    color: #c53030;
+}
+
+.close-modal-optional {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #9ba3ae;
+}
+
+.close-modal-select {
+    border: 1px solid #d9dde3;
+    border-radius: 8px;
+    height: 40px;
+    padding: 0 10px;
+    font-size: 14px;
+    color: #17181e;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.close-modal-select:focus {
+    border-color: #378ADD;
+}
+
+.close-modal-textarea {
+    border: 1px solid #d9dde3;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #17181e;
+    resize: vertical;
+    outline: none;
+    font-family: inherit;
+    line-height: 1.45;
+    transition: border-color 0.15s;
+}
+
+.close-modal-textarea:focus {
+    border-color: #378ADD;
+}
+
+.close-modal-hint {
+    margin: 0;
+    font-size: 12px;
+    color: #9ba3ae;
+    font-style: italic;
+}
+
+.close-modal-error {
+    margin: 0;
+    font-size: 13px;
+    color: #c53030;
+    background: #fff2f2;
+    border-radius: 6px;
+    padding: 8px 12px;
+}
+
+.close-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cm-btn {
+    border: 0;
+    border-radius: 8px;
+    height: 40px;
+    padding: 0 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.cm-btn--secondary {
+    border: 1px solid #c6ccd5;
+    background: #fff;
+    color: #3d4654;
+}
+
+.cm-btn--danger {
+    background: #DC2626;
+    color: #fff;
+}
+
+.cm-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}

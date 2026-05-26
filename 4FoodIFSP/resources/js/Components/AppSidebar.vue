@@ -29,6 +29,7 @@ const cadastrosOptions = [
     { key: 'users', label: 'Usuarios', icon: 'users', route: '/admin/cadastros/users' },
     { key: 'departments', label: 'Departamentos', icon: 'departments', route: '/admin/cadastros/departments' },
     { key: 'dishes', label: 'Pratos', icon: 'dishes', route: '/admin/cadastros/dishes' },
+    { key: 'wa-motivos', label: 'Motivos WA', icon: 'wa-motivos', route: '/admin/cadastros/wa-motivos' },
 ];
 
 const splitAfter = new Set(['dashboard', 'cadastros']);
@@ -145,6 +146,9 @@ onBeforeUnmount(() => {
                         </svg>
                         <svg v-else-if="option.icon === 'departments'" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M10 3H4v6h6V3Zm10 0h-6v6h6V3ZM10 15H4v6h6v-6Zm2-4h-2v2h-2v2h2v2h2v-2h2v-2h-2v-2Zm8 4h-6v6h6v-6Z" />
+                        </svg>
+                        <svg v-else-if="option.icon === 'wa-motivos'" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M17.63 5.84A2 2 0 0 0 16.23 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h11.23a2 2 0 0 0 1.4-.57L21 15V9l-3.37-3.16ZM11 17H9v-2h2v2Zm0-4H9V7h2v6Zm4 4h-2v-2h2v2Zm0-4h-2V7h2v6Z" />
                         </svg>
                         <svg v-else viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M8.1 13.34 3.91 9.16a4.01 4.01 0 0 1 5.67-5.67l2.84 2.83-1.41 1.42-2.84-2.84a2 2 0 1 0-2.83 2.83l4.19 4.19-1.43 1.42Zm7.8-7.78 4.19 4.19a4.01 4.01 0 0 1-5.67 5.67l-2.84-2.83 1.41-1.42 2.84 2.84a2 2 0 1 0 2.83-2.83l-4.19-4.19 1.43-1.43ZM8 21l8.94-8.94-1.41-1.41L6.59 19.59 8 21Z" />

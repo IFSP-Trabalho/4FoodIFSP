@@ -9,7 +9,7 @@ const props = defineProps({
     loading:  { type: Boolean, default: false },
 });
 
-const emit = defineEmits(['message-sent']);
+const emit = defineEmits(['message-sent', 'close', 'reopen']);
 
 const messagesEl = ref(null);
 const inputText  = ref('');
@@ -76,7 +76,28 @@ watch(() => props.loading, (v) => { if (!v) scrollToBottom(); });
                 <strong>{{ ticket.customer_name || 'Cliente' }}</strong>
                 <span>{{ formatPhoneE164(ticket.phone_number) || ticket.phone_number }}</span>
             </div>
-            <span v-if="ticket.status === 'closed'" class="chat-closed-badge">Fechado</span>
+            <div class="chat-head-actions">
+                <span v-if="ticket.status === 'closed'" class="chat-closed-badge">Fechado</span>
+                <button
+                    v-if="ticket.status === 'closed'"
+                    type="button"
+                    class="chat-reopen-btn"
+                    @click="emit('reopen')"
+                >
+                    Reabrir
+                </button>
+                <button
+                    v-if="ticket.status === 'in_progress'"
+                    type="button"
+                    class="chat-close-btn"
+                    aria-label="Fechar atendimento"
+                    @click="emit('close')"
+                >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M18 6 6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
         </header>
 
         <div v-if="loading" class="chat-loading">

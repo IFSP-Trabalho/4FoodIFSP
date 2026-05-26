@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\WaClosureReasonsController;
 use App\Http\Controllers\Admin\WhatsApp\ConnectionsController;
 use App\Http\Controllers\Tablet\TabletOrderController;
 use App\Http\Controllers\Webhooks\BaileysMessageWebhookController;
@@ -50,6 +51,11 @@ Route::middleware('firebase.auth')->group(function () {
                 Route::put('/users/{user}', [UsersController::class, 'update'])->name('users.update');
                 Route::delete('/users/{user}', [UsersController::class, 'destroy'])->name('users.destroy');
                 Route::put('/users/{user}/departments', [UsersController::class, 'syncDepartments'])->name('users.syncDepartments');
+
+                Route::get('/wa-motivos', [WaClosureReasonsController::class, 'index'])->name('wa-motivos.index');
+                Route::post('/wa-motivos', [WaClosureReasonsController::class, 'store'])->name('wa-motivos.store');
+                Route::put('/wa-motivos/{reason}', [WaClosureReasonsController::class, 'update'])->name('wa-motivos.update');
+                Route::delete('/wa-motivos/{reason}', [WaClosureReasonsController::class, 'destroy'])->name('wa-motivos.destroy');
             });
 
             Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
@@ -80,6 +86,8 @@ Route::middleware('firebase.auth')->group(function () {
             Route::get('/inbox/poll', [InboxController::class, 'poll'])->name('inbox.poll');
             Route::get('/inbox/tickets/{ticket}/messages', [InboxController::class, 'messages'])->name('inbox.messages');
             Route::patch('/inbox/tickets/{ticket}/accept', [InboxController::class, 'accept'])->name('inbox.accept');
+            Route::patch('/inbox/tickets/{ticket}/close', [InboxController::class, 'close'])->name('inbox.close');
+            Route::patch('/inbox/tickets/{ticket}/reopen', [InboxController::class, 'reopen'])->name('inbox.reopen');
             Route::post('/inbox/tickets/{ticket}/send', [InboxController::class, 'send'])->name('inbox.send');
         });
     });

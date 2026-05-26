@@ -7,9 +7,10 @@ import WaChatPanel from '../../Components/WaChatPanel.vue';
 import WaContactRow from '../../Components/WaContactRow.vue';
 
 const props = defineProps({
-    tickets:    { type: Object, required: true },
-    date:       { type: String, required: true },
-    authUserId: { type: String, default: null },
+    tickets:        { type: Object, required: true },
+    date:           { type: String, required: true },
+    authUserId:     { type: String, default: null },
+    closureReasons: { type: Array,  default: () => [] },
 });
 
 const activeTab   = ref('in_progress');
@@ -19,6 +20,13 @@ const chatMessages = ref([]);
 const chatLoading  = ref(false);
 const isAccepting  = ref(false);
 const acceptError  = ref(null);
+
+const showCloseModal  = ref(false);
+const pendingCloseId  = ref(null);
+const closeReasonId   = ref('');
+const closeSummary    = ref('');
+const closeError      = ref(null);
+const isClosing       = ref(false);
 
 const POLL_MS = 5000;
 let pollTimer           = null;
@@ -99,6 +107,51 @@ async function handleAccept(ticketId) {
         acceptError.value = e.response?.data?.message ?? 'Erro ao atender ticket.';
     } finally {
         isAccepting.value = false;
+    }
+}
+
+function handleClose(ticketId) {
+    pendingCloseId.value = ticketId;
+    closeReasonId.value  = '';
+    closeSummary.value   = '';
+    closeError.value     = null;
+    showCloseModal.value = true;
+}
+
+function cancelClose() {
+    showCloseModal.value = false;
+    pendingCloseId.value = null;
+}
+
+async function confirmClose() {
+    if (!closeReasonId.value) {
+        closeError.value = 'Selecione um motivo de fechamento.';
+        return;
+    }
+    isClosing.value  = true;
+    closeError.value = null;
+    try {
+        await axios.patch(`/whatsapp/inbox/tickets/${pendingCloseId.value}/close`, {
+            closure_reason_id: closeReasonId.value,
+            summary:           closeSummary.value || null,
+        });
+        showCloseModal.value = false;
+        activeTab.value      = 'closed';
+        router.reload({ only: ['tickets'], preserveScroll: true });
+    } catch (e) {
+        closeError.value = e.response?.data?.message ?? 'Erro ao fechar atendimento.';
+    } finally {
+        isClosing.value = false;
+    }
+}
+
+async function handleReopen(ticketId) {
+    try {
+        await axios.patch(`/whatsapp/inbox/tickets/${ticketId}/reopen`);
+        activeTab.value = 'in_progress';
+        router.reload({ only: ['tickets'], preserveScroll: true });
+    } catch (e) {
+        window.alert(e.response?.data?.message ?? 'Erro ao reabrir atendimento.');
     }
 }
 
@@ -285,7 +338,58 @@ onUnmounted(() => {
                 :messages="chatMessages"
                 :loading="chatLoading"
                 @message-sent="(msg) => chatMessages.push(msg)"
+                @close="handleClose(selectedTicket.id)"
+                @reopen="handleReopen(selectedTicket.id)"
             />
+        </div>
+    </div>
+
+    <!-- modal de fechamento -->
+    <div v-if="showCloseModal" class="close-modal-overlay" @click.self="cancelClose">
+        <div class="close-modal-dialog">
+            <h3>Fechar atendimento</h3>
+
+            <div class="close-modal-field">
+                <label class="close-modal-label">Motivo <span class="close-modal-required">*</span></label>
+                <select v-model="closeReasonId" class="close-modal-select">
+                    <option value="">Selecione...</option>
+                    <option v-for="r in closureReasons" :key="r.id" :value="r.id">
+                        {{ r.name }}
+                    </option>
+                </select>
+                <p v-if="closureReasons.length === 0" class="close-modal-hint">
+                    Nenhum motivo cadastrado. Configure em Cadastros → Motivos WA.
+                </p>
+            </div>
+
+            <div class="close-modal-field">
+                <label class="close-modal-label">
+                    Resumo <span class="close-modal-optional">(opcional)</span>
+                </label>
+                <textarea
+                    v-model="closeSummary"
+                    class="close-modal-textarea"
+                    rows="3"
+                    placeholder="Resumo do atendimento..."
+                    maxlength="4096"
+                />
+            </div>
+
+            <p v-if="closeError" class="close-modal-error">{{ closeError }}</p>
+
+            <footer class="close-modal-actions">
+                <button type="button" class="cm-btn cm-btn--secondary" :disabled="isClosing" @click="cancelClose">
+                    Cancelar
+                </button>
+                <button
+                    type="button"
+                    class="cm-btn cm-btn--danger"
+                    :disabled="isClosing || !closeReasonId"
+                    @click="confirmClose"
+                >
+                    {{ isClosing ? 'Fechando...' : 'Fechar atendimento' }}
+                </button>
+            </footer>
         </div>
     </div>
 </template>
