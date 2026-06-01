@@ -11,6 +11,7 @@ use App\Http\Controllers\Tablet\TabletOrderController;
 use App\Http\Controllers\Tablet\TabletSessionController;
 use App\Http\Controllers\Webhooks\BaileysMessageWebhookController;
 use App\Http\Controllers\Webhooks\BaileysWebhookController;
+use App\Http\Controllers\WhatsApp\ContactsController;
 use App\Http\Controllers\WhatsApp\InboxController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -95,6 +96,12 @@ Route::middleware('firebase.auth')->group(function () {
         })->name('waiter.dashboard');
 
         Route::middleware(['role:admin|whatsapp_agent'])->prefix('whatsapp')->name('whatsapp.')->group(function () {
+            Route::get('/contatos', [ContactsController::class, 'index'])->name('contatos.index');
+            Route::post('/contatos', [ContactsController::class, 'store'])->name('contatos.store');
+            Route::put('/contatos/{contact}', [ContactsController::class, 'update'])->name('contatos.update');
+            Route::delete('/contatos/{contact}', [ContactsController::class, 'destroy'])->name('contatos.destroy');
+            Route::post('/contatos/{contact}/abrir-atendimento', [ContactsController::class, 'openTicket'])->name('contatos.openTicket');
+
             Route::get('/inbox', [InboxController::class, 'index'])->name('inbox');
             Route::get('/inbox/poll', [InboxController::class, 'poll'])->name('inbox.poll');
             Route::get('/inbox/tickets/{ticket}/messages', [InboxController::class, 'messages'])->name('inbox.messages');

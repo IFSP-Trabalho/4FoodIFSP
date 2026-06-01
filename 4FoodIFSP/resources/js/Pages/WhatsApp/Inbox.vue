@@ -11,6 +11,7 @@ const props = defineProps({
     date:           { type: String, required: true },
     authUserId:     { type: String, default: null },
     closureReasons: { type: Array,  default: () => [] },
+    focusTicketId:  { type: String, default: null },
 });
 
 const activeTab   = ref('in_progress');
@@ -254,7 +255,16 @@ function initials(name) {
         : parts[0].slice(0, 2).toUpperCase();
 }
 
+function focusFromQuery() {
+    if (!props.focusTicketId) return;
+    const ticket = allTickets.value.find((t) => t.id === props.focusTicketId);
+    if (!ticket) return;
+    activeTab.value = ticket.status;
+    onSelect(ticket.id);
+}
+
 onMounted(() => {
+    focusFromQuery();
     pollTimer = setInterval(pollInbox, POLL_MS);
 });
 

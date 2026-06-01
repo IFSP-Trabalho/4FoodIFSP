@@ -19,6 +19,7 @@ class InboxController extends Controller
             'tickets'        => $this->buildTicketsGrouped(),
             'date'           => now()->format('d/m/Y'),
             'authUserId'     => auth()->id(),
+            'focusTicketId'  => request()->query('ticket'),
             'closureReasons' => DB::table('wa_closure_reasons')
                 ->where('active', true)
                 ->orderBy('name')
@@ -79,11 +80,28 @@ class InboxController extends Controller
         $record = DB::table('wa_tickets')->where('id', $ticket)->first();
         abort_unless($record, 404);
         abort_if($record->status !== 'in_progress', 422, 'Ticket não está em atendimento.');
-        abort_unless($record->wa_connection_id, 422, 'Conexão WhatsApp não vinculada ao ticket.');
 
-        $connection = DB::table('wa_connections')->where('id', (string) $record->wa_connection_id)->first();
-        abort_unless($connection, 422, 'Conexão WhatsApp não encontrada.');
+        $connection = $record->wa_connection_id
+            ? DB::table('wa_connections')->where('id', (string) $record->wa_connection_id)->first()
+            : null;
+
+        // Liga automaticamente a uma conexão conectada quando o ticket não tem
+        // vínculo (ex.: atendimento aberto pela tela de Contatos antes de a
+        // conexão subir) ou quando a conexão vinculada não está utilizável.
+        if (! $connection || $connection->connection_status !== 'connected' || ! $connection->baileys_session_id) {
+            $connection = DB::table('wa_connections')
+                ->where('connection_status', 'connected')
+                ->whereNotNull('baileys_session_id')
+                ->orderByDesc('last_status_at')
+                ->first();
+        }
+
+        abort_unless($connection, 422, 'Nenhuma conexão WhatsApp conectada disponível para envio.');
         abort_unless($connection->baileys_session_id, 422, 'Sessão Baileys não configurada na conexão.');
+
+        if ((string) $record->wa_connection_id !== (string) $connection->id) {
+            DB::table('wa_tickets')->where('id', $ticket)->update(['wa_connection_id' => $connection->id]);
+        }
 
         $baileysUrl = rtrim(config('services.baileys.url', 'http://127.0.0.1:3001'), '/');
         $response = Http::post("{$baileysUrl}/sessions/{$connection->baileys_session_id}/send", [

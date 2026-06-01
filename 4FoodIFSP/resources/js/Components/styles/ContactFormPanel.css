@@ -1,0 +1,150 @@
+/* textarea segue o mesmo wrap dos inputs */
+.admin-modal-textarea-wrap {
+    align-items: stretch;
+    padding: 10px 14px;
+}
+
+.admin-modal-textarea-wrap textarea {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    outline: 0;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 13px;
+    color: #1f242e;
+    line-height: 1.5;
+}
+
+.admin-modal-textarea-wrap textarea::placeholder {
+    color: #9aa1ad;
+}
+
+/* linha DDD + Número */
+.phone-row {
+    display: flex;
+    gap: 12px;
+}
+
+.phone-ddd {
+    width: 96px;
+    flex-shrink: 0;
+}
+
+.phone-number {
+    flex: 1;
+    min-width: 0;
+}
+
+/* seletor de país */
+.country-select {
+    position: relative;
+    width: 100%;
+}
+
+.country-trigger {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid #d9dde3;
+    border-radius: 4px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s ease;
+}
+
+.country-trigger:hover {
+    border-color: #b8bec8;
+}
+
+.country-select.is-open .country-trigger {
+    border-color: #993c1d;
+}
+
+.country-flag {
+    width: 22px;
+    height: 16px;
+    object-fit: cover;
+    border-radius: 2px;
+    flex-shrink: 0;
+    background: #eceef0;
+}
+
+.country-trigger-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    color: #1f242e;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.country-dial {
+    font-size: 13px;
+    font-weight: 600;
+    color: #712b13;
+}
+
+.country-chevron {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    fill: #7b7f89;
+    transition: transform 0.15s ease;
+}
+
+.country-select.is-open .country-chevron {
+    transform: rotate(180deg);
+    fill: #993c1d;
+}
+
+.country-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 60;
+    border: 1px solid #d9dde3;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 8px 20px rgba(23, 24, 30, 0.12);
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.country-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border: 0;
+    border-bottom: 1px solid #eceef0;
+    background: transparent;
+    color: #1f242e;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.country-option:last-child {
+    border-bottom: 0;
+}
+
+.country-option:hover {
+    background: #f6f7f9;
+}
+
+.country-option[aria-selected="true"] {
+    background: #faece7;
+}
+
+.country-option-name {
+    flex: 1;
+    min-width: 0;
+}

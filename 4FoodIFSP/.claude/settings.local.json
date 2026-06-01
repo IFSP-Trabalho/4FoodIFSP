@@ -43,7 +43,27 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\DELL\\\\Downloads\\\\4FoodIFSP\\\\4FoodIFSP\" -Recurse -Directory)",
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Sort-Object)",
-      "Bash(npx vite *)"
-    ]
+      "Bash(npx vite *)",
+      "PowerShell(php artisan migrate --force 2>&1 | Select-Object -Last 20)",
+      "PowerShell(php artisan route:list --path=whatsapp/contatos 2>&1 | Select-Object -First 20)",
+      "PowerShell(npm run *)",
+      "PowerShell(php -l app/Http/Controllers/WhatsApp/ContactsController.php; php -l app/Support/WaPhone.php; php -l app/Services/WhatsApp/IncomingWhatsAppMessageService.php)",
+      "PowerShell(Get-Content *)",
+      "PowerShell(Get-CimInstance *)",
+      "Skill(update-config)",
+      "Edit",
+      "Write",
+      "MultiEdit",
+      "PowerShell(php artisan *)",
+      "PowerShell(php -l *)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(Test-Path *)",
+      "Bash(php artisan *)",
+      "Bash(php -l *)",
+      "Bash(node *)",
+      "PowerShell($p = Get-CimInstance Win32_Process -Filter \"Name='node.exe'\" | Where-Object { $_.CommandLine -match 'vite' }; if \\($p\\) { $p | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }; if \\(Test-Path \"node_modules\\\\.vite\"\\) { Remove-Item \"node_modules\\\\.vite\" -Recurse -Force }; \"Stopped vite \\(PID $\\($p.ProcessId\\)\\) and cleared cache\" } else { \"No vite dev server running\" })"
+    ],
+    "defaultMode": "acceptEdits"
   }
 }

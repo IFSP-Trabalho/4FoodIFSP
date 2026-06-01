@@ -2,6 +2,7 @@
 
 namespace App\Services\WhatsApp;
 
+use App\Support\WaPhone;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -14,6 +15,8 @@ class IncomingWhatsAppMessageService
             if (DB::table('wa_messages')->where('wa_message_id', $data['wa_message_id'])->exists()) {
                 return;
             }
+
+            $this->ensureContact($data);
 
             // Busca pelo JID completo OU pelo número local (compatibilidade com formato antigo)
             $localPart = explode('@', $data['phone_number'])[0];
@@ -84,5 +87,39 @@ class IncomingWhatsAppMessageService
             }
             DB::table('wa_tickets')->where('id', $ticketId)->update($ticketFinalUpdate);
         });
+    }
+
+    /**
+     * Insere o contato automaticamente na primeira mensagem recebida.
+     * Se já existir (mesmo número nacional), nada é atualizado — o nome
+     * permanece fixo a partir da primeira inserção.
+     */
+    private function ensureContact(array $data): void
+    {
+        $national = WaPhone::national($data['phone_number']);
+
+        if ($national === '') {
+            return;
+        }
+
+        if (DB::table('wa_contacts')->where('phone_digits', $national)->exists()) {
+            return;
+        }
+
+        [$ddd, $number] = WaPhone::split($data['phone_number']);
+
+        DB::table('wa_contacts')->insert([
+            'id'           => (string) Str::uuid(),
+            'name'         => $data['customer_name'] ?? null,
+            'phone_number' => $data['phone_number'],
+            'country_code' => WaPhone::country($data['phone_number']),
+            'phone_digits' => $national,
+            'ddd'          => $ddd,
+            'number'       => $number,
+            'cpf'          => null,
+            'notes'        => null,
+            'created_at'   => now(),
+            'updated_at'   => now(),
+        ]);
     }
 }
