@@ -230,6 +230,17 @@
     color: #5d6472;
 }
 
+.cancel-reason {
+    display: block;
+    margin-top: 4px;
+    max-width: 240px;
+    font-size: 11px;
+    color: #8a4a36;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .empty-row {
     text-align: center;
     color: #6e7482;

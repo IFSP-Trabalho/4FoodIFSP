@@ -31,6 +31,13 @@ const isClosing       = ref(false);
 
 const localClearedIds = ref([]);
 
+const soundEnabled = ref(localStorage.getItem('4food_inbox_sound') === '1');
+const knownTriageIds = new Set();
+let knownUnread = new Map();
+let pollInitialized = false;
+let notifyAudio = null;
+let audioUnlocked = false;
+
 const POLL_MS = 5000;
 let pollTimer           = null;
 let lastSnapshot        = null;
@@ -192,10 +199,87 @@ async function handleMarkUnread(ticketId) {
     }
 }
 
+function ensureAudio() {
+    if (!notifyAudio) {
+        notifyAudio = new Audio('/sounds/new-order.mp3');
+        notifyAudio.preload = 'auto';
+    }
+    return notifyAudio;
+}
+
+// Desbloqueia o áudio dentro de um gesto do usuário (política de autoplay do navegador):
+// toca mudo uma vez e pausa, liberando reproduções posteriores disparadas pelo timer.
+function unlockAudio() {
+    if (audioUnlocked) return;
+    const audio = ensureAudio();
+    audio.muted = true;
+    audio.play()
+        .then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.muted = false;
+            audioUnlocked = true;
+        })
+        .catch(() => {
+            audio.muted = false;
+        });
+}
+
+function toggleSound() {
+    soundEnabled.value = !soundEnabled.value;
+    localStorage.setItem('4food_inbox_sound', soundEnabled.value ? '1' : '0');
+    if (soundEnabled.value) {
+        unlockAudio();
+    }
+}
+
+async function playNewTicketSound() {
+    try {
+        const audio = ensureAudio();
+        audio.currentTime = 0;
+        await audio.play();
+    } catch {
+        // NotAllowedError ou arquivo ausente — ignora silenciosamente
+    }
+}
+
 async function pollInbox() {
     if (document.visibilityState !== 'visible') return;
     try {
         const { data } = await axios.get('/whatsapp/inbox/poll');
+        const triageIds = data.triage_ids ?? [];
+        const unread = new Map(Object.entries(data.unread_counts ?? {}).map(([id, n]) => [id, Number(n)]));
+
+        if (!pollInitialized) {
+            triageIds.forEach((id) => knownTriageIds.add(id));
+            knownUnread = unread;
+            pollInitialized = true;
+        } else {
+            // Novo chamado na triagem.
+            let shouldPlay = triageIds.some((id) => !knownTriageIds.has(id));
+            triageIds.forEach((id) => knownTriageIds.add(id));
+
+            // Mensagem nova (unread_count aumentou) em um chamado que NÃO está aberto.
+            const reappear = [];
+            for (const [id, count] of unread) {
+                if (id === selectedId.value) continue;
+                if (count > (knownUnread.get(id) ?? 0)) {
+                    shouldPlay = true;
+                    reappear.push(id);
+                }
+            }
+            knownUnread = unread;
+
+            // Reexibe o badge de não-lido mesmo que o chamado já tenha sido aberto antes.
+            if (reappear.length) {
+                localClearedIds.value = localClearedIds.value.filter((id) => !reappear.includes(id));
+            }
+
+            if (shouldPlay && soundEnabled.value) {
+                await playNewTicketSound();
+            }
+        }
+
         const snapshot = JSON.stringify(data);
         if (lastSnapshot !== null && snapshot !== lastSnapshot) {
             router.reload({ only: ['tickets'], preserveScroll: true });
@@ -263,13 +347,43 @@ function focusFromQuery() {
     onSelect(ticket.id);
 }
 
+function closeDetail() {
+    selectedId.value   = null;
+    chatMessages.value = [];
+    acceptError.value  = null;
+}
+
+function onKeydown(event) {
+    // Qualquer tecla é um gesto válido para desbloquear o áudio.
+    if (soundEnabled.value) unlockAudio();
+
+    if (event.key !== 'Escape') return;
+
+    // Fecha o modal de fechamento, se estiver aberto; senão, fecha a tela do chamado.
+    if (showCloseModal.value) {
+        cancelClose();
+    } else if (selectedId.value) {
+        closeDetail();
+    }
+}
+
+// Desbloqueia o áudio na primeira interação, caso o som já esteja ativado pelo localStorage.
+function primeAudioOnInteraction() {
+    if (soundEnabled.value) unlockAudio();
+    window.removeEventListener('pointerdown', primeAudioOnInteraction);
+}
+
 onMounted(() => {
     focusFromQuery();
     pollTimer = setInterval(pollInbox, POLL_MS);
+    document.addEventListener('keydown', onKeydown);
+    window.addEventListener('pointerdown', primeAudioOnInteraction);
 });
 
 onUnmounted(() => {
     clearInterval(pollTimer);
+    document.removeEventListener('keydown', onKeydown);
+    window.removeEventListener('pointerdown', primeAudioOnInteraction);
 });
 </script>
 
@@ -287,7 +401,22 @@ onUnmounted(() => {
                         <p>{{ date }}</p>
                     </div>
                 </div>
-                <span class="role-badge">WhatsApp</span>
+                <div class="panel-head-right">
+                    <button
+                        type="button"
+                        class="bell-btn"
+                        :class="soundEnabled ? 'bell-btn--on' : 'bell-btn--off'"
+                        :aria-pressed="soundEnabled"
+                        :aria-label="soundEnabled ? 'Desativar aviso sonoro' : 'Ativar aviso sonoro'"
+                        :title="soundEnabled ? 'Aviso sonoro ativado' : 'Aviso sonoro desativado'"
+                        @click="toggleSound"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 3a6 6 0 0 0-6 6v3.6L4.4 16a1 1 0 0 0 .8 1.6h13.6a1 1 0 0 0 .8-1.6L18 12.6V9a6 6 0 0 0-6-6Zm0 19a3 3 0 0 0 2.82-2h-5.64A3 3 0 0 0 12 22Z" />
+                        </svg>
+                    </button>
+                    <span class="role-badge">WhatsApp</span>
+                </div>
             </div>
 
             <nav class="tabs">

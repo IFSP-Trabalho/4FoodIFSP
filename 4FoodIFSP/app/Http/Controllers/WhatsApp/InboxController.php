@@ -35,6 +35,7 @@ class InboxController extends Controller
             'triage_ids'      => DB::table('wa_tickets')->where('status', 'triage')->orderBy('created_at')->pluck('id'),
             'in_progress_ids' => DB::table('wa_tickets')->where('status', 'in_progress')->orderByDesc('updated_at')->pluck('id'),
             'closed_ids'      => DB::table('wa_tickets')->where('status', 'closed')->whereDate('updated_at', today())->orderByDesc('updated_at')->pluck('id'),
+            'unread_counts'   => DB::table('wa_tickets')->where('is_unread', true)->pluck('unread_count', 'id'),
             'updated_at_max'  => DB::table('wa_tickets')->max('updated_at'),
             'server_time'     => now()->toIso8601String(),
         ]);

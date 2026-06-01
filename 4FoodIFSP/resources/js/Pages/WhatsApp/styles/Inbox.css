@@ -60,6 +60,41 @@
     color: #6b7280;
 }
 
+.panel-head-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bell-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #f0e0da;
+    border-radius: 8px;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+}
+
+.bell-btn--off {
+    opacity: 0.5;
+}
+
+.bell-btn--on {
+    opacity: 1;
+    border-color: #993c1d;
+    background: #faece7;
+}
+
+.bell-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: #993c1d;
+}
+
 .role-badge {
     background: #faece7;
     color: #993c1d;

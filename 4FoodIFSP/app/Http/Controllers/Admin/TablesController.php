@@ -76,6 +76,7 @@ class TablesController extends Controller
                 $session->started_at,
                 $ordersCount,
                 $session->id,
+                $this->getSessionCancelledOrders($session->id),
             );
         })->values()->all();
 
@@ -246,6 +247,7 @@ class TablesController extends Controller
         ?string $sessionStartedAt,
         int $ordersCount,
         ?string $sessionId = null,
+        array $cancelledOrders = [],
     ): array {
         return [
             'id'                 => $table->id,
@@ -258,6 +260,47 @@ class TablesController extends Controller
             'session_id'         => $sessionId,
             'session_started_at' => $sessionStartedAt,
             'orders_count'       => $ordersCount,
+            'cancelled_orders'   => $cancelledOrders,
         ];
+    }
+
+    /**
+     * Pedidos cancelados (na mesa/kanban) da sessão aberta, para exibir no fechamento de conta.
+     */
+    private function getSessionCancelledOrders(string $sessionId): array
+    {
+        $rows = DB::select("
+            SELECT
+                orders.id,
+                orders.cancel_reason,
+                orders.updated_at,
+                order_items.quantity,
+                dishes.name AS dish_name
+            FROM orders
+            INNER JOIN order_items ON order_items.order_id = orders.id
+            INNER JOIN dishes ON dishes.id = order_items.dish_id
+            WHERE orders.table_session_id = :session_id
+              AND orders.status = 'cancelled'
+            ORDER BY orders.updated_at DESC, orders.id
+        ", ['session_id' => $sessionId]);
+
+        $grouped = [];
+        foreach ($rows as $row) {
+            $uuid = $row->id;
+            if (! isset($grouped[$uuid])) {
+                $grouped[$uuid] = [
+                    'id'     => substr(str_replace('-', '', $uuid), 0, 4),
+                    'reason' => $row->cancel_reason,
+                    'time'   => date('H:i', strtotime($row->updated_at)),
+                    'items'  => [],
+                ];
+            }
+            $grouped[$uuid]['items'][] = [
+                'qty'  => (int) $row->quantity,
+                'name' => (string) $row->dish_name,
+            ];
+        }
+
+        return array_values($grouped);
     }
 }

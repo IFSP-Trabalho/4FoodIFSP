@@ -49,6 +49,87 @@
     letter-spacing: -0.3px;
 }
 
+/* ── pedidos cancelados na mesa ──────────────────── */
+.cam-cancelled {
+    background: #fbf2ee;
+    border: 1px solid #e7c3b8;
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cam-cancelled-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cam-cancelled-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #993c1d;
+    letter-spacing: 0.03em;
+}
+
+.cam-cancelled-badge {
+    border-radius: 999px;
+    background: #993c1d;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 8px;
+}
+
+.cam-cancelled-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cam-cancelled-item {
+    background: #fff;
+    border: 1px solid #efd9d1;
+    border-radius: 6px;
+    padding: 8px 10px;
+}
+
+.cam-cancelled-item-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+}
+
+.cam-cancelled-id {
+    font-family: 'JetBrains Mono', 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #993c1d;
+}
+
+.cam-cancelled-time {
+    font-size: 11px;
+    color: #9aa1ad;
+}
+
+.cam-cancelled-dishes {
+    margin: 0;
+    font-size: 13px;
+    color: #5c6370;
+    text-decoration: line-through;
+}
+
+.cam-cancelled-reason {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #8a4a36;
+}
+
 /* ── fieldsets ───────────────────────────────────── */
 .cam-fieldset {
     border: 0;

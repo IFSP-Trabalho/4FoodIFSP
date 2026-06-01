@@ -1,0 +1,67 @@
+.report-filters {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #eceef0;
+    border-radius: 14px;
+    padding: 12px;
+}
+
+.report-filters-dates {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.report-filters-dates label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.report-filters-dates span {
+    font-family: 'JetBrains Mono', 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 10px;
+    color: #7f8391;
+}
+
+.report-filters-dates input {
+    border: 1px solid #e1e3e7;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: #17181e;
+    background: #fff;
+}
+
+.report-filters-dates input:focus {
+    outline: none;
+    border-color: #993c1d;
+}
+
+.report-filters-presets {
+    display: flex;
+    gap: 8px;
+}
+
+.report-filters-presets button {
+    border: 1px solid #e1e3e7;
+    background: #fff;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555a66;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.report-filters-presets button:hover {
+    border-color: #993c1d;
+    color: #993c1d;
+}

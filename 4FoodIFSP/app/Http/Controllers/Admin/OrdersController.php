@@ -54,6 +54,13 @@ class OrdersController extends Controller
             'status' => ['required', 'in:pending,in_progress,ready,cancelled'],
         ]);
 
+        // Regra: só permite finalizar (ready) se todos os itens estiverem concluídos.
+        if ($validated['status'] === 'ready' && $this->hasPendingItems($order)) {
+            return redirect()->back()->withErrors([
+                'status' => 'Conclua todos os itens antes de finalizar o pedido.',
+            ]);
+        }
+
         DB::table('orders')
             ->where('id', $order)
             ->update([
@@ -62,6 +69,48 @@ class OrdersController extends Controller
             ]);
 
         return redirect()->back();
+    }
+
+    public function cancel(Request $request, string $order): RedirectResponse
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:500'],
+        ]);
+
+        DB::table('orders')
+            ->where('id', $order)
+            ->update([
+                'status'        => 'cancelled',
+                'cancel_reason' => trim($validated['reason']),
+                'updated_at'    => now(),
+            ]);
+
+        return redirect()->back();
+    }
+
+    public function toggleItem(Request $request, string $order, string $item): RedirectResponse
+    {
+        $validated = $request->validate([
+            'completed' => ['required', 'boolean'],
+        ]);
+
+        DB::table('order_items')
+            ->where('id', $item)
+            ->where('order_id', $order)
+            ->update([
+                'completed'  => $validated['completed'],
+                'updated_at' => now(),
+            ]);
+
+        return redirect()->back();
+    }
+
+    private function hasPendingItems(string $order): bool
+    {
+        return DB::table('order_items')
+            ->where('order_id', $order)
+            ->where('completed', false)
+            ->exists();
     }
 
     private function formatDatePtBr(): string
@@ -85,8 +134,10 @@ class OrdersController extends Controller
                 orders.status,
                 tables.number,
                 tables.label,
+                order_items.id AS item_id,
                 order_items.quantity,
                 order_items.note,
+                order_items.completed,
                 dishes.name AS dish_name
             FROM orders
             INNER JOIN tables ON tables.id = orders.table_id
@@ -112,9 +163,11 @@ class OrdersController extends Controller
                 ];
             }
             $grouped[$uuid]['items'][] = [
-                'qty'  => (int) $row->quantity,
-                'name' => (string) $row->dish_name,
-                'note' => ($row->note !== null && trim((string) $row->note) !== '')
+                'id'        => $row->item_id,
+                'qty'       => (int) $row->quantity,
+                'name'      => (string) $row->dish_name,
+                'completed' => (bool) $row->completed,
+                'note'      => ($row->note !== null && trim((string) $row->note) !== '')
                     ? (string) $row->note
                     : null,
             ];
@@ -145,6 +198,7 @@ class OrdersController extends Controller
             SELECT
                 orders.id,
                 orders.status,
+                orders.cancel_reason,
                 orders.updated_at,
                 tables.number,
                 tables.label,
@@ -164,12 +218,13 @@ class OrdersController extends Controller
             $uuid = $row->id;
             if (!isset($grouped[$uuid])) {
                 $grouped[$uuid] = [
-                    'id'     => '#' . $this->formatOrderDisplayId($uuid),
-                    'mesa'   => $row->label ?? 'Mesa ' . $row->number,
-                    'items'  => [],
-                    'status' => $row->status,
-                    'date'   => date('Y-m-d', strtotime($row->updated_at)),
-                    'time'   => date('H:i', strtotime($row->updated_at)),
+                    'id'            => '#' . $this->formatOrderDisplayId($uuid),
+                    'mesa'          => $row->label ?? 'Mesa ' . $row->number,
+                    'items'         => [],
+                    'status'        => $row->status,
+                    'cancel_reason' => $row->cancel_reason,
+                    'date'          => date('Y-m-d', strtotime($row->updated_at)),
+                    'time'          => date('H:i', strtotime($row->updated_at)),
                 ];
             }
             $name = (string) $row->dish_name;

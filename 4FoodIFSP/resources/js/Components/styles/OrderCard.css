@@ -63,6 +63,22 @@
     color: #1f242e;
 }
 
+.item-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.item-check input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: #1d9e75;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
 .item-qty {
     font-weight: 600;
     margin-right: 4px;
@@ -103,4 +119,33 @@
     background: #e0e0e0;
     color: #aaa;
     cursor: default;
+}
+
+.action-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.checklist-hint {
+    margin: 10px 0 0;
+    font-size: 11px;
+    color: #b45309;
+}
+
+.cancel-btn {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #e7c3b8;
+    background: #fff;
+    color: #993c1d;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.cancel-btn:hover {
+    background: #faece7;
+    border-color: #993c1d;
 }

@@ -5,6 +5,7 @@ import { router } from '@inertiajs/vue3';
 import AppSidebar from '../../Components/AppSidebar.vue';
 import AppTopbar from '../../Components/AppTopbar.vue';
 import OrderCard from '../../Components/OrderCard.vue';
+import CancelOrderPanel from '../../Components/CancelOrderPanel.vue';
 
 const props = defineProps({
     orders: {
@@ -36,11 +37,14 @@ const statusKeys = ['pending', 'in_progress', 'ready'];
 const localOrders = ref(cloneOrders(props.orders));
 const dragState = ref({ orderUuid: null, fromStatus: null });
 const dragOverStatus = ref(null);
+const cancelTarget = ref(null);
 
 const soundEnabled = ref(localStorage.getItem('4food_orders_sound') === '1');
 const knownPendingIds = new Set();
 let pollInitialized = false;
 let pollingInterval = null;
+let notifyAudio = null;
+let audioUnlocked = false;
 
 watch(
     () => props.filters,
@@ -122,6 +126,39 @@ function advanceStatus(orderUuid, currentStatus) {
     }
 }
 
+function findOrder(orderUuid) {
+    for (const status of statusKeys) {
+        const found = (localOrders.value[status] ?? []).find((order) => order.uuid === orderUuid);
+        if (found) {
+            return found;
+        }
+    }
+    return null;
+}
+
+function toggleItem(orderUuid, { itemId, completed }) {
+    const order = findOrder(orderUuid);
+    const item = order?.items.find((entry) => entry.id === itemId);
+    if (!item) {
+        return;
+    }
+
+    item.completed = completed;
+
+    router.patch(`/admin/orders/${orderUuid}/items/${itemId}`, { completed }, {
+        preserveState: true,
+        preserveScroll: true,
+    });
+}
+
+function openCancel(order) {
+    cancelTarget.value = order;
+}
+
+function closeCancel() {
+    cancelTarget.value = null;
+}
+
 function canDropOn(status) {
     return status !== 'ready';
 }
@@ -191,18 +228,48 @@ function statusLabel(status) {
 
 // ── Bell / sound ──
 
+function ensureAudio() {
+    if (!notifyAudio) {
+        notifyAudio = new Audio('/sounds/new-order.mp3');
+        notifyAudio.preload = 'auto';
+    }
+    return notifyAudio;
+}
+
+// Desbloqueia o áudio dentro de um gesto do usuário (política de autoplay do navegador):
+// toca mudo uma vez e pausa, liberando reproduções posteriores disparadas pelo timer.
+function unlockAudio() {
+    if (audioUnlocked) return;
+    const audio = ensureAudio();
+    audio.muted = true;
+    audio.play()
+        .then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.muted = false;
+            audioUnlocked = true;
+        })
+        .catch(() => {
+            audio.muted = false;
+        });
+}
+
 function toggleSound() {
     soundEnabled.value = !soundEnabled.value;
     localStorage.setItem('4food_orders_sound', soundEnabled.value ? '1' : '0');
 
-    if (soundEnabled.value && !pollInitialized) {
-        pollOnce();
+    if (soundEnabled.value) {
+        unlockAudio();
+        if (!pollInitialized) {
+            pollOnce();
+        }
     }
 }
 
 async function playNewOrderSound() {
     try {
-        const audio = new Audio('/sounds/new-order.mp3');
+        const audio = ensureAudio();
+        audio.currentTime = 0;
         await audio.play();
     } catch {
         // NotAllowedError or missing file — ignore silently
@@ -262,13 +329,24 @@ function syncPollingState() {
 
 watch(activeTab, syncPollingState);
 
+// Desbloqueia o áudio na primeira interação, caso o som já esteja ativado pelo localStorage.
+function primeAudioOnInteraction() {
+    if (soundEnabled.value) unlockAudio();
+    window.removeEventListener('pointerdown', primeAudioOnInteraction);
+    window.removeEventListener('keydown', primeAudioOnInteraction);
+}
+
 onMounted(() => {
     document.addEventListener('visibilitychange', syncPollingState);
+    window.addEventListener('pointerdown', primeAudioOnInteraction);
+    window.addEventListener('keydown', primeAudioOnInteraction);
     syncPollingState();
 });
 
 onUnmounted(() => {
     document.removeEventListener('visibilitychange', syncPollingState);
+    window.removeEventListener('pointerdown', primeAudioOnInteraction);
+    window.removeEventListener('keydown', primeAudioOnInteraction);
     stopPolling();
 });
 </script>
@@ -345,6 +423,8 @@ onUnmounted(() => {
                                 :order="order"
                                 status="pending"
                                 @advance="advanceStatus(order.uuid, 'pending')"
+                                @toggle-item="toggleItem(order.uuid, $event)"
+                                @cancel="openCancel(order)"
                             />
                         </div>
                     </div>
@@ -372,6 +452,8 @@ onUnmounted(() => {
                                 :order="order"
                                 status="in_progress"
                                 @advance="advanceStatus(order.uuid, 'in_progress')"
+                                @toggle-item="toggleItem(order.uuid, $event)"
+                                @cancel="openCancel(order)"
                             />
                         </div>
                     </div>
@@ -427,6 +509,13 @@ onUnmounted(() => {
                                         >
                                             {{ statusLabel(entry.status) }}
                                         </span>
+                                        <span
+                                            v-if="entry.status === 'cancelled' && entry.cancel_reason"
+                                            class="cancel-reason"
+                                            :title="entry.cancel_reason"
+                                        >
+                                            {{ entry.cancel_reason }}
+                                        </span>
                                     </td>
                                     <td>{{ entry.time }}</td>
                                 </tr>
@@ -439,6 +528,12 @@ onUnmounted(() => {
                 </div>
             </div>
         </div>
+
+        <CancelOrderPanel
+            v-if="cancelTarget"
+            :order="cancelTarget"
+            @close="closeCancel"
+        />
     </div>
 </template>
 

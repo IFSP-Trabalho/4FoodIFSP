@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\TablesController;
@@ -42,6 +43,8 @@ Route::middleware('firebase.auth')->group(function () {
             Route::get('/orders/poll', [OrdersController::class, 'poll'])->name('orders.poll');
             Route::get('/orders/history', [OrdersController::class, 'history'])->name('orders.history');
             Route::patch('/orders/{order}/status', [OrdersController::class, 'updateStatus'])->name('orders.updateStatus');
+            Route::post('/orders/{order}/cancel', [OrdersController::class, 'cancel'])->name('orders.cancel');
+            Route::patch('/orders/{order}/items/{item}', [OrdersController::class, 'toggleItem'])->name('orders.toggleItem');
 
             Route::prefix('cadastros')->name('cadastros.')->group(function () {
                 Route::get('/users', [UsersController::class, 'index'])->name('users.index');
@@ -94,6 +97,13 @@ Route::middleware('firebase.auth')->group(function () {
         Route::get('/waiter/dashboard', function () {
             return Inertia::render('Waiter/Dashboard');
         })->name('waiter.dashboard');
+
+        Route::prefix('relatorios')->name('relatorios.')->group(function () {
+            Route::middleware('role:admin|finance')->get('/vendas', [ReportsController::class, 'vendas'])->name('vendas');
+            Route::middleware('role:admin|kitchen')->get('/cozinha', [ReportsController::class, 'cozinha'])->name('cozinha');
+            Route::middleware('role:admin|waiter')->get('/garcom', [ReportsController::class, 'garcom'])->name('garcom');
+            Route::middleware('role:admin')->get('/whatsapp', [ReportsController::class, 'whatsapp'])->name('whatsapp');
+        });
 
         Route::middleware(['role:admin|whatsapp_agent'])->prefix('whatsapp')->name('whatsapp.')->group(function () {
             Route::get('/contatos', [ContactsController::class, 'index'])->name('contatos.index');

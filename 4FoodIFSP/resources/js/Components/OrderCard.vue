@@ -12,7 +12,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['advance']);
+const emit = defineEmits(['advance', 'toggle-item', 'cancel']);
 
 const actionLabel = computed(() => ({
     pending: 'Preparar pedido',
@@ -20,7 +20,21 @@ const actionLabel = computed(() => ({
     ready: 'Pedido finalizado',
 }[props.status]));
 
-const actionDisabled = computed(() => props.status === 'ready');
+// Itens só recebem checkbox/conclusão enquanto o pedido está em preparo.
+const showChecklist = computed(() => props.status === 'in_progress');
+
+const allItemsDone = computed(() => props.order.items.every((item) => item.completed));
+
+// Finalizar (in_progress -> ready) só é permitido com todos os itens concluídos.
+const actionDisabled = computed(() => {
+    if (props.status === 'ready') {
+        return true;
+    }
+    if (props.status === 'in_progress') {
+        return !allItemsDone.value;
+    }
+    return false;
+});
 
 const cardClass = computed(() => ({
     'card--pending': props.status === 'pending',
@@ -28,7 +42,12 @@ const cardClass = computed(() => ({
     'card--ready': props.status === 'ready',
 }));
 
-const itemClass = computed(() => props.status === 'ready' ? 'item--done' : '');
+function itemClass(item) {
+    if (props.status === 'ready') {
+        return 'item--done';
+    }
+    return item.completed ? 'item--done' : '';
+}
 </script>
 
 <template>
@@ -43,17 +62,32 @@ const itemClass = computed(() => props.status === 'ready' ? 'item--done' : '');
         <ul class="items-list">
             <li
                 v-for="item in order.items"
-                :key="`${order.id}-${item.name}`"
+                :key="item.id ?? `${order.id}-${item.name}`"
                 class="item-row"
-                :class="itemClass"
+                :class="itemClass(item)"
             >
-                <span class="item-qty">{{ item.qty }}x</span>
-                <span class="item-name">{{ item.name }}</span>
+                <label v-if="showChecklist" class="item-check">
+                    <input
+                        type="checkbox"
+                        :checked="item.completed"
+                        @change="emit('toggle-item', { itemId: item.id, completed: $event.target.checked })"
+                    >
+                    <span class="item-qty">{{ item.qty }}x</span>
+                    <span class="item-name">{{ item.name }}</span>
+                </label>
+                <template v-else>
+                    <span class="item-qty">{{ item.qty }}x</span>
+                    <span class="item-name">{{ item.name }}</span>
+                </template>
             </li>
         </ul>
 
-        <p v-if="order.note_summary" class="note" :class="itemClass">
+        <p v-if="order.note_summary" class="note">
             {{ order.note_summary }}
+        </p>
+
+        <p v-if="status === 'in_progress' && !allItemsDone" class="checklist-hint">
+            Conclua todos os itens para finalizar.
         </p>
 
         <button
@@ -64,6 +98,15 @@ const itemClass = computed(() => props.status === 'ready' ? 'item--done' : '');
             @click="!actionDisabled && emit('advance', order.id)"
         >
             {{ actionLabel }}
+        </button>
+
+        <button
+            v-if="status !== 'ready'"
+            type="button"
+            class="cancel-btn"
+            @click="emit('cancel', order)"
+        >
+            Cancelar pedido
         </button>
     </div>
 </template>

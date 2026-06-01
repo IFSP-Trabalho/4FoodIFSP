@@ -77,6 +77,22 @@ function extractTextBody(message) {
     return null;
 }
 
+/**
+ * Resolve o JID de telefone real do remetente. Quando a conversa é endereçada
+ * por LID (@lid), `remoteJid` é um identificador de privacidade (não é o número);
+ * nesse caso o telefone real vem em `senderPn` (fallback: `participantPn`).
+ */
+function resolvePhoneJid(key) {
+    const remoteJid = key?.remoteJid ?? '';
+    if (remoteJid.endsWith('@lid')) {
+        const pn = key.senderPn || key.participantPn;
+        if (pn && pn.includes('@')) {
+            return pn;
+        }
+    }
+    return remoteJid;
+}
+
 async function _startSocketBackground(id) {
     const session = getOrCreate(id);
 
@@ -121,10 +137,16 @@ async function _startSocketBackground(id) {
                 const body = extractTextBody(msg.message);
                 if (!body) continue;
 
+                // Quando a conversa é endereçada por LID (@lid), o `remoteJid` é um
+                // identificador de privacidade — NÃO é o telefone. O número real vem
+                // em `key.senderPn`. Usamos ele para não criar contato/atendimento
+                // duplicado com um número inexistente.
+                const phoneNumber = resolvePhoneJid(msg.key);
+
                 await notifyLaravelMessage({
                     connection_id:  id,
                     wa_message_id:  msg.key.id,
-                    phone_number:   remoteJid,
+                    phone_number:   phoneNumber,
                     customer_name:  msg.pushName ?? null,
                     body,
                     sent_at: new Date(Number(msg.messageTimestamp) * 1000).toISOString(),

@@ -18,6 +18,8 @@ const tipValue       = ref('');
 
 const subtotal = computed(() => props.table.total_open_raw ?? 0);
 
+const cancelledOrders = computed(() => props.table.cancelled_orders ?? []);
+
 const discountAmount = computed(() => {
     const v = parseFloat(discountValue.value) || 0;
     if (v <= 0) return 0;
@@ -85,6 +87,28 @@ const canConfirm = computed(() => !!paymentMethod.value && !props.loading);
                         <span class="cam-total-label">Total final</span>
                         <span class="cam-total-value">{{ fmt(finalTotal) }}</span>
                     </div>
+                </div>
+
+                <!-- pedidos cancelados na mesa -->
+                <div v-if="cancelledOrders.length" class="cam-cancelled">
+                    <div class="cam-cancelled-head">
+                        <span class="cam-cancelled-title">Pedidos cancelados na mesa</span>
+                        <span class="cam-cancelled-badge">{{ cancelledOrders.length }}</span>
+                    </div>
+                    <ul class="cam-cancelled-list">
+                        <li v-for="order in cancelledOrders" :key="order.id" class="cam-cancelled-item">
+                            <div class="cam-cancelled-item-head">
+                                <span class="cam-cancelled-id">#{{ order.id }}</span>
+                                <span class="cam-cancelled-time">{{ order.time }}</span>
+                            </div>
+                            <p class="cam-cancelled-dishes">
+                                <span v-for="(it, i) in order.items" :key="i">
+                                    {{ it.qty }}x {{ it.name }}<span v-if="i < order.items.length - 1">, </span>
+                                </span>
+                            </p>
+                            <p v-if="order.reason" class="cam-cancelled-reason">Motivo: {{ order.reason }}</p>
+                        </li>
+                    </ul>
                 </div>
 
                 <!-- payment method -->

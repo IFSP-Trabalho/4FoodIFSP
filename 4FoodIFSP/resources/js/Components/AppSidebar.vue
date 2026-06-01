@@ -13,6 +13,20 @@ const props = defineProps({
 const page = usePage();
 const userRole = page.props.auth?.user?.role ?? '';
 
+const reportsByRole = {
+    admin: ['vendas', 'cozinha', 'garcom', 'whatsapp'],
+    finance: ['vendas'],
+    kitchen: ['cozinha'],
+    waiter: ['garcom'],
+};
+
+const reportsOptions = [
+    { key: 'vendas', label: 'Vendas', icon: 'finance', route: '/relatorios/vendas' },
+    { key: 'cozinha', label: 'Cozinha', icon: 'dishes', route: '/relatorios/cozinha' },
+    { key: 'garcom', label: 'Garçom', icon: 'tables', route: '/relatorios/garcom' },
+    { key: 'whatsapp', label: 'WhatsApp', icon: 'whatsapp', route: '/relatorios/whatsapp' },
+].filter((option) => (reportsByRole[userRole] ?? []).includes(option.key));
+
 const items = [
     { key: 'home', label: 'Home', icon: 'home', route: '/admin/dashboard' },
     { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', route: null },
@@ -24,7 +38,17 @@ const items = [
     { key: 'whatsapp-conexoes', label: 'Conexoes', icon: 'whatsapp-conexoes', route: '/admin/whatsapp/conexoes', adminOnly: true },
     { key: 'whatsapp', label: 'Atendimento', icon: 'whatsapp', route: '/whatsapp/inbox' },
     { key: 'whatsapp-contatos', label: 'Contatos', icon: 'whatsapp-contatos', route: '/whatsapp/contatos' },
-].filter((item) => !item.adminOnly || userRole === 'admin');
+].filter((item) => {
+    if (item.adminOnly && userRole !== 'admin') {
+        return false;
+    }
+
+    if (item.key === 'reports' && reportsOptions.length === 0) {
+        return false;
+    }
+
+    return true;
+});
 
 const cadastrosOptions = [
     { key: 'users', label: 'Usuarios', icon: 'users', route: '/admin/cadastros/users' },
@@ -35,10 +59,11 @@ const cadastrosOptions = [
 
 const splitAfter = new Set(['dashboard', 'cadastros']);
 const isCadastrosMenuOpen = ref(false);
+const isReportsMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 
 function isDisabled(item) {
-    return !item.route && item.key !== 'cadastros';
+    return !item.route && item.key !== 'cadastros' && item.key !== 'reports';
 }
 
 function isActive(item) {
@@ -53,7 +78,14 @@ function onItemClick(item) {
     isUserMenuOpen.value = false;
 
     if (item.key === 'cadastros') {
+        isReportsMenuOpen.value = false;
         isCadastrosMenuOpen.value = !isCadastrosMenuOpen.value;
+        return;
+    }
+
+    if (item.key === 'reports') {
+        isCadastrosMenuOpen.value = false;
+        isReportsMenuOpen.value = !isReportsMenuOpen.value;
         return;
     }
 
@@ -62,6 +94,7 @@ function onItemClick(item) {
     }
 
     isCadastrosMenuOpen.value = false;
+    isReportsMenuOpen.value = false;
     router.visit(item.route);
 }
 
@@ -70,9 +103,15 @@ function onCadastrosOptionSelect(route) {
     router.visit(route);
 }
 
+function onReportsOptionSelect(route) {
+    isReportsMenuOpen.value = false;
+    router.visit(route);
+}
+
 function toggleUserMenu() {
     isUserMenuOpen.value = !isUserMenuOpen.value;
     isCadastrosMenuOpen.value = false;
+    isReportsMenuOpen.value = false;
 }
 
 function logout() {
@@ -87,6 +126,10 @@ function onWindowClick(event) {
 
     if (!event.target.closest('.cadastros-wrapper')) {
         isCadastrosMenuOpen.value = false;
+    }
+
+    if (!event.target.closest('.reports-wrapper')) {
+        isReportsMenuOpen.value = false;
     }
 
     if (!event.target.closest('.user-menu-wrapper')) {
@@ -156,6 +199,38 @@ onBeforeUnmount(() => {
                         </svg>
                         <svg v-else viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z" />
+                        </svg>
+                        {{ option.label }}
+                    </button>
+                </div>
+            </div>
+            <div v-else-if="item.key === 'reports'" class="reports-wrapper cadastros-wrapper">
+                <button
+                    type="button"
+                    class="nav-item"
+                    :class="{
+                        active: isActive(item),
+                        disabled: isDisabled(item),
+                    }"
+                    :title="item.label"
+                    :aria-label="item.label"
+                    @click.stop="onItemClick(item)"
+                >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H5V5h14v14.1zm0-16.1H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
+                    </svg>
+                </button>
+
+                <div v-if="isReportsMenuOpen" class="cadastros-menu">
+                    <button
+                        v-for="option in reportsOptions"
+                        :key="option.key"
+                        type="button"
+                        class="cadastros-menu-item"
+                        @click="onReportsOptionSelect(option.route)"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H5V5h14v14.1zm0-16.1H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
                         </svg>
                         {{ option.label }}
                     </button>

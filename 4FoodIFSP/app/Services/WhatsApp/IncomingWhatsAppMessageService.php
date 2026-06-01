@@ -81,7 +81,8 @@ class IncomingWhatsAppMessageService
             ]);
 
             $ticketFinalUpdate = ['updated_at' => now()];
-            if ($openTicket && $openTicket->status === 'in_progress') {
+            // Mensagem nova em um chamado já existente (triagem ou em andamento) marca como não-lido.
+            if ($openTicket) {
                 $ticketFinalUpdate['is_unread']    = true;
                 $ticketFinalUpdate['unread_count'] = DB::raw('unread_count + 1');
             }
@@ -96,6 +97,13 @@ class IncomingWhatsAppMessageService
      */
     private function ensureContact(array $data): void
     {
+        // Nunca criar contato a partir de um LID (@lid) — é um identificador de
+        // privacidade do WhatsApp, não um telefone. A ponte já resolve para o
+        // número real (senderPn); este guard evita poluir a base se algo escapar.
+        if (str_contains($data['phone_number'], '@lid')) {
+            return;
+        }
+
         $national = WaPhone::national($data['phone_number']);
 
         if ($national === '') {
