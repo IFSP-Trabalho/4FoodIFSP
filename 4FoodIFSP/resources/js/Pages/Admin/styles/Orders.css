@@ -105,6 +105,9 @@
     border-radius: 12px;
     padding: 12px;
     min-height: 360px;
+    max-height: calc(100vh - 180px);
+    display: flex;
+    flex-direction: column;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -118,6 +121,32 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.col-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+    margin-right: -4px;
+}
+
+.col-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.col-body::-webkit-scrollbar-thumb {
+    background: #d9dde3;
+    border-radius: 999px;
+}
+
+.col-body::-webkit-scrollbar-thumb:hover {
+    background: #c2c7cf;
+}
+
+.col-body::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .col-title {

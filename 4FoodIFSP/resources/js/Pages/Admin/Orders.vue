@@ -411,21 +411,23 @@ onUnmounted(() => {
                             <span class="col-title">Pendente</span>
                             <span class="col-badge">{{ pendente.length }}</span>
                         </div>
-                        <div
-                            v-for="order in pendente"
-                            :key="order.uuid"
-                            class="order-drag-wrapper"
-                            draggable="true"
-                            @dragstart="onDragStart(order.uuid, 'pending', $event)"
-                            @dragend="onDragEnd"
-                        >
-                            <OrderCard
-                                :order="order"
-                                status="pending"
-                                @advance="advanceStatus(order.uuid, 'pending')"
-                                @toggle-item="toggleItem(order.uuid, $event)"
-                                @cancel="openCancel(order)"
-                            />
+                        <div class="col-body">
+                            <div
+                                v-for="order in pendente"
+                                :key="order.uuid"
+                                class="order-drag-wrapper"
+                                draggable="true"
+                                @dragstart="onDragStart(order.uuid, 'pending', $event)"
+                                @dragend="onDragEnd"
+                            >
+                                <OrderCard
+                                    :order="order"
+                                    status="pending"
+                                    @advance="advanceStatus(order.uuid, 'pending')"
+                                    @toggle-item="toggleItem(order.uuid, $event)"
+                                    @cancel="openCancel(order)"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -440,21 +442,23 @@ onUnmounted(() => {
                             <span class="col-title">Preparando</span>
                             <span class="col-badge">{{ preparando.length }}</span>
                         </div>
-                        <div
-                            v-for="order in preparando"
-                            :key="order.uuid"
-                            class="order-drag-wrapper"
-                            draggable="true"
-                            @dragstart="onDragStart(order.uuid, 'in_progress', $event)"
-                            @dragend="onDragEnd"
-                        >
-                            <OrderCard
-                                :order="order"
-                                status="in_progress"
-                                @advance="advanceStatus(order.uuid, 'in_progress')"
-                                @toggle-item="toggleItem(order.uuid, $event)"
-                                @cancel="openCancel(order)"
-                            />
+                        <div class="col-body">
+                            <div
+                                v-for="order in preparando"
+                                :key="order.uuid"
+                                class="order-drag-wrapper"
+                                draggable="true"
+                                @dragstart="onDragStart(order.uuid, 'in_progress', $event)"
+                                @dragend="onDragEnd"
+                            >
+                                <OrderCard
+                                    :order="order"
+                                    status="in_progress"
+                                    @advance="advanceStatus(order.uuid, 'in_progress')"
+                                    @toggle-item="toggleItem(order.uuid, $event)"
+                                    @cancel="openCancel(order)"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -463,13 +467,15 @@ onUnmounted(() => {
                             <span class="col-title">Finalizados</span>
                             <span class="col-badge">{{ finalizados.length }}</span>
                         </div>
-                        <OrderCard
-                            v-for="order in finalizados"
-                            :key="order.uuid"
-                            :order="order"
-                            status="ready"
-                            @advance="advanceStatus(order.uuid, 'ready')"
-                        />
+                        <div class="col-body">
+                            <OrderCard
+                                v-for="order in finalizados"
+                                :key="order.uuid"
+                                :order="order"
+                                status="ready"
+                                @advance="advanceStatus(order.uuid, 'ready')"
+                            />
+                        </div>
                     </div>
                 </div>
 
