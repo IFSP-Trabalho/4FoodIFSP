@@ -11,6 +11,9 @@
 /.phpunit.cache
 /.vscode
 /.zed
+/.obsidian/workspace.json
+/.obsidian/workspace-mobile.json
+/.obsidian/cache
 /auth.json
 /node_modules
 /public/build
