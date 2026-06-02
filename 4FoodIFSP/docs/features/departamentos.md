@@ -1,8 +1,8 @@
 # Feature: admin-cadastros-departamentos
 
 > Contexto: Tela de listagem dos departamentos (roles) do sistema no painel admin, dentro do módulo Cadastros. Visualização em tabela alinhada à tela de Usuários.  
-> Fluxo de implementação (IA): `docs/flow/depts/edicaoDepartamento.md`  
-> Depende de: `features/cadastros.md`, `features/auth.md`, `docs/database/schema.md`  
+> Fluxo de implementação (IA): [edicaoDepartamento.md](../flow/depts/edicaoDepartamento.md)  
+> Depende de: [cadastros.md](cadastros.md), [auth.md](auth.md), [schema.md](../database/schema.md)  
 > Roles com acesso: `admin` apenas  
 > Stack: Inertia.js + Vue 3, Laravel controller  
 > URL: `http://127.0.0.1:8000/admin/cadastros/departments`

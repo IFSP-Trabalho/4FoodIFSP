@@ -2,7 +2,7 @@
 
 > **Contexto:** Interface pública do cliente na mesa (tablet físico ou navegador no computador) para montar o pedido a partir do cardápio e, nas fases seguintes, enviar à cozinha.
 >
-> **Depende de:** `docs/database/schema.md`, `docs/features/cadastroPratos.md`, `docs/features/pedidos.md`, `docs/project_overview.md` §3.7
+> **Depende de:** [schema.md](../database/schema.md), [cadastroPratos.md](cadastroPratos.md), [pedidos.md](pedidos.md), [project_overview.md](../project_overview.md) §3.7
 >
 > **Stack:** Inertia.js + Vue 3 (mesma stack do painel), layout dedicado **sem** sidebar admin
 >

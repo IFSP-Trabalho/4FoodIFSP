@@ -1,7 +1,7 @@
 # Feature: admin-cadastros
 
 > Contexto: Módulo de cadastros no painel admin com navegação secundária lateral. Primeira entrega focada na listagem e gestão de usuários.  
-> Depende de: `features/auth.md`, `database/schema.md`  
+> Depende de: [auth.md](auth.md), [schema.md](../database/schema.md)  
 > Roles com acesso: `admin` apenas  
 > Stack: Inertia.js + Vue 3, Laravel controller
 

@@ -1,7 +1,7 @@
 # Feature: admin-dashboard
 
 > Contexto: Primeira tela que o admin vê após login. Resumo multi-departamento com métricas estáticas (prontas para substituição por queries reais).  
-> Depende de: `features/auth.md` (redirecionamento pós-login), `database/schema.md`  
+> Depende de: [auth.md](auth.md) (redirecionamento pós-login), [schema.md](../database/schema.md)  
 > Roles com acesso: `admin` apenas  
 > Stack: Inertia.js + Vue 3, Laravel controller
 

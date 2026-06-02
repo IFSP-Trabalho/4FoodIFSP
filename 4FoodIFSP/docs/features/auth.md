@@ -1,7 +1,7 @@
 # Feature: auth
 
 > Contexto: Autenticação do painel de gestão via Firebase Authentication + Laravel session  
-> Depende de: `database/schema.md` (tabela `users` com `id = firebaseUid`)  
+> Depende de: [schema.md](../database/schema.md) (tabela `users` com `id = firebaseUid`)  
 > Roles com acesso: todos (tela pública) → redireciona conforme role após login  
 > Stack: Inertia.js + Vue 3 no frontend, Laravel no backend
 

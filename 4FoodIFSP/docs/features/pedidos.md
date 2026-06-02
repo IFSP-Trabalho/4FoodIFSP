@@ -1,7 +1,7 @@
 # Feature: kitchen-orders
 
 > Contexto: Tela principal da cozinha. Kanban de pedidos ao vivo (Pendente / Preparando / Finalizados) com aba de histórico. A cozinha avança o status dos pedidos via botão de ação.
-> Depende de: `features/auth.md`, `database/schema.md`
+> Depende de: [auth.md](auth.md), [schema.md](../database/schema.md)
 > Roles com acesso: `kitchen` apenas
 > Stack: Inertia.js + Vue 3, Laravel controller
 

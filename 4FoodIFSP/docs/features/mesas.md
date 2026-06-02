@@ -2,9 +2,9 @@
 
 > **Contexto:** Gestão das mesas físicas do restaurante — configuração no admin, visualização operacional em cards e ciclo de **ocupação iniciado pelo cliente** no tablet (`/tablet?mesa=N`).
 >
-> **Depende de:** `docs/database/schema.md` (`tables`, `orders`, `order_items`), `docs/features/tablet.md`, `docs/features/pedidos.md`, `docs/features/auth.md`
+> **Depende de:** [schema.md](../database/schema.md) (`tables`, `orders`, `order_items`), [tablet.md](tablet.md), [pedidos.md](pedidos.md), [auth.md](auth.md)
 >
-> **Relacionado:** `docs/project_overview.md` §3.4 (Finance), §3.5 (Waiter), §3.7 (Tablet); fechamento de conta (módulo financeiro/garçom — feature futura dedicada)
+> **Relacionado:** [project_overview.md](../project_overview.md) §3.4 (Finance), §3.5 (Waiter), §3.7 (Tablet); fechamento de conta (módulo financeiro/garçom — feature futura dedicada)
 >
 > **Stack:** Inertia.js + Vue 3 (admin), rota pública no tablet
 >

@@ -1,7 +1,7 @@
 # Feature: whatsapp-inbox
 
 > Contexto: Página inicial do módulo de atendimento WhatsApp. O agente visualiza chamados (tickets) organizados por status, filtra por nome e seleciona um contato na lista. Não inclui chat, envio de mensagens nem integração com API.
-> Depende de: `features/auth.md`, `database/schema.md` (tabelas `wa_tickets`, `wa_messages`)
+> Depende de: [auth.md](auth.md), [schema.md](../database/schema.md) (tabelas `wa_tickets`, `wa_messages`)
 > Roles com acesso: `whatsapp_agent` apenas
 > Stack: Inertia.js + Vue 3, Laravel controller
 

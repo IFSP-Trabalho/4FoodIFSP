@@ -1,7 +1,7 @@
 # Feature: admin-cadastros-pratos-menu
 
 > Contexto: Listagem visual de pratos por menu/categoria no painel admin, dentro do módulo Cadastros (item **Pratos** no submenu). Layout baseado na referência de cardápio (chips de menu + grid de cards).  
-> Depende de: `features/cadastros.md`, `features/auth.md`, `docs/database/schema.md`  
+> Depende de: [cadastros.md](cadastros.md), [auth.md](auth.md), [schema.md](../database/schema.md)  
 > Roles com acesso: `admin` apenas  
 > Stack: Inertia.js + Vue 3, Laravel controller  
 > URL: `http://127.0.0.1:8000/admin/cadastros/dishes`
