@@ -13,6 +13,15 @@ const props = defineProps({
 const page = usePage();
 const userRole = page.props.auth?.user?.role ?? '';
 
+// Tela inicial (ícone Home) de cada departamento.
+const homeRouteByRole = {
+    admin: '/admin/dashboard',
+    kitchen: '/admin/orders',
+    finance: '/admin/orders',
+    waiter: '/admin/mesas',
+    whatsapp_agent: '/whatsapp/inbox',
+};
+
 const reportsByRole = {
     admin: ['vendas', 'cozinha', 'garcom', 'whatsapp'],
     finance: ['vendas'],
@@ -28,18 +37,18 @@ const reportsOptions = [
 ].filter((option) => (reportsByRole[userRole] ?? []).includes(option.key));
 
 const items = [
-    { key: 'home', label: 'Home', icon: 'home', route: '/admin/dashboard' },
-    { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', route: null },
-    { key: 'orders', label: 'Orders', icon: 'orders', route: '/admin/orders' },
-    { key: 'tables', label: 'Mesas', icon: 'tables', route: '/admin/mesas', adminOnly: true },
-    { key: 'cadastros', label: 'Cadastros', icon: 'cadastros', route: null },
-    { key: 'finance', label: 'Financeiro', icon: 'finance', route: null },
+    { key: 'home', label: 'Home', icon: 'home', route: homeRouteByRole[userRole] ?? '/admin/dashboard' },
+    { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', route: null, roles: ['admin'] },
+    { key: 'orders', label: 'Orders', icon: 'orders', route: '/admin/orders', roles: ['admin', 'kitchen', 'finance', 'waiter'] },
+    { key: 'tables', label: 'Mesas', icon: 'tables', route: '/admin/mesas', roles: ['admin', 'finance', 'waiter'] },
+    { key: 'cadastros', label: 'Cadastros', icon: 'cadastros', route: null, roles: ['admin'] },
+    { key: 'finance', label: 'Financeiro', icon: 'finance', route: null, roles: ['admin'] },
     { key: 'reports', label: 'Relatorios', icon: 'reports', route: null },
-    { key: 'whatsapp-conexoes', label: 'Conexoes', icon: 'whatsapp-conexoes', route: '/admin/whatsapp/conexoes', adminOnly: true },
-    { key: 'whatsapp', label: 'Atendimento', icon: 'whatsapp', route: '/whatsapp/inbox' },
-    { key: 'whatsapp-contatos', label: 'Contatos', icon: 'whatsapp-contatos', route: '/whatsapp/contatos' },
+    { key: 'whatsapp-conexoes', label: 'Conexoes', icon: 'whatsapp-conexoes', route: '/admin/whatsapp/conexoes', roles: ['admin'] },
+    { key: 'whatsapp', label: 'Atendimento', icon: 'whatsapp', route: '/whatsapp/inbox', roles: ['admin', 'whatsapp_agent'] },
+    { key: 'whatsapp-contatos', label: 'Contatos', icon: 'whatsapp-contatos', route: '/whatsapp/contatos', roles: ['admin', 'whatsapp_agent'] },
 ].filter((item) => {
-    if (item.adminOnly && userRole !== 'admin') {
+    if (item.roles && !item.roles.includes(userRole)) {
         return false;
     }
 

@@ -10,6 +10,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    canCancel: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emit = defineEmits(['advance', 'toggle-item', 'cancel']);
@@ -101,7 +105,7 @@ function itemClass(item) {
         </button>
 
         <button
-            v-if="status !== 'ready'"
+            v-if="status !== 'ready' && canCancel"
             type="button"
             class="cancel-btn"
             @click="emit('cancel', order)"

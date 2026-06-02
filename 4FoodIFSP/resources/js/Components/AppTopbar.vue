@@ -1,5 +1,8 @@
 <script setup>
-defineProps({
+import { computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+
+const props = defineProps({
     title: {
         type: String,
         required: true,
@@ -10,9 +13,22 @@ defineProps({
     },
     roleBadge: {
         type: String,
-        default: 'Admin',
+        default: null,
     },
 });
+
+const roleLabels = {
+    admin: 'Admin',
+    kitchen: 'Cozinha',
+    finance: 'Financeiro',
+    waiter: 'Garçom',
+    whatsapp_agent: 'Atendimento',
+};
+
+const page = usePage();
+const displayBadge = computed(
+    () => props.roleBadge ?? roleLabels[page.props.auth?.user?.role] ?? '',
+);
 </script>
 
 <template>
@@ -24,7 +40,7 @@ defineProps({
                 <p>{{ subtitle }}</p>
             </div>
         </div>
-        <span class="role-badge">{{ roleBadge }}</span>
+        <span class="role-badge">{{ displayBadge }}</span>
     </header>
 </template>
 

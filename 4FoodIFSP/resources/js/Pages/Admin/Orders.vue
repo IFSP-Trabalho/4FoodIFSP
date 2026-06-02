@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import axios from 'axios';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import AppSidebar from '../../Components/AppSidebar.vue';
 import AppTopbar from '../../Components/AppTopbar.vue';
 import OrderCard from '../../Components/OrderCard.vue';
@@ -28,6 +28,9 @@ const props = defineProps({
         required: true,
     },
 });
+
+// A cozinha pode acompanhar e preparar pedidos, mas não cancelá-los.
+const canCancel = computed(() => usePage().props.auth?.user?.role !== 'kitchen');
 
 const activeTab = ref('live');
 const search = ref('');
@@ -355,7 +358,7 @@ onUnmounted(() => {
     <div class="shell">
         <AppSidebar active="orders" />
         <div class="main">
-            <AppTopbar title="Pedidos" :subtitle="props.date" role-badge="Admin" />
+            <AppTopbar title="Pedidos" :subtitle="props.date" />
 
             <div class="content">
                 <div class="orders-toolbar">
@@ -423,6 +426,7 @@ onUnmounted(() => {
                                 <OrderCard
                                     :order="order"
                                     status="pending"
+                                    :can-cancel="canCancel"
                                     @advance="advanceStatus(order.uuid, 'pending')"
                                     @toggle-item="toggleItem(order.uuid, $event)"
                                     @cancel="openCancel(order)"
@@ -454,6 +458,7 @@ onUnmounted(() => {
                                 <OrderCard
                                     :order="order"
                                     status="in_progress"
+                                    :can-cancel="canCancel"
                                     @advance="advanceStatus(order.uuid, 'in_progress')"
                                     @toggle-item="toggleItem(order.uuid, $event)"
                                     @cancel="openCancel(order)"

@@ -1,5 +1,7 @@
 <script setup>
 import './styles/Tables.css';
+import { computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import AppSidebar from '../../Components/AppSidebar.vue';
 import AppTopbar from '../../Components/AppTopbar.vue';
 import TableStatusCard from '../../Components/TableStatusCard.vue';
@@ -12,6 +14,9 @@ const props = defineProps({
     tables: { type: Array,  default: () => [] },
     stats:  { type: Object, default: () => ({}) },
 });
+
+// Cadastro de mesas (criar/editar/excluir) é exclusivo do admin.
+const isAdmin = computed(() => usePage().props.auth?.user?.role === 'admin');
 
 const {
     search,
@@ -50,7 +55,6 @@ const {
             <AppTopbar
                 title="Mesas"
                 :subtitle="`${stats.total ?? 0} mesas cadastradas`"
-                role-badge="Admin"
             />
 
             <div class="content">
@@ -75,7 +79,7 @@ const {
                             </div>
                         </div>
 
-                        <button type="button" class="btn-new" @click="openCreate">
+                        <button v-if="isAdmin" type="button" class="btn-new" @click="openCreate">
                             Nova mesa
                         </button>
                     </div>
@@ -113,7 +117,7 @@ const {
                             <template v-if="props.tables.length === 0">
                                 <p class="empty-title">Nenhuma mesa ainda</p>
                                 <p class="empty-text">Cadastre a primeira mesa para o salão aparecer aqui.</p>
-                                <button type="button" class="btn-new btn-new--inline" @click="openCreate">
+                                <button v-if="isAdmin" type="button" class="btn-new btn-new--inline" @click="openCreate">
                                     Nova mesa
                                 </button>
                             </template>
@@ -190,6 +194,7 @@ const {
                             </button>
 
                             <button
+                                v-if="isAdmin"
                                 type="button"
                                 class="detail-btn detail-btn--outline"
                                 :disabled="actionLoading"
@@ -199,7 +204,7 @@ const {
                             </button>
 
                             <button
-                                v-if="['inactive', 'available'].includes(selectedTable.status)"
+                                v-if="isAdmin && ['inactive', 'available'].includes(selectedTable.status)"
                                 type="button"
                                 class="detail-btn detail-btn--danger"
                                 :disabled="actionLoading"

@@ -136,9 +136,9 @@ class AuthController extends Controller
     {
         return match ($role) {
             'admin' => redirect()->route('admin.dashboard'),
-            'kitchen' => redirect()->route('kitchen.dashboard'),
-            'finance' => redirect()->route('finance.dashboard'),
-            'waiter' => redirect()->route('waiter.dashboard'),
+            'kitchen' => redirect()->route('admin.orders'),
+            'finance' => redirect()->route('admin.orders'),
+            'waiter' => redirect()->route('admin.mesas.index'),
             'whatsapp_agent' => redirect()->route('whatsapp.inbox'),
             default => redirect()
                 ->route('login')
