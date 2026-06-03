@@ -3,6 +3,7 @@ import { router, usePage } from '@inertiajs/vue3';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import AppSidebar from '../../Components/AppSidebar.vue';
 import ContactFormPanel from '../../Components/ContactFormPanel.vue';
+import ContactImportPanel from '../../Components/ContactImportPanel.vue';
 
 const props = defineProps({
     contacts:   { type: Array,  default: () => [] },
@@ -70,6 +71,28 @@ function formatNumber(contact) {
     return contact.phone_digits;
 }
 
+/* ---------- exportar / importar ---------- */
+const isExportMenuOpen = ref(false);
+const isImportOpen     = ref(false);
+
+function toggleExportMenu() {
+    isExportMenuOpen.value = !isExportMenuOpen.value;
+}
+
+function exportContacts() {
+    isExportMenuOpen.value = false;
+    window.location.href = '/whatsapp/contatos/exportar';
+}
+
+function openImport() {
+    isExportMenuOpen.value = false;
+    isImportOpen.value = true;
+}
+
+function closeImport() {
+    isImportOpen.value = false;
+}
+
 /* ---------- menu de 3 pontos ---------- */
 const openMenuId = ref(null);
 
@@ -81,6 +104,9 @@ function onWindowClick(event) {
     if (!(event.target instanceof HTMLElement)) return;
     if (!event.target.closest('.menu-wrapper')) {
         openMenuId.value = null;
+    }
+    if (!event.target.closest('.split-wrapper')) {
+        isExportMenuOpen.value = false;
     }
 }
 
@@ -157,12 +183,31 @@ function confirmDelete() {
                     </button>
 
                     <div class="split-wrapper">
-                        <button type="button" class="btn-secondary-soft" disabled title="Em breve">
-                            Exportar / Importar
+                        <button
+                            type="button"
+                            class="btn-secondary-soft"
+                            @click="exportContacts"
+                        >
+                            Exportar planilha
                         </button>
-                        <button type="button" class="btn-split-arrow" disabled aria-label="Opções" title="Em breve">
+                        <button
+                            type="button"
+                            class="btn-split-arrow"
+                            :class="{ 'is-open': isExportMenuOpen }"
+                            aria-label="Opções de importação"
+                            @click.stop="toggleExportMenu"
+                        >
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z" /></svg>
                         </button>
+
+                        <div v-if="isExportMenuOpen" class="split-menu">
+                            <button type="button" class="split-menu-item" @click="exportContacts">
+                                Exportar planilha
+                            </button>
+                            <button type="button" class="split-menu-item" @click="openImport">
+                                Importar planilha
+                            </button>
+                        </div>
                     </div>
 
                     <button type="button" class="btn-primary" @click="openCreate">
@@ -276,6 +321,12 @@ function confirmDelete() {
             v-if="isFormOpen"
             :contact="editingContact"
             @close="closeForm"
+        />
+
+        <!-- modal importar -->
+        <ContactImportPanel
+            v-if="isImportOpen"
+            @close="closeImport"
         />
 
         <!-- modal remover -->

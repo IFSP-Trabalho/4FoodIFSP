@@ -43,7 +43,8 @@
 }
 
 .note-textarea:focus {
-    border-color: #1a1a1a;
+    border-color: var(--brand, #993c1d);
+    box-shadow: 0 0 0 3px rgba(153, 60, 29, 0.12);
     background: #ffffff;
 }
 
@@ -75,12 +76,17 @@
 .note-save {
     flex: 2;
     padding: 12px;
-    background: #1a1a1a;
+    background: var(--brand, #993c1d);
     border: none;
     border-radius: 10px;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     color: #ffffff;
     cursor: pointer;
     min-height: 44px;
+    transition: background 0.15s ease;
+}
+
+.note-save:hover {
+    background: var(--brand-strong, #7f3218);
 }

@@ -1,7 +1,20 @@
 .tablet-layout {
+    /* Brand palette — shared by all tablet styles via CSS custom properties */
+    --brand: #993c1d;
+    --brand-strong: #7f3218;
+    --brand-soft: #f7ece7;
+    --accent: #e67e22;
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --surface: #ffffff;
+    --bg: #faf6f3;
+    --border: #ece6e2;
+    --shadow-card: 0 1px 2px rgba(60, 30, 15, 0.04);
+    --shadow-card-hover: 0 10px 24px rgba(153, 60, 29, 0.12);
+
     min-height: 100vh;
     min-height: 100dvh;
-    background: #f5f6f8;
+    background: var(--bg);
     display: flex;
     flex-direction: column;
 }
@@ -10,31 +23,49 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    height: 56px;
+    height: 60px;
     background: #ffffff;
-    border-bottom: 1px solid #eceef0;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 0 rgba(153, 60, 29, 0.04);
     display: flex;
     align-items: center;
     padding: 0 24px;
-    gap: 8px;
+    gap: 12px;
     flex-shrink: 0;
 }
 
 .tablet-header-brand {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1a1a1a;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--brand);
+}
+
+.tablet-header-brand::before {
+    content: "";
+    width: 10px;
+    height: 22px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--accent), var(--brand));
 }
 
 .tablet-header-sep {
-    color: #9ca3af;
-    font-size: 18px;
+    display: none;
 }
 
 .tablet-header-mesa {
-    font-size: 18px;
-    font-weight: 500;
-    color: #4b5563;
+    margin-left: auto;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--brand);
+    background: var(--brand-soft);
+    border: 1px solid rgba(153, 60, 29, 0.14);
+    padding: 6px 14px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
 }
 
 .tablet-content {

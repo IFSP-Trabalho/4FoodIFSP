@@ -1,7 +1,9 @@
 .welcome-screen {
     min-height: 100vh;
     min-height: 100dvh;
-    background: #f5f6f8;
+    background:
+        radial-gradient(1200px 600px at 50% -10%, #f7ece7 0%, transparent 60%),
+        #faf6f3;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,18 +11,41 @@
 }
 
 .welcome-card {
+    position: relative;
     background: #ffffff;
-    border: 1px solid #eceef0;
-    border-radius: 20px;
+    border: 1px solid #ece6e2;
+    border-radius: 24px;
     padding: 56px 48px;
     text-align: center;
     max-width: 460px;
     width: 100%;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 18px 48px rgba(153, 60, 29, 0.10);
+    overflow: hidden;
+}
+
+.welcome-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #e67e22, #993c1d);
+}
+
+.welcome-card::before {
+    content: "4Food";
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #993c1d;
+    margin-bottom: 18px;
 }
 
 .welcome-table-number {
-    font-size: 42px;
+    font-size: 44px;
     font-weight: 800;
     color: #1a1a1a;
     margin: 0 0 8px;
@@ -40,19 +65,24 @@
     justify-content: center;
     width: 100%;
     min-height: 60px;
-    background: #1a1a1a;
+    background: #993c1d;
     color: #ffffff;
     font-size: 17px;
     font-weight: 700;
     letter-spacing: 0.06em;
     border: 0;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
-    transition: background 0.15s ease, opacity 0.15s ease;
+    box-shadow: 0 10px 24px rgba(153, 60, 29, 0.24);
+    transition: background 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
 }
 
 .welcome-btn:hover:not(:disabled) {
-    background: #333333;
+    background: #7f3218;
+}
+
+.welcome-btn:active:not(:disabled) {
+    transform: scale(0.99);
 }
 
 .welcome-btn:disabled {

@@ -66,8 +66,8 @@
 .order-cart-sidebar {
     width: 360px;
     min-width: 320px;
-    border-left: 1px solid #eceef0;
-    background: #ffffff;
+    border-left: 1px solid var(--border, #eceef0);
+    background: var(--surface, #ffffff);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -75,12 +75,23 @@
 }
 
 .order-cart-sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 15px;
-    font-weight: 600;
-    color: #1a1a1a;
-    padding: 16px 16px 0;
+    font-weight: 700;
+    color: var(--ink, #1a1a1a);
+    padding: 18px 16px 4px;
     margin: 0;
     flex-shrink: 0;
+}
+
+.order-cart-sidebar-title::before {
+    content: "";
+    width: 4px;
+    height: 16px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--accent, #e67e22), var(--brand, #993c1d));
 }
 
 /* ── FAB (mobile only) ── */
@@ -90,17 +101,17 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    background: #1a1a1a;
+    background: var(--brand, #993c1d);
     color: #ffffff;
     border: none;
     border-radius: 32px;
     padding: 14px 24px;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     min-height: 44px;
     min-width: 44px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 22px rgba(153, 60, 29, 0.35);
     z-index: 20;
     align-items: center;
     justify-content: center;
@@ -191,10 +202,11 @@
 }
 
 .order-confirm-total {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1a1a1a;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--brand, #993c1d);
     margin: 0 0 28px;
+    letter-spacing: -0.01em;
 }
 
 .order-confirm-error {
@@ -228,14 +240,24 @@
 .order-confirm-send {
     flex: 2;
     padding: 12px;
-    background: #1a1a1a;
+    background: var(--brand, #993c1d);
     border: none;
     border-radius: 10px;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
     color: #ffffff;
     cursor: pointer;
     min-height: 44px;
+    transition: background 0.15s ease;
+}
+
+.order-confirm-send:hover:not(:disabled) {
+    background: var(--brand-strong, #7f3218);
+}
+
+.order-confirm-send:disabled {
+    opacity: 0.6;
+    cursor: default;
 }
 
 /* ── Toast ── */
@@ -245,15 +267,25 @@
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
-    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #1f7a4d;
     color: #ffffff;
-    padding: 14px 24px;
+    padding: 14px 22px;
     border-radius: 12px;
     font-size: 14px;
+    font-weight: 600;
     z-index: 60;
     text-align: center;
     max-width: 90vw;
     white-space: nowrap;
+    box-shadow: 0 8px 22px rgba(31, 122, 77, 0.32);
+}
+
+.order-success-toast::before {
+    content: "✓";
+    font-weight: 800;
 }
 
 /* ── Transitions ── */

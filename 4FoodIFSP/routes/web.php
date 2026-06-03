@@ -126,6 +126,9 @@ Route::middleware('firebase.auth')->group(function () {
 
         Route::middleware(['role:admin|whatsapp_agent'])->prefix('whatsapp')->name('whatsapp.')->group(function () {
             Route::get('/contatos', [ContactsController::class, 'index'])->name('contatos.index');
+            Route::get('/contatos/exportar', [ContactsController::class, 'export'])->name('contatos.export');
+            Route::get('/contatos/modelo', [ContactsController::class, 'template'])->name('contatos.template');
+            Route::post('/contatos/importar', [ContactsController::class, 'import'])->name('contatos.import');
             Route::post('/contatos', [ContactsController::class, 'store'])->name('contatos.store');
             Route::put('/contatos/{contact}', [ContactsController::class, 'update'])->name('contatos.update');
             Route::delete('/contatos/{contact}', [ContactsController::class, 'destroy'])->name('contatos.destroy');

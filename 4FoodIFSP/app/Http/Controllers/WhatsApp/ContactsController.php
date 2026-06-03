@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContactsController extends Controller
 {
@@ -68,6 +69,219 @@ class ContactsController extends Controller
                 'number' => $number,
             ],
         ]);
+    }
+
+    /**
+     * Exporta todos os contatos como planilha CSV (abre no Excel/Google Sheets).
+     * Colunas: nome | numero. O número é exportado em formato re-importável.
+     */
+    public function export(): StreamedResponse
+    {
+        $rows = DB::table('wa_contacts')
+            ->orderBy('name')
+            ->orderBy('phone_digits')
+            ->get(['name', 'country_code', 'phone_digits', 'ddd', 'number']);
+
+        $filename = 'contatos-' . now()->format('Y-m-d') . '.csv';
+
+        return response()->streamDownload(function () use ($rows) {
+            $out = fopen('php://output', 'w');
+
+            // BOM UTF-8 para acentos corretos no Excel (Windows).
+            fwrite($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['nome', 'numero'], ';');
+
+            foreach ($rows as $row) {
+                fputcsv($out, [$row->name, $this->formatExportNumber($row)], ';');
+            }
+
+            fclose($out);
+        }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /**
+     * Baixa um modelo de planilha (CSV) com a estrutura e exemplos que o cliente
+     * deve seguir para importar contatos.
+     */
+    public function template(): StreamedResponse
+    {
+        return response()->streamDownload(function () {
+            $out = fopen('php://output', 'w');
+
+            fwrite($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['nome', 'numero'], ';');
+            fputcsv($out, ['João da Silva', '(14) 99173-6181'], ';');
+            fputcsv($out, ['Maria Souza', '14991112222'], ';');
+
+            fclose($out);
+        }, 'modelo-importacao-contatos.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /**
+     * Importa contatos a partir de uma planilha CSV (colunas nome | numero).
+     * Linhas duplicadas (número já cadastrado) são ignoradas; linhas inválidas
+     * são contabilizadas e reportadas. Os novos contatos passam a aparecer na
+     * lista para atendimento.
+     */
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:csv,txt', 'max:5120'],
+        ], [
+            'file.required' => 'Selecione um arquivo para importar.',
+            'file.mimes'    => 'Envie um arquivo CSV (use o modelo disponibilizado).',
+            'file.max'      => 'O arquivo é muito grande (máximo 5 MB).',
+        ]);
+
+        $path   = $request->file('file')->getRealPath();
+        $handle = fopen($path, 'r');
+
+        if ($handle === false) {
+            return back()->withErrors(['file' => 'Não foi possível ler o arquivo.']);
+        }
+
+        // Detecta o separador (';' usado no modelo; aceita ',' também).
+        $firstLine = fgets($handle);
+        $firstLine = $firstLine === false ? '' : ltrim($firstLine, "\xEF\xBB\xBF");
+        $delimiter = substr_count($firstLine, ';') >= substr_count($firstLine, ',') ? ';' : ',';
+        rewind($handle);
+
+        $imported = 0;
+        $duplicate = 0;
+        $invalid = 0;
+        $rowNumber = 0;
+        $seen = [];
+        $insert = [];
+
+        // Números nacionais já cadastrados (chave de deduplicação).
+        $existing = DB::table('wa_contacts')->pluck('phone_digits')->flip();
+
+        while (($cols = fgetcsv($handle, 0, $delimiter)) !== false) {
+            $rowNumber++;
+
+            $name = isset($cols[0]) ? trim((string) $cols[0]) : '';
+            $raw  = isset($cols[1]) ? (string) $cols[1] : '';
+
+            // Pula linha de cabeçalho e linhas em branco.
+            if ($rowNumber === 1 && $this->looksLikeHeader($name, $raw)) {
+                continue;
+            }
+            if ($name === '' && trim($raw) === '') {
+                continue;
+            }
+
+            $parsed = $this->parseImportNumber($raw);
+
+            if ($name === '' || $name === null || mb_strlen($name) > 120 || $parsed === null) {
+                $invalid++;
+                continue;
+            }
+
+            $national = $parsed['ddd'] . $parsed['number'];
+
+            if (isset($existing[$national]) || isset($seen[$national])) {
+                $duplicate++;
+                continue;
+            }
+
+            $seen[$national] = true;
+            $insert[] = [
+                'id'           => (string) Str::uuid(),
+                'name'         => mb_substr($name, 0, 120),
+                'phone_number' => $parsed['country_code'] . $national,
+                'country_code' => $parsed['country_code'],
+                'phone_digits' => $national,
+                'ddd'          => $parsed['ddd'],
+                'number'       => $parsed['number'],
+                'cpf'          => null,
+                'notes'        => null,
+                'created_at'   => now(),
+                'updated_at'   => now(),
+            ];
+            $imported++;
+        }
+
+        fclose($handle);
+
+        foreach (array_chunk($insert, 200) as $chunk) {
+            DB::table('wa_contacts')->insert($chunk);
+        }
+
+        if ($imported === 0 && $duplicate === 0 && $invalid === 0) {
+            return back()->withErrors(['file' => 'Nenhum contato encontrado na planilha.']);
+        }
+
+        $parts = ["{$imported} adicionado(s)"];
+        if ($duplicate > 0) {
+            $parts[] = "{$duplicate} já existente(s)";
+        }
+        if ($invalid > 0) {
+            $parts[] = "{$invalid} inválido(s)";
+        }
+
+        return back()->with('success', 'Importação concluída: ' . implode(', ', $parts) . '.');
+    }
+
+    /**
+     * Formata o número para exportação de forma legível e re-importável:
+     * "+55 (14) 99173-6181".
+     */
+    private function formatExportNumber(object $row): string
+    {
+        $country = (string) ($row->country_code ?? '55');
+        $ddd     = (string) ($row->ddd ?? '');
+        $number  = (string) ($row->number ?? '');
+
+        if ($ddd === '' || $number === '') {
+            return $country . (string) $row->phone_digits;
+        }
+
+        $formatted = strlen($number) === 9
+            ? substr($number, 0, 5) . '-' . substr($number, 5)
+            : (strlen($number) === 8
+                ? substr($number, 0, 4) . '-' . substr($number, 4)
+                : $number);
+
+        return "+{$country} ({$ddd}) {$formatted}";
+    }
+
+    /**
+     * Converte o valor da coluna "numero" da planilha em país/DDD/número.
+     * Foco em números brasileiros (país 55 por padrão). Retorna null se inválido.
+     *
+     * @return array{country_code: string, ddd: string, number: string}|null
+     */
+    private function parseImportNumber(string $raw): ?array
+    {
+        $digits = preg_replace('/\D/', '', $raw) ?? '';
+
+        // Remove o código do país do Brasil quando presente (55 + DDD + número).
+        if (strlen($digits) >= 12 && str_starts_with($digits, '55')) {
+            $digits = substr($digits, 2);
+        }
+
+        // Nacional válido: DDD (2) + número (8 ou 9 dígitos).
+        if (! preg_match('/^(\d{2})(\d{8,9})$/', $digits, $m)) {
+            return null;
+        }
+
+        return [
+            'country_code' => '55',
+            'ddd'          => $m[1],
+            'number'       => $m[2],
+        ];
+    }
+
+    /**
+     * Detecta a linha de cabeçalho do modelo (ex.: "nome;numero").
+     */
+    private function looksLikeHeader(string $name, string $raw): bool
+    {
+        $name = mb_strtolower(trim($name));
+        $raw  = mb_strtolower(trim($raw));
+
+        return in_array($name, ['nome', 'name'], true)
+            && in_array($raw, ['numero', 'número', 'numero ', 'telefone', 'phone'], true);
     }
 
     public function store(Request $request): RedirectResponse
