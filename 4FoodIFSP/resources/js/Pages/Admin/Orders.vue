@@ -41,6 +41,7 @@ const localOrders = ref(cloneOrders(props.orders));
 const dragState = ref({ orderUuid: null, fromStatus: null });
 const dragOverStatus = ref(null);
 const cancelTarget = ref(null);
+const historyFilter = ref('all');
 
 const soundEnabled = ref(localStorage.getItem('4food_orders_sound') === '1');
 const knownPendingIds = new Set();
@@ -220,6 +221,15 @@ function filterHistory() {
         preserveScroll: true,
     });
 }
+
+const cancelledCount = computed(() =>
+    props.history.filter((e) => e.status === 'cancelled').length,
+);
+
+const filteredHistory = computed(() => {
+    if (historyFilter.value === 'all') return props.history;
+    return props.history.filter((e) => e.status === historyFilter.value);
+});
 
 function statusLabel(status) {
     if (status === 'ready') {
@@ -485,17 +495,37 @@ onUnmounted(() => {
                 </div>
 
                 <div v-if="activeTab === 'history'" class="history-view">
-                    <form class="history-filters" @submit.prevent="filterHistory">
-                        <label>
-                            De
-                            <input v-model="dateFrom" type="date">
-                        </label>
-                        <label>
-                            Ate
-                            <input v-model="dateTo" type="date">
-                        </label>
-                        <button type="submit" class="filter-btn">Filtrar</button>
-                    </form>
+                    <div class="history-controls">
+                        <form class="history-filters" @submit.prevent="filterHistory">
+                            <label>
+                                De
+                                <input v-model="dateFrom" type="date">
+                            </label>
+                            <label>
+                                Ate
+                                <input v-model="dateTo" type="date">
+                            </label>
+                            <button type="submit" class="filter-btn">Filtrar</button>
+                        </form>
+
+                        <div class="history-status-filter">
+                            <button
+                                :class="['hsf-btn', { active: historyFilter === 'all' }]"
+                                @click="historyFilter = 'all'"
+                            >Todos</button>
+                            <button
+                                :class="['hsf-btn', { active: historyFilter === 'ready' }]"
+                                @click="historyFilter = 'ready'"
+                            >Prontos</button>
+                            <button
+                                :class="['hsf-btn hsf-cancelled', { active: historyFilter === 'cancelled' }]"
+                                @click="historyFilter = 'cancelled'"
+                            >
+                                Cancelados
+                                <span v-if="cancelledCount > 0" class="hsf-count">{{ cancelledCount }}</span>
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="history-table-wrap">
                         <table class="history-table">
@@ -505,11 +535,12 @@ onUnmounted(() => {
                                     <th>Mesa</th>
                                     <th>Itens</th>
                                     <th>Status</th>
+                                    <th>Motivo do cancelamento</th>
                                     <th>Horario</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="entry in props.history" :key="entry.id">
+                                <tr v-for="entry in filteredHistory" :key="entry.id">
                                     <td>{{ entry.id }}</td>
                                     <td>{{ entry.mesa }}</td>
                                     <td>{{ entry.items.join(', ') }}</td>
@@ -520,18 +551,15 @@ onUnmounted(() => {
                                         >
                                             {{ statusLabel(entry.status) }}
                                         </span>
-                                        <span
-                                            v-if="entry.status === 'cancelled' && entry.cancel_reason"
-                                            class="cancel-reason"
-                                            :title="entry.cancel_reason"
-                                        >
-                                            {{ entry.cancel_reason }}
-                                        </span>
+                                    </td>
+                                    <td class="td-motivo">
+                                        <span v-if="entry.cancel_reason" class="cancel-reason">{{ entry.cancel_reason }}</span>
+                                        <span v-else class="no-reason">—</span>
                                     </td>
                                     <td>{{ entry.time }}</td>
                                 </tr>
-                                <tr v-if="props.history.length === 0">
-                                    <td colspan="5" class="empty-row">Nenhum pedido no periodo selecionado.</td>
+                                <tr v-if="filteredHistory.length === 0">
+                                    <td colspan="6" class="empty-row">Nenhum pedido no periodo selecionado.</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -42,6 +42,14 @@ Route::middleware('firebase.auth')->group(function () {
             Route::middleware('role:admin')->group(function () {
                 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+                // Dashboard API — polling e filtro de período (retornam JSON)
+                Route::get('/dashboard/hero-kpis',   [DashboardController::class, 'heroKpis'])->name('dashboard.heroKpis');
+                Route::get('/dashboard/financial',   [DashboardController::class, 'financialSummary'])->name('dashboard.financial');
+                Route::get('/dashboard/operational', [DashboardController::class, 'operationalStatus'])->name('dashboard.operational');
+                Route::get('/dashboard/tables',      [DashboardController::class, 'tablesStatus'])->name('dashboard.tables');
+                Route::get('/dashboard/whatsapp',    [DashboardController::class, 'whatsappSummary'])->name('dashboard.whatsapp');
+                Route::get('/dashboard/menu',        [DashboardController::class, 'menuSummary'])->name('dashboard.menu');
+
                 Route::prefix('cadastros')->name('cadastros.')->group(function () {
                     Route::get('/users', [UsersController::class, 'index'])->name('users.index');
                     Route::get('/departments', [UsersController::class, 'departments'])->name('departments.index');

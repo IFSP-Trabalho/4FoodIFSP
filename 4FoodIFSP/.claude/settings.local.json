@@ -64,7 +64,9 @@
       "Bash(node *)",
       "PowerShell($p = Get-CimInstance Win32_Process -Filter \"Name='node.exe'\" | Where-Object { $_.CommandLine -match 'vite' }; if \\($p\\) { $p | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }; if \\(Test-Path \"node_modules\\\\.vite\"\\) { Remove-Item \"node_modules\\\\.vite\" -Recurse -Force }; \"Stopped vite \\(PID $\\($p.ProcessId\\)\\) and cleared cache\" } else { \"No vite dev server running\" })",
       "Bash(grep -rn \"lidMapping\\\\|LIDMapping\\\\|getPNForLID\\\\|getLIDForPN\\\\|storeLIDPNMappings\\\\|getPN\\\\b\" lib/Types/*.d.ts lib/Signal/*.js)",
-      "Bash(grep -rln \"getPNForLID\\\\|LIDMappingStore\\\\|lidMapping\" lib/)"
+      "Bash(grep -rln \"getPNForLID\\\\|LIDMappingStore\\\\|lidMapping\" lib/)",
+      "Bash(Get-ChildItem -Path . -Depth 1)",
+      "Bash(Select-Object -Property Name, PSIsContainer)"
     ],
     "defaultMode": "acceptEdits"
   }
