@@ -20,7 +20,7 @@ Siga essa ordem para evitar erros de FK:
 6. wa_tickets
 7. orders
 8. order_items
-9. wa_messages leve
+9. wa_messages 
 ```
 
 ---
