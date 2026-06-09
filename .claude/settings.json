@@ -3,7 +3,10 @@
     "allow": [
       "PowerShell(netstat -ano)",
       "Bash(Get-ChildItem \"c:\\\\Users\\\\DELL\\\\Downloads\\\\4FoodIFSP\\\\4FoodIFSP\\\\database\\\\migrations\" -Name)",
-      "Bash(Sort-Object)"
+      "Bash(Sort-Object)",
+      "Bash(php -l app/Services/WhatsApp/IncomingWhatsAppMessageService.php)",
+      "Bash(php -l app/Services/WhatsApp/ChatbotEngine.php)",
+      "Bash(php -l app/Http/Controllers/Webhooks/BaileysMessageWebhookController.php)"
     ]
   }
 }

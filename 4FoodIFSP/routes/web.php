@@ -5,6 +5,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\TablesController;
+use App\Http\Controllers\Admin\ChatbotController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\WaClosureReasonsController;
 use App\Http\Controllers\Admin\WhatsApp\ConnectionsController;
@@ -68,6 +69,8 @@ Route::middleware('firebase.auth')->group(function () {
                     Route::put('/wa-motivos/{reason}', [WaClosureReasonsController::class, 'update'])->name('wa-motivos.update');
                     Route::delete('/wa-motivos/{reason}', [WaClosureReasonsController::class, 'destroy'])->name('wa-motivos.destroy');
                 });
+
+                Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot.index');
 
                 Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
                     Route::get('/conexoes', [ConnectionsController::class, 'index'])->name('conexoes.index');

@@ -9,11 +9,16 @@ use Illuminate\Support\Str;
 
 class IncomingWhatsAppMessageService
 {
-    public function handleInbound(array $data): void
+    /**
+     * Grava a mensagem inbound (ticket + wa_message). Retorna true se a mensagem
+     * é nova; false se for reentrega duplicada (mesmo wa_message_id) — usado para
+     * o chatbot não reprocessar/responder duas vezes a mesma mensagem.
+     */
+    public function handleInbound(array $data): bool
     {
-        DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
             if (DB::table('wa_messages')->where('wa_message_id', $data['wa_message_id'])->exists()) {
-                return;
+                return false;
             }
 
             $this->ensureContact($data);
@@ -87,6 +92,8 @@ class IncomingWhatsAppMessageService
                 $ticketFinalUpdate['unread_count'] = DB::raw('unread_count + 1');
             }
             DB::table('wa_tickets')->where('id', $ticketId)->update($ticketFinalUpdate);
+
+            return true;
         });
     }
 

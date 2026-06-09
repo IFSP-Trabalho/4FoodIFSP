@@ -47,6 +47,7 @@ const items = [
     { key: 'whatsapp-conexoes', label: 'Conexoes', icon: 'whatsapp-conexoes', route: '/admin/whatsapp/conexoes', roles: ['admin'] },
     { key: 'whatsapp', label: 'Atendimento', icon: 'whatsapp', route: '/whatsapp/inbox', roles: ['admin', 'whatsapp_agent'] },
     { key: 'whatsapp-contatos', label: 'Contatos', icon: 'whatsapp-contatos', route: '/whatsapp/contatos', roles: ['admin', 'whatsapp_agent'] },
+    { key: 'chatbot', label: 'ChatBot', icon: 'robot', route: null, roles: ['admin'] },
 ].filter((item) => {
     if (item.roles && !item.roles.includes(userRole)) {
         return false;
@@ -66,13 +67,18 @@ const cadastrosOptions = [
     { key: 'wa-motivos', label: 'Motivos WA', icon: 'wa-motivos', route: '/admin/cadastros/wa-motivos' },
 ];
 
+const chatbotOptions = [
+    { key: 'chatbot', label: 'ChatBot', icon: 'robot', route: '/admin/chatbot' },
+];
+
 const splitAfter = new Set(['dashboard', 'cadastros']);
 const isCadastrosMenuOpen = ref(false);
 const isReportsMenuOpen = ref(false);
+const isChatbotMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 
 function isDisabled(item) {
-    return !item.route && item.key !== 'cadastros' && item.key !== 'reports';
+    return !item.route && item.key !== 'cadastros' && item.key !== 'reports' && item.key !== 'chatbot';
 }
 
 function isActive(item) {
@@ -88,13 +94,22 @@ function onItemClick(item) {
 
     if (item.key === 'cadastros') {
         isReportsMenuOpen.value = false;
+        isChatbotMenuOpen.value = false;
         isCadastrosMenuOpen.value = !isCadastrosMenuOpen.value;
         return;
     }
 
     if (item.key === 'reports') {
         isCadastrosMenuOpen.value = false;
+        isChatbotMenuOpen.value = false;
         isReportsMenuOpen.value = !isReportsMenuOpen.value;
+        return;
+    }
+
+    if (item.key === 'chatbot') {
+        isCadastrosMenuOpen.value = false;
+        isReportsMenuOpen.value = false;
+        isChatbotMenuOpen.value = !isChatbotMenuOpen.value;
         return;
     }
 
@@ -104,6 +119,7 @@ function onItemClick(item) {
 
     isCadastrosMenuOpen.value = false;
     isReportsMenuOpen.value = false;
+    isChatbotMenuOpen.value = false;
     router.visit(item.route);
 }
 
@@ -117,10 +133,16 @@ function onReportsOptionSelect(route) {
     router.visit(route);
 }
 
+function onChatbotOptionSelect(route) {
+    isChatbotMenuOpen.value = false;
+    router.visit(route);
+}
+
 function toggleUserMenu() {
     isUserMenuOpen.value = !isUserMenuOpen.value;
     isCadastrosMenuOpen.value = false;
     isReportsMenuOpen.value = false;
+    isChatbotMenuOpen.value = false;
 }
 
 function logout() {
@@ -139,6 +161,10 @@ function onWindowClick(event) {
 
     if (!event.target.closest('.reports-wrapper')) {
         isReportsMenuOpen.value = false;
+    }
+
+    if (!event.target.closest('.chatbot-wrapper')) {
+        isChatbotMenuOpen.value = false;
     }
 
     if (!event.target.closest('.user-menu-wrapper')) {
@@ -240,6 +266,38 @@ onBeforeUnmount(() => {
                     >
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H5V5h14v14.1zm0-16.1H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
+                        </svg>
+                        {{ option.label }}
+                    </button>
+                </div>
+            </div>
+            <div v-else-if="item.key === 'chatbot'" class="chatbot-wrapper cadastros-wrapper">
+                <button
+                    type="button"
+                    class="nav-item"
+                    :class="{
+                        active: isActive(item),
+                        disabled: isDisabled(item),
+                    }"
+                    :title="item.label"
+                    :aria-label="item.label"
+                    @click.stop="onItemClick(item)"
+                >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+                    </svg>
+                </button>
+
+                <div v-if="isChatbotMenuOpen" class="cadastros-menu">
+                    <button
+                        v-for="option in chatbotOptions"
+                        :key="option.key"
+                        type="button"
+                        class="cadastros-menu-item"
+                        @click="onChatbotOptionSelect(option.route)"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3zM7.5 11.5C7.5 10.67 8.17 10 9 10s1.5.67 1.5 1.5S9.83 13 9 13s-1.5-.67-1.5-1.5zM16 17H8v-2h8v2zm-1-4c-.83 0-1.5-.67-1.5-1.5S14.17 10 15 10s1.5.67 1.5 1.5S15.83 13 15 13z" />
                         </svg>
                         {{ option.label }}
                     </button>

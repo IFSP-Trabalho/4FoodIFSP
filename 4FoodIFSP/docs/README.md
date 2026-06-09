@@ -38,6 +38,7 @@ Comece por [project_overview.md](project_overview.md) — visão técnica de tod
 | Mesas / Caixa | [features/mesas.md](features/mesas.md) | `finance`, `waiter` |
 | Tablet (cliente) | [features/tablet.md](features/tablet.md) | público |
 | Atendimento WhatsApp | [features/atendimento.md](features/atendimento.md) | `whatsapp_agent` |
+| Chatbot (construtor de fluxo) | [features/chatbot-fluxo.md](features/chatbot-fluxo.md) | `admin` |
 
 ---
 
@@ -65,6 +66,9 @@ Comece por [project_overview.md](project_overview.md) — visão técnica de tod
 - [flow/WhatsApp/Atendimentos.md](flow/WhatsApp/Atendimentos.md) — inbox real, chat, webhook (Fase 3)
 - [flow/WhatsApp/Contatos.md](flow/WhatsApp/Contatos.md) — contatos
 - [flow/WhatsApp/fechamento.md](flow/WhatsApp/fechamento.md) — encerramento de ticket
+
+### Chatbot
+- [flow/chatBot/motorFase1.md](flow/chatBot/motorFase1.md) — motor (máquina de estados) · handoff para humano · Fase 1
 
 ### App celular
 - [flow/AppCel/AppCelular.md](flow/AppCel/AppCelular.md) — spec do app mobile
