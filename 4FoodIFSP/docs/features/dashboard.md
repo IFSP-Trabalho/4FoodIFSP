@@ -122,7 +122,7 @@ Cada área do dashboard precisa lidar com três estados:
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
-ee
+
 ---
 
 ## Blocos de Métricas
