@@ -2,8 +2,8 @@
     width: 60px;
     min-width: 60px;
     height: 100vh;
-    background: #111418;
-    border-right: 1px solid #2e3238;
+    background: var(--bg-111418);
+    border-right: 1px solid var(--bd-2e3238);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,7 +40,7 @@
     border: 0;
     border-radius: 10px;
     background: transparent;
-    color: #5a6068;
+    color: var(--fg-5a6068);
     padding: 0;
     display: inline-flex;
     align-items: center;
@@ -57,12 +57,12 @@
 
 .wa-nav-item.active {
     background: rgba(74, 222, 128, 0.12);
-    color: #4ade80;
+    color: var(--fg-4ade80);
 }
 
 .wa-nav-item:not(.active):hover {
-    background: #1e2228;
-    color: #9aa0a6;
+    background: var(--bg-1e2228);
+    color: var(--fg-9aa0a6);
 }
 
 .wa-bottom {
@@ -80,8 +80,8 @@
     height: 34px;
     border: 0;
     border-radius: 50%;
-    background: #2a2d33;
-    color: #e8eaed;
+    background: var(--bg-2a2d33);
+    color: var(--fg-e8eaed);
     font-size: 13px;
     font-weight: 700;
     display: flex;
@@ -91,7 +91,7 @@
 }
 
 .wa-avatar:hover {
-    background: #363b42;
+    background: var(--bg-363b42);
 }
 
 .wa-user-menu {
@@ -99,8 +99,8 @@
     bottom: 42px;
     left: 0;
     width: 120px;
-    background: #1e2228;
-    border: 1px solid #2e3238;
+    background: var(--bg-1e2228);
+    border: 1px solid var(--bd-2e3238);
     border-radius: 10px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     padding: 8px;
@@ -110,8 +110,8 @@
 .wa-logout-btn {
     width: 100%;
     border: 0;
-    background: #2a1a1a;
-    color: #f87171;
+    background: var(--bg-2a1a1a);
+    color: var(--fg-f87171);
     border-radius: 7px;
     font-size: 12px;
     font-weight: 700;
@@ -121,5 +121,5 @@
 }
 
 .wa-logout-btn:hover {
-    background: #3a2020;
+    background: var(--bg-3a2020);
 }

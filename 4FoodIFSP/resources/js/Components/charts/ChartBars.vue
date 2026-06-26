@@ -108,7 +108,7 @@ const tipStyle = computed(() => {
 }
 
 .bar-row:hover {
-    background: #faf6f4;
+    background: var(--bg-faf6f4);
 }
 
 .bar-row.dim {
@@ -122,8 +122,8 @@ const tipStyle = computed(() => {
     display: grid;
     place-items: center;
     border-radius: 7px;
-    background: #f3eae5;
-    color: #993c1d;
+    background: var(--bg-f3eae5);
+    color: var(--fg-993c1d);
     font-size: 11px;
     font-weight: 700;
 }
@@ -141,7 +141,7 @@ const tipStyle = computed(() => {
     justify-content: space-between;
     gap: 10px;
     font-size: 13px;
-    color: #2b2d35;
+    color: var(--fg-2b2d35);
 }
 
 .bar-label {
@@ -151,21 +151,21 @@ const tipStyle = computed(() => {
 }
 
 .bar-label small {
-    color: #9aa0ab;
+    color: var(--fg-9aa0ab);
     font-size: 11px;
     margin-left: 6px;
 }
 
 .bar-value {
     font-weight: 700;
-    color: #17181e;
+    color: var(--fg-17181e);
     white-space: nowrap;
 }
 
 .bar-track {
     height: 9px;
     border-radius: 999px;
-    background: #f0f1f3;
+    background: var(--bg-f0f1f3);
     overflow: hidden;
 }
 
@@ -180,8 +180,8 @@ const tipStyle = computed(() => {
     z-index: 5;
     pointer-events: none;
     transform: translate(-50%, calc(-100% - 14px));
-    background: #17181e;
-    color: #fff;
+    background: var(--bg-17181e);
+    color: var(--fg-ffffff);
     border-radius: 11px;
     padding: 8px 11px;
     box-shadow: 0 10px 26px rgba(15, 16, 22, 0.22);
@@ -198,7 +198,7 @@ const tipStyle = computed(() => {
     transform: translateX(-50%) rotate(45deg);
     width: 9px;
     height: 9px;
-    background: #17181e;
+    background: var(--bg-17181e);
     border-radius: 2px;
 }
 
@@ -206,7 +206,7 @@ const tipStyle = computed(() => {
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #b9bcc4;
+    color: var(--fg-b9bcc4);
 }
 
 .chart-tip strong {
@@ -216,7 +216,7 @@ const tipStyle = computed(() => {
 
 .chart-tip .tip-hint {
     font-size: 11px;
-    color: #c9ccd2;
+    color: var(--fg-c9ccd2);
 }
 
 .tip-enter-active,
@@ -232,7 +232,7 @@ const tipStyle = computed(() => {
 .chart-empty {
     padding: 30px 12px;
     text-align: center;
-    color: #9aa0ab;
+    color: var(--fg-9aa0ab);
     font-size: 13px;
 }
 </style>

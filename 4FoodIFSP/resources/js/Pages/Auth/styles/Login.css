@@ -44,7 +44,7 @@
 
 .cp-card {
     width: min(420px, 100%);
-    background: #1b2030;
+    background: var(--bg-1b2030);
     border: 1px solid rgb(255 255 255 / 10%);
     border-radius: 20px;
     box-shadow: 0 32px 80px rgb(0 0 0 / 60%);
@@ -70,12 +70,12 @@
 .cp-lock-icon {
     width: 24px;
     height: 24px;
-    fill: #e07050;
+    fill: var(--fg-e07050);
 }
 
 .cp-title {
     margin: 0 0 8px;
-    color: #f5f6f8;
+    color: var(--fg-f5f6f8);
     font-size: 20px;
     font-weight: 700;
     text-align: center;
@@ -95,7 +95,7 @@
     background: rgb(185 40 40 / 18%);
     border: 1px solid rgb(185 40 40 / 40%);
     border-radius: 10px;
-    color: #f9a5a5;
+    color: var(--fg-f9a5a5);
     font-size: 13px;
     font-weight: 500;
     padding: 10px 14px;
@@ -128,7 +128,7 @@
     background: rgb(255 255 255 / 8%);
     border: 1px solid rgb(255 255 255 / 16%);
     border-radius: 10px;
-    color: #f5f6f8;
+    color: var(--fg-f5f6f8);
     font-size: 14px;
     padding: 11px 42px 11px 14px;
     outline: none;
@@ -178,8 +178,8 @@
     width: 100%;
     border: none;
     border-radius: 10px;
-    background: #fff;
-    color: #1a1f27;
+    background: var(--bg-ffffff);
+    color: var(--fg-1a1f27);
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.04em;

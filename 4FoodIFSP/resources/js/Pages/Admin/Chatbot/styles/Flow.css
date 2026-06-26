@@ -1,0 +1,755 @@
+/* ── Layout geral ─────────────────────────────────────────────────────────── */
+.flow-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: var(--bg-f6f7f9);
+    overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.flow-header {
+    height: 50px;
+    min-height: 50px;
+    background: var(--bg-ffffff);
+    border-bottom: 1px solid var(--bd-dce3e8);
+    padding: 0 20px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 10;
+}
+
+.flow-header__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.flow-header__name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--fg-17181e);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.flow-header__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.flow-btn-back {
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    height: 34px;
+    padding: 0 12px;
+    background: var(--bg-ffffff);
+    color: var(--fg-3d4654);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.flow-btn-etapa {
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    height: 34px;
+    padding: 0 12px;
+    background: var(--bg-ffffff);
+    color: var(--fg-17181e);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.flow-btn-etapa:hover {
+    background: var(--bg-f6f7f9);
+}
+
+.flow-btn-icon {
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    height: 34px;
+    width: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-ffffff);
+    color: var(--fg-3d4654);
+    cursor: pointer;
+    padding: 0;
+}
+
+.flow-btn-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+.flow-btn-icon:not(:disabled):hover {
+    background: var(--bg-f6f7f9);
+}
+
+.flow-btn-icon:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.flow-btn-save {
+    border: 0;
+    border-radius: 8px;
+    height: 34px;
+    padding: 0 16px;
+    background: var(--bg-993c1d);
+    color: var(--fg-ffffff);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.flow-btn-save:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* ── Body ────────────────────────────────────────────────────────────────── */
+.flow-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ── Canvas ──────────────────────────────────────────────────────────────── */
+.flow-canvas {
+    flex: 1;
+    height: 100%;
+}
+
+/* ── Custom nodes ────────────────────────────────────────────────────────── */
+.flow-node {
+    position: relative;
+    border-radius: 5px;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-e0e3e7);
+    opacity: 0.9;
+}
+
+.flow-node.active,
+.flow-node:focus-within,
+.selected .flow-node {
+    opacity: 1;
+    border-color: rgba(24, 121, 255, 0.5);
+}
+
+.flow-node:hover {
+    border: 1px dashed var(--bd-1879ff);
+    background: var(--bg-f0f7ff);
+}
+
+/* Start node — círculo verde igual ao Noah */
+.flow-node--start {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(54, 145, 90, 0.3);
+    background: rgba(34, 235, 115, 0.6);
+    cursor: default;
+}
+
+.flow-node-start__icon {
+    font-size: 14px;
+    color: rgba(54, 145, 90, 1);
+}
+
+/* Message + Action nodes — card retangular */
+.flow-node--message,
+.flow-node--action {
+    min-width: 170px;
+    max-width: 370px;
+    min-height: 32px;
+    cursor: move;
+}
+
+.flow-node__header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+}
+
+.flow-node__icon {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.flow-node__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-17181e);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.flow-node__body {
+    padding: 4px 10px 8px;
+    border-top: 1px solid var(--bd-f0f1f3);
+}
+
+.flow-node__text {
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--fg-5f6572);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.flow-node__action-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--bg-fdf0e9);
+    color: var(--fg-993c1d);
+}
+
+/* ── Right panel ─────────────────────────────────────────────────────────── */
+.flow-panel {
+    width: 500px;
+    min-width: 500px;
+    border-left: 1px solid var(--bd-dce3e8);
+    background: var(--bg-ffffff);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.flow-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--bd-eceef0);
+    position: sticky;
+    top: 0;
+    background: var(--bg-ffffff);
+    z-index: 1;
+}
+
+.flow-panel__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fg-17181e);
+}
+
+.flow-panel__close {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--fg-7b7f89);
+    padding: 4px;
+    line-height: 1;
+}
+
+.flow-panel__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.flow-panel__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.flow-panel__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-3d4654);
+}
+
+.flow-panel__input {
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--fg-17181e);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.flow-panel__input:disabled {
+    background: var(--bg-f6f7f9);
+    color: var(--fg-7b7f89);
+}
+
+.flow-panel__input--sm {
+    height: 32px;
+    font-size: 13px;
+}
+
+.flow-panel__textarea {
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--fg-17181e);
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.flow-panel__select {
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--fg-17181e);
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--bg-ffffff);
+}
+
+.flow-panel__select--sm {
+    height: 32px;
+    font-size: 13px;
+}
+
+/* Section: saídas */
+.flow-panel__section {
+    border-top: 1px solid var(--bd-eceef0);
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.flow-panel__section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flow-panel__section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fg-17181e);
+}
+
+.flow-panel__btn-add {
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    height: 30px;
+    padding: 0 12px;
+    background: var(--bg-ffffff);
+    color: var(--fg-993c1d);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.flow-panel__empty {
+    margin: 0;
+    font-size: 13px;
+    color: var(--fg-7b7f89);
+}
+
+.flow-panel__placeholder {
+    margin: 0;
+    padding: 12px 0;
+    font-size: 13px;
+    color: var(--fg-7b7f89);
+    font-style: italic;
+}
+
+.flow-panel__edge {
+    display: grid;
+    grid-template-columns: 110px 1fr 28px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid var(--bd-eceef0);
+    border-radius: 8px;
+}
+
+.flow-panel__btn-remove {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--fg-b72323);
+    padding: 4px;
+    line-height: 1;
+}
+
+/* Danger zone */
+.flow-panel__danger {
+    border-top: 1px solid var(--bd-eceef0);
+    padding-top: 14px;
+}
+
+.flow-panel__btn-delete {
+    border: 1px solid var(--bd-f0c2c2);
+    border-radius: 8px;
+    height: 34px;
+    padding: 0 14px;
+    background: var(--bg-ffffff);
+    color: var(--fg-b72323);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .flow-panel {
+        width: 100%;
+        min-width: unset;
+        border-left: 0;
+        border-top: 1px solid var(--bd-dce3e8);
+    }
+
+    .flow-body {
+        flex-direction: column;
+    }
+}
+
+/* ── Abas: Interações / Condições ────────────────────────────────────────── */
+.flow-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--bd-eceef0);
+}
+
+.flow-tabs button {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    padding: 10px 8px;
+    margin-bottom: -1px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--fg-9aa0aa);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+.flow-tabs button.active {
+    color: var(--fg-993c1d);
+    border-bottom-color: var(--bd-993c1d);
+}
+
+.flow-tab-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Barra de ícones para adicionar interação */
+.flow-itoolbar {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    padding: 4px 0 2px;
+}
+
+.flow-itool {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--fg-5f6572);
+    padding: 4px;
+    line-height: 0;
+}
+
+.flow-itool:hover { color: var(--fg-993c1d); }
+.flow-itool svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* Card de interação numerado */
+.flow-interaction {
+    border: 1px solid var(--bd-eceef0);
+    border-radius: 10px;
+    padding: 10px;
+    background: var(--bg-ffffff);
+}
+
+.flow-interaction__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.flow-interaction__num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg-9a8b73);
+    color: var(--fg-ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.flow-interaction__actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.flow-interaction__actions button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--fg-9aa0aa);
+    padding: 4px;
+    line-height: 0;
+}
+
+.flow-interaction__actions button:not(:disabled):hover { color: var(--fg-5f6572); }
+.flow-interaction__actions button:disabled { opacity: 0.35; cursor: not-allowed; }
+.flow-interaction__actions button svg { width: 18px; height: 18px; fill: currentColor; }
+.flow-interaction__del { color: var(--fg-c0392b); }
+
+.flow-interaction__text {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--fg-17181e);
+    resize: vertical;
+}
+
+.flow-panel__btn-add--block {
+    align-self: flex-start;
+}
+
+/* Card de condição (Se… / Rotear para: Etapa) */
+.flow-condition {
+    border: 1px solid var(--bd-eceef0);
+    border-radius: 10px;
+    padding: 12px;
+    background: var(--bg-ffffff);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.flow-condition__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flow-condition__num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg-c9ccd1);
+    color: var(--fg-ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.flow-condition__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.flow-condition__actions button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--fg-3d4654);
+    padding: 2px;
+    line-height: 0;
+}
+
+.flow-condition__actions button:disabled { opacity: 0.3; cursor: not-allowed; }
+.flow-condition__actions button svg { width: 18px; height: 18px; fill: currentColor; }
+.flow-condition__del { color: var(--fg-d4302a); }
+
+.flow-condition__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.flow-condition__field label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--fg-7b7f89);
+}
+
+.flow-condition__divider {
+    border: 0;
+    border-top: 1px solid var(--bd-eceef0);
+    margin: 2px 0;
+    width: 100%;
+}
+
+.flow-condition__route-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-3d4654);
+}
+
+.flow-condition__radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--fg-3d4654);
+}
+
+.flow-condition__radio input {
+    accent-color: var(--fg-993c1d);
+}
+
+/* Campo de respostas (tags/chips) */
+.flow-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    padding: 6px 8px;
+    min-height: 38px;
+}
+
+.flow-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-eceef0);
+    border-radius: 999px;
+    padding: 2px 4px 2px 10px;
+    font-size: 13px;
+    color: var(--fg-3d4654);
+}
+
+.flow-tag__del {
+    border: 0;
+    background: var(--bg-c9ccd1);
+    color: var(--fg-ffffff);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    line-height: 1;
+    padding: 0;
+    cursor: pointer;
+}
+
+.flow-tags__input {
+    flex: 1;
+    min-width: 90px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--fg-17181e);
+    padding: 2px;
+}
+
+/* Uma condição: "Se a resposta for X → ir para etapa Y" */
+.flow-panel__condition {
+    position: relative;
+    border: 1px solid var(--bd-eceef0);
+    border-radius: 8px;
+    background: var(--bg-fafbfc);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.flow-panel__condition-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flow-panel__condition-line .flow-panel__input,
+.flow-panel__condition-line .flow-panel__select {
+    flex: 1;
+    min-width: 0;
+}
+
+.flow-panel__condition-label {
+    font-size: 12px;
+    color: var(--fg-5f6572);
+    white-space: nowrap;
+}
+
+.flow-panel__condition-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    border: 0;
+    background: transparent;
+    color: var(--fg-b72323);
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+    padding: 2px;
+}
+
+/* ── Animações ───────────────────────────────────────────────────────────── */
+/* Painel da etapa: abrir (entrar) e voltar (sair) com slide + fade */
+.panel-enter-active,
+.panel-leave-active {
+    transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.panel-enter-from,
+.panel-leave-to {
+    transform: translateX(18px);
+    opacity: 0;
+}
+
+/* Nós surgem suavemente ao aparecer (criação, desfazer/refazer) */
+:deep(.vue-flow__node) {
+    animation: flow-node-in 0.18s ease;
+}
+
+@keyframes flow-node-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}

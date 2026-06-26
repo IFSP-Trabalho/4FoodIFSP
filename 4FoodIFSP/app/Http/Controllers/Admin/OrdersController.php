@@ -132,6 +132,9 @@ class OrdersController extends Controller
             SELECT
                 orders.id,
                 orders.status,
+                orders.origin,
+                orders.customer_name,
+                orders.customer_phone,
                 tables.number,
                 tables.label,
                 order_items.id AS item_id,
@@ -140,11 +143,10 @@ class OrdersController extends Controller
                 order_items.completed,
                 dishes.name AS dish_name
             FROM orders
-            INNER JOIN tables ON tables.id = orders.table_id
+            LEFT JOIN tables ON tables.id = orders.table_id
             INNER JOIN order_items ON order_items.order_id = orders.id
             INNER JOIN dishes ON dishes.id = order_items.dish_id
-            WHERE orders.origin = 'table'
-              AND DATE(orders.created_at) = CURRENT_DATE
+            WHERE DATE(orders.created_at) = CURRENT_DATE
               AND orders.status IN ('pending', 'in_progress', 'ready')
             ORDER BY orders.created_at ASC
         ");
@@ -153,10 +155,15 @@ class OrdersController extends Controller
         foreach ($rows as $row) {
             $uuid = $row->id;
             if (!isset($grouped[$uuid])) {
+                $isDelivery = $row->origin === 'delivery';
                 $grouped[$uuid] = [
                     'id'           => $this->formatOrderDisplayId($uuid),
                     'uuid'         => $uuid,
-                    'mesa'         => $row->label ?? 'Mesa ' . $row->number,
+                    'origin'       => $row->origin,
+                    'mesa'         => $isDelivery
+                        ? ($row->customer_name ?: 'Cliente delivery')
+                        : ($row->label ?? 'Mesa ' . $row->number),
+                    'phone'        => $isDelivery ? $row->customer_phone : null,
                     'status'       => $row->status,
                     'items'        => [],
                     'note_summary' => null,
@@ -198,17 +205,18 @@ class OrdersController extends Controller
             SELECT
                 orders.id,
                 orders.status,
+                orders.origin,
+                orders.customer_name,
                 orders.cancel_reason,
                 orders.updated_at,
                 tables.number,
                 tables.label,
                 dishes.name AS dish_name
             FROM orders
-            INNER JOIN tables ON tables.id = orders.table_id
+            LEFT JOIN tables ON tables.id = orders.table_id
             INNER JOIN order_items ON order_items.order_id = orders.id
             INNER JOIN dishes ON dishes.id = order_items.dish_id
-            WHERE orders.origin = 'table'
-              AND orders.status IN ('ready', 'cancelled')
+            WHERE orders.status IN ('ready', 'cancelled')
               AND DATE(orders.updated_at) BETWEEN :date_from AND :date_to
             ORDER BY orders.updated_at DESC, orders.id
         ", ['date_from' => $dateFrom, 'date_to' => $dateTo]);
@@ -217,9 +225,13 @@ class OrdersController extends Controller
         foreach ($rows as $row) {
             $uuid = $row->id;
             if (!isset($grouped[$uuid])) {
+                $isDelivery = $row->origin === 'delivery';
                 $grouped[$uuid] = [
                     'id'            => '#' . $this->formatOrderDisplayId($uuid),
-                    'mesa'          => $row->label ?? 'Mesa ' . $row->number,
+                    'origin'        => $row->origin,
+                    'mesa'          => $isDelivery
+                        ? ($row->customer_name ?: 'Cliente delivery')
+                        : ($row->label ?? 'Mesa ' . $row->number),
                     'items'         => [],
                     'status'        => $row->status,
                     'cancel_reason' => $row->cancel_reason,

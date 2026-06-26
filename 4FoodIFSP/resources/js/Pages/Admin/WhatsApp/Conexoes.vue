@@ -5,10 +5,15 @@ import { computed, ref } from 'vue';
 import AppSidebar from '../../../Components/AppSidebar.vue';
 import WaConnectionCard from '../../../Components/WaConnectionCard.vue';
 import WaConnectionCreatePanel from '../../../Components/WaConnectionCreatePanel.vue';
+import WaConnectionEditPanel from '../../../Components/WaConnectionEditPanel.vue';
 import WaQrCodeModal from '../../../Components/WaQrCodeModal.vue';
 
 const props = defineProps({
     connections: {
+        type: Array,
+        default: () => [],
+    },
+    chatbots: {
         type: Array,
         default: () => [],
     },
@@ -19,8 +24,17 @@ const page = usePage();
 const flashSuccess = computed(() => page.props.flash?.success ?? '');
 
 const isCreateOpen  = ref(false);
+const editConnectionId = ref(null);
 const pendingDeleteId = ref(null);
 const isDeleting    = ref(false);
+
+const editConnection = computed(() =>
+    props.connections.find((c) => c.id === editConnectionId.value) ?? null
+);
+
+function handleEdit(id) {
+    editConnectionId.value = id;
+}
 
 /** @type {import('vue').Ref<{connection: object, qrBase64: string|null, expiresAt: string|null, loading: boolean, error: string|null}|null>} */
 const qrModal = ref(null);
@@ -134,6 +148,7 @@ const pendingDeleteConnection = computed(() =>
                         @request-qr="handleRequestQr"
                         @cancel-pairing="handleCancelPairing"
                         @delete="handleDelete"
+                        @edit="handleEdit"
                     />
                 </div>
             </div>
@@ -178,6 +193,13 @@ const pendingDeleteConnection = computed(() =>
         <WaConnectionCreatePanel
             v-if="isCreateOpen"
             @close="isCreateOpen = false"
+        />
+
+        <WaConnectionEditPanel
+            v-if="editConnection"
+            :connection="editConnection"
+            :chatbots="chatbots"
+            @close="editConnectionId = null"
         />
     </div>
 </template>

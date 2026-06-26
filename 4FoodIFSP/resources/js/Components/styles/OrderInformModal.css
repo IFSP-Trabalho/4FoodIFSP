@@ -1,0 +1,223 @@
+/* Específico do modal "Informar pedido" — base vem de AdminModal.css (global). */
+
+.order-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid var(--bd-eceef0);
+    padding-top: 14px;
+}
+
+.order-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.order-section-head > span {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--fg-993c1d);
+    text-transform: uppercase;
+}
+
+.order-add-btn {
+    border: 1px solid var(--bd-993c1d);
+    background: var(--bg-faece7);
+    color: var(--fg-993c1d);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.order-add-btn:hover {
+    background: var(--bg-f5d5cc);
+}
+
+.order-empty {
+    margin: 0;
+    font-size: 13px;
+    color: var(--fg-9aa1ad);
+    padding: 6px 2px;
+}
+
+.order-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.order-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-f6f7f9);
+    border: 1px solid var(--bd-eceef0);
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+.order-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-17181e);
+}
+
+.order-item-price {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fg-17181e);
+    white-space: nowrap;
+}
+
+.order-qty {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.order-qty button {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid var(--bd-d9dde3);
+    background: var(--bg-ffffff);
+    color: var(--fg-17181e);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.order-qty button:hover {
+    background: var(--bg-f3f4f6);
+}
+
+.order-qty span {
+    min-width: 16px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-17181e);
+}
+
+.order-item-remove {
+    width: 24px;
+    height: 24px;
+    border: 0;
+    background: transparent;
+    color: var(--fg-9aa1ad);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.order-item-remove:hover {
+    background: var(--bg-fef2f2);
+    color: var(--fg-c53030);
+}
+
+/* Mini-cardápio */
+.order-menu {
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 8px;
+    background: var(--bg-ffffff);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.order-menu-search {
+    width: 100%;
+    border: 1px solid var(--bd-d9dde3);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--fg-17181e);
+    background: var(--bg-f9fafb);
+    outline: none;
+}
+
+.order-menu-search:focus {
+    border-color: var(--bd-993c1d);
+}
+
+.order-menu-list {
+    max-height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-right: 2px;
+}
+
+.order-menu-cat {
+    margin: 8px 0 2px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg-9aa1ad);
+}
+
+.order-menu-dish {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: transparent;
+    border-radius: 6px;
+    padding: 7px 8px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.order-menu-dish:hover {
+    background: var(--bg-faece7);
+}
+
+.order-menu-dish-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-17181e);
+}
+
+.order-menu-dish-price {
+    font-size: 12px;
+    color: var(--fg-7b7f89);
+    white-space: nowrap;
+}
+
+.order-menu-dish-add {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--fg-993c1d);
+    text-transform: uppercase;
+}
+
+.order-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px dashed var(--bd-d9dde3);
+    padding-top: 10px;
+    font-size: 14px;
+    color: var(--fg-17181e);
+}
+
+.order-total strong {
+    font-size: 16px;
+    color: var(--fg-993c1d);
+}

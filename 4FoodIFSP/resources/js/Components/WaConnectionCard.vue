@@ -9,7 +9,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['disconnect', 'request-qr', 'cancel-pairing', 'delete']);
+const emit = defineEmits(['disconnect', 'request-qr', 'cancel-pairing', 'delete', 'edit']);
 
 const isKebabOpen = ref(false);
 
@@ -46,6 +46,12 @@ const formattedTimestamp = computed(() => {
 function toggleKebab(event) {
     event.stopPropagation();
     isKebabOpen.value = !isKebabOpen.value;
+}
+
+function onEdit(event) {
+    event.stopPropagation();
+    isKebabOpen.value = false;
+    emit('edit', props.connection.id);
 }
 
 function onDelete(event) {
@@ -91,6 +97,9 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
                     </svg>
                 </button>
                 <div v-if="isKebabOpen" class="wa-card-kebab-menu">
+                    <button type="button" class="wa-card-kebab-item" @click="onEdit">
+                        Editar
+                    </button>
                     <button type="button" class="wa-card-kebab-item danger" @click="onDelete">
                         Excluir
                     </button>

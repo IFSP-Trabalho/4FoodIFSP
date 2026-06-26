@@ -6,9 +6,9 @@
     justify-content: space-between;
     gap: 8px;
     padding: 10px 12px;
-    background: #fff;
-    border: 1px solid #eceef0;
-    border-left: 3px solid var(--chip-accent, #17181e);
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-eceef0);
+    border-left: 3px solid var(--chip-accent, var(--bd-17181e));
     border-radius: 10px;
     cursor: pointer;
     text-align: left;
@@ -16,7 +16,7 @@
 }
 
 .kanban-chip:hover {
-    border-color: #d9dde3;
+    border-color: var(--bd-d9dde3);
     box-shadow: 0 2px 8px rgb(23 24 30 / 6%);
 }
 
@@ -36,13 +36,13 @@
 .kc-number {
     font-size: 18px;
     font-weight: 700;
-    color: #17181e;
+    color: var(--fg-17181e);
     line-height: 1;
 }
 
 .kc-label {
     font-size: 11px;
-    color: #9aa1ad;
+    color: var(--fg-9aa1ad);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -51,12 +51,12 @@
 .kc-total {
     font-size: 13px;
     font-weight: 700;
-    color: #c4451a;
+    color: var(--fg-c4451a);
     flex-shrink: 0;
 }
 
 .kc-meta {
     font-size: 11px;
-    color: #b0b6c2;
+    color: var(--fg-b0b6c2);
     flex-shrink: 0;
 }

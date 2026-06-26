@@ -71,10 +71,16 @@ Route::middleware('firebase.auth')->group(function () {
                 });
 
                 Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot.index');
+                Route::post('/chatbot', [ChatbotController::class, 'store'])->name('chatbot.store');
+                Route::put('/chatbot/{id}', [ChatbotController::class, 'update'])->name('chatbot.update');
+                Route::delete('/chatbot/{id}', [ChatbotController::class, 'destroy'])->name('chatbot.destroy');
+                Route::get('/chatbot/{id}/flow', [ChatbotController::class, 'flow'])->name('chatbot.flow');
+                Route::post('/chatbot/{id}/flow', [ChatbotController::class, 'saveFlow'])->name('chatbot.saveFlow');
 
                 Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
                     Route::get('/conexoes', [ConnectionsController::class, 'index'])->name('conexoes.index');
                     Route::post('/conexoes', [ConnectionsController::class, 'store'])->name('conexoes.store');
+                    Route::put('/conexoes/{connection}', [ConnectionsController::class, 'update'])->name('conexoes.update');
                     Route::patch('/conexoes/{connection}/disconnect', [ConnectionsController::class, 'disconnect'])->name('conexoes.disconnect');
                     Route::delete('/conexoes/{connection}', [ConnectionsController::class, 'destroy'])->name('conexoes.destroy');
                     Route::post('/conexoes/{connection}/request-qr', [ConnectionsController::class, 'requestQr'])->name('conexoes.requestQr');
@@ -154,6 +160,9 @@ Route::middleware('firebase.auth')->group(function () {
             Route::patch('/inbox/tickets/{ticket}/triage', [InboxController::class, 'returnTriage'])->name('inbox.returnTriage');
             Route::patch('/inbox/tickets/{ticket}/unread', [InboxController::class, 'markUnread'])->name('inbox.markUnread');
             Route::post('/inbox/tickets/{ticket}/send', [InboxController::class, 'send'])->name('inbox.send');
+            Route::post('/inbox/tickets/{ticket}/send-location', [InboxController::class, 'sendLocation'])->name('inbox.sendLocation');
+            Route::get('/inbox/menu', [InboxController::class, 'menu'])->name('inbox.menu');
+            Route::post('/inbox/tickets/{ticket}/order', [InboxController::class, 'storeOrder'])->name('inbox.storeOrder');
         });
     });
 });

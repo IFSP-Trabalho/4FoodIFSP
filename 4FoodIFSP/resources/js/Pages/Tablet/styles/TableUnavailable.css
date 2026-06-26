@@ -1,7 +1,7 @@
 .table-unavailable {
     min-height: 100vh;
     min-height: 100dvh;
-    background: #f5f6f8;
+    background: var(--bg-f5f6f8);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,8 +9,8 @@
 }
 
 .table-unavailable-card {
-    background: #ffffff;
-    border: 1px solid #eceef0;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-eceef0);
     border-radius: 16px;
     padding: 48px 40px;
     text-align: center;
@@ -22,7 +22,7 @@
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
-    color: #d1d5db;
+    color: var(--fg-d1d5db);
 }
 
 .table-unavailable-icon svg {
@@ -34,13 +34,13 @@
 .table-unavailable-title {
     font-size: 22px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--fg-1a1a1a);
     margin: 0 0 12px;
 }
 
 .table-unavailable-text {
     font-size: 15px;
-    color: #6b7280;
+    color: var(--fg-6b7280);
     line-height: 1.6;
     margin: 0;
 }

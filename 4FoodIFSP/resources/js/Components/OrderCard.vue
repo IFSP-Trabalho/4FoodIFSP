@@ -40,10 +40,13 @@ const actionDisabled = computed(() => {
     return false;
 });
 
+const isDelivery = computed(() => props.order.origin === 'delivery');
+
 const cardClass = computed(() => ({
     'card--pending': props.status === 'pending',
     'card--in-progress': props.status === 'in_progress',
     'card--ready': props.status === 'ready',
+    'order-card--delivery': isDelivery.value,
 }));
 
 function itemClass(item) {
@@ -58,10 +61,21 @@ function itemClass(item) {
     <div class="order-card" :class="cardClass">
         <div class="card-head">
             <span class="order-id">#{{ order.id }}</span>
-            <span v-if="status === 'ready'" class="badge-feito">FEITO</span>
+            <span class="card-head-badges">
+                <span v-if="isDelivery" class="badge-delivery">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 17a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm14 0a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3 6h9v2H3V6zm0 4h7v2H3v-2zm13.5-3H19l3 5v3h-2a2.5 2.5 0 0 0-5 0H9.5a2.5 2.5 0 0 0-2-1.95V8h9v-1zM18 8.5V11h2.6l-1.5-2.5H18z" />
+                    </svg>
+                    DELIVERY
+                </span>
+                <span v-if="status === 'ready'" class="badge-feito">FEITO</span>
+            </span>
         </div>
 
-        <p class="mesa-label">{{ order.mesa }}</p>
+        <p class="mesa-label" :class="{ 'mesa-label--delivery': isDelivery }">
+            {{ order.mesa }}
+        </p>
+        <p v-if="isDelivery && order.phone" class="delivery-phone">{{ order.phone }}</p>
 
         <ul class="items-list">
             <li

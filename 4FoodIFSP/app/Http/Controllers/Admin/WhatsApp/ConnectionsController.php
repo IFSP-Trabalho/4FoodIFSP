@@ -9,12 +9,17 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ConnectionsController extends Controller
 {
     public function index()
     {
+        $boundFlows = DB::table('chatbot_flows')
+            ->whereNotNull('wa_connection_id')
+            ->pluck('id', 'wa_connection_id');
+
         return Inertia::render('Admin/WhatsApp/Conexoes', [
             'connections' => DB::table('wa_connections')
                 ->orderBy('created_at', 'asc')
@@ -25,10 +30,50 @@ class ConnectionsController extends Controller
                     'channel_type'      => $row->channel_type,
                     'phone_number'      => $row->phone_number,
                     'connection_status' => $row->connection_status,
+                    'active'            => (bool) $row->active,
+                    'chatbot_flow_id'   => $boundFlows[$row->id] ?? null,
                     'last_status_at'    => $row->last_status_at,
                     'updated_at'        => $row->updated_at,
                 ]),
+            'chatbots' => DB::table('chatbot_flows')
+                ->orderBy('name')
+                ->get(['id', 'name'])
+                ->map(fn($row) => ['id' => $row->id, 'name' => $row->name]),
         ]);
+    }
+
+    public function update(Request $request, string $connection)
+    {
+        $record = DB::table('wa_connections')->where('id', $connection)->first();
+        abort_unless($record, 404);
+
+        $validated = $request->validate([
+            'name'            => ['required', 'string', 'min:2', 'max:80', Rule::unique('wa_connections', 'name')->ignore($connection, 'id')],
+            'active'          => ['boolean'],
+            'chatbot_flow_id' => ['nullable', 'uuid', 'exists:chatbot_flows,id'],
+        ], [
+            'name.unique' => 'Já existe uma conexão com este nome.',
+        ]);
+
+        DB::transaction(function () use ($connection, $request, $validated) {
+            DB::table('wa_connections')->where('id', $connection)->update([
+                'name'       => trim($validated['name']),
+                'active'     => $request->boolean('active'),
+                'updated_at' => now(),
+            ]);
+
+            // Apenas um fluxo por conexão: solta o vínculo atual e revincula o escolhido.
+            DB::table('chatbot_flows')->where('wa_connection_id', $connection)
+                ->update(['wa_connection_id' => null, 'updated_at' => now()]);
+
+            if (! empty($validated['chatbot_flow_id'])) {
+                DB::table('chatbot_flows')->where('id', $validated['chatbot_flow_id'])
+                    ->update(['wa_connection_id' => $connection, 'updated_at' => now()]);
+            }
+        });
+
+        return redirect()->route('admin.whatsapp.conexoes.index')
+            ->with('success', 'Conexão atualizada com sucesso.');
     }
 
     public function store(Request $request)

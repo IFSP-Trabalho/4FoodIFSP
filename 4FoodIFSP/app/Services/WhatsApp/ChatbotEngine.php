@@ -69,8 +69,12 @@ class ChatbotEngine
             ->orderByDesc('updated_at')
             ->first();
 
-        if ($latest && $latest->status === 'handoff') {
-            return; // humano conduz; bot fica mudo
+        // Fluxo já encerrado (completed) ou transferido (handoff): o bot fica em
+        // silêncio — NÃO reinicia o menu. É isso que "força a parada" quando o
+        // cliente chega ao fim de uma opção. Para reengajar, encerre/reabra o
+        // atendimento ou limpe a sessão do contato.
+        if ($latest && in_array($latest->status, ['handoff', 'completed'], true)) {
+            return;
         }
 
         // Invariante "um condutor só": não iniciar o bot por cima de uma conversa
@@ -80,7 +84,7 @@ class ChatbotEngine
             return;
         }
 
-        // 'completed' ou inexistente → (re)inicia o fluxo, respeitando o gatilho.
+        // Primeiro contato (sem sessão) → inicia o fluxo, respeitando o gatilho.
         if ($flow->trigger_keyword && strcasecmp($body, $flow->trigger_keyword) !== 0) {
             return;
         }

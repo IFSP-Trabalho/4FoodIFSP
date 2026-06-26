@@ -111,7 +111,6 @@ async function _startSocketBackground(id) {
         const sock = makeWASocket({
             version,
             auth: state,
-            printQRInTerminal: false,
             logger,
             browser: Browsers.ubuntu('Chrome'),
         });
@@ -120,9 +119,11 @@ async function _startSocketBackground(id) {
         sock.ev.on('creds.update', saveCreds);
 
         sock.ev.on('messages.upsert', async ({ messages, type }) => {
+            console.log(`[debug] messages.upsert type=${type} count=${messages?.length}`);
             if (type !== 'notify') return;
 
             for (const msg of messages) {
+                console.log(`[debug] msg fromMe=${msg.key?.fromMe} jid=${msg.key?.remoteJid} hasMsg=${!!msg.message}`);
                 if (msg.key.fromMe) continue;
                 if (!msg.message) continue;
 
@@ -132,16 +133,17 @@ async function _startSocketBackground(id) {
                     remoteJid === 'status@broadcast' ||
                     remoteJid.endsWith('@newsletter') ||
                     remoteJid.endsWith('@broadcast')
-                ) continue;
+                ) { console.log('[debug] ignorado: grupo/status/broadcast'); continue; }
 
                 const body = extractTextBody(msg.message);
-                if (!body) continue;
+                if (!body) { console.log('[debug] ignorado: sem corpo de texto'); continue; }
 
                 // Quando a conversa é endereçada por LID (@lid), o `remoteJid` é um
                 // identificador de privacidade — NÃO é o telefone. O número real vem
                 // em `key.senderPn`. Usamos ele para não criar contato/atendimento
                 // duplicado com um número inexistente.
                 const phoneNumber = resolvePhoneJid(msg.key);
+                console.log(`[debug] -> encaminhando ao Laravel: ${phoneNumber} "${body}"`);
 
                 await notifyLaravelMessage({
                     connection_id:  id,
@@ -151,6 +153,7 @@ async function _startSocketBackground(id) {
                     body,
                     sent_at: new Date(Number(msg.messageTimestamp) * 1000).toISOString(),
                 });
+                console.log('[debug] notifyLaravelMessage concluído');
             }
         });
 
@@ -284,6 +287,41 @@ export async function sendMessage(id, to, body) {
         await session.socket.sendMessage(jid, { text: body });
     } catch (err) {
         console.warn(`[baileys] sendMessage falhou para ${id}:`, err.message, '— forçando reconexão');
+        session.status = 'disconnected';
+        session.socket = null;
+        _startSocketBackground(id);
+        throw new Error('Falha ao enviar, reconectando. Tente novamente em alguns segundos.');
+    }
+}
+
+export async function sendLocation(id, to, latitude, longitude) {
+    const session = sessions.get(id);
+    if (!session || !session.socket) {
+        throw new Error('Sessão não encontrada. Aguarde a reconexão.');
+    }
+    if (session.status !== 'connected') {
+        throw new Error(`Sessão não conectada (status: ${session.status}). Aguarde reconexão.`);
+    }
+
+    const wsState = session.socket.ws?.readyState;
+    if (wsState !== undefined && wsState !== 1 /* WebSocket.OPEN */) {
+        console.warn(`[baileys] WS morto (readyState=${wsState}) — forçando reconexão da sessão ${id}`);
+        session.status = 'disconnected';
+        session.socket = null;
+        _startSocketBackground(id);
+        throw new Error('Conexão WhatsApp fechada, reconectando. Tente novamente em alguns segundos.');
+    }
+
+    const jid = to.includes('@') ? to : `${to}@s.whatsapp.net`;
+    try {
+        await session.socket.sendMessage(jid, {
+            location: {
+                degreesLatitude: Number(latitude),
+                degreesLongitude: Number(longitude),
+            },
+        });
+    } catch (err) {
+        console.warn(`[baileys] sendLocation falhou para ${id}:`, err.message, '— forçando reconexão');
         session.status = 'disconnected';
         session.socket = null;
         _startSocketBackground(id);

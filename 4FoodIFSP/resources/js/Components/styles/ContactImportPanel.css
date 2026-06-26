@@ -11,34 +11,34 @@
     justify-content: center;
     gap: 6px;
     padding: 26px 16px;
-    border: 1px dashed #c7ccd4;
+    border: 1px dashed var(--bd-c7ccd4);
     border-radius: 6px;
-    background: #fafbfc;
-    color: #6b7280;
+    background: var(--bg-fafbfc);
+    color: var(--fg-6b7280);
     cursor: pointer;
     transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .import-dropzone:hover {
-    border-color: #993c1d;
-    background: #faece7;
+    border-color: var(--bd-993c1d);
+    background: var(--bg-faece7);
 }
 
 .import-dropzone svg {
     width: 26px;
     height: 26px;
-    fill: #993c1d;
+    fill: var(--fg-993c1d);
 }
 
 .import-dropzone-title {
     font-size: 14px;
     font-weight: 600;
-    color: #1f242e;
+    color: var(--fg-1f242e);
 }
 
 .import-dropzone-hint {
     font-size: 12px;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
 }
 
 /* arquivo selecionado */
@@ -47,15 +47,15 @@
     align-items: center;
     gap: 10px;
     padding: 12px 14px;
-    border: 1px solid #d9dde3;
+    border: 1px solid var(--bd-d9dde3);
     border-radius: 6px;
-    background: #fff;
+    background: var(--bg-ffffff);
 }
 
 .import-file-icon {
     width: 22px;
     height: 22px;
-    fill: #993c1d;
+    fill: var(--fg-993c1d);
     flex-shrink: 0;
 }
 
@@ -64,7 +64,7 @@
     min-width: 0;
     font-size: 13px;
     font-weight: 500;
-    color: #1f242e;
+    color: var(--fg-1f242e);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -73,7 +73,7 @@
 .import-file-remove {
     border: 0;
     background: transparent;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
     width: 26px;
     height: 26px;
     display: inline-flex;
@@ -84,7 +84,7 @@
 }
 
 .import-file-remove:hover {
-    color: #c53030;
+    color: var(--fg-c53030);
 }
 
 .import-file-remove svg {
@@ -100,9 +100,9 @@
     justify-content: space-between;
     gap: 12px;
     padding: 14px;
-    border: 1px solid #eceef0;
+    border: 1px solid var(--bd-eceef0);
     border-radius: 6px;
-    background: #f6f7f9;
+    background: var(--bg-f6f7f9);
 }
 
 .import-template-text {
@@ -114,12 +114,12 @@
 
 .import-template-text strong {
     font-size: 13px;
-    color: #1f242e;
+    color: var(--fg-1f242e);
 }
 
 .import-template-text span {
     font-size: 12px;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
 }
 
 .import-template-btn {
@@ -127,9 +127,9 @@
     align-items: center;
     gap: 6px;
     flex-shrink: 0;
-    border: 1px solid #993c1d;
-    background: #fff;
-    color: #993c1d;
+    border: 1px solid var(--bd-993c1d);
+    background: var(--bg-ffffff);
+    color: var(--fg-993c1d);
     border-radius: 4px;
     height: 36px;
     padding: 0 14px;
@@ -139,7 +139,7 @@
 }
 
 .import-template-btn:hover {
-    background: #faece7;
+    background: var(--bg-faece7);
 }
 
 .import-template-btn svg {

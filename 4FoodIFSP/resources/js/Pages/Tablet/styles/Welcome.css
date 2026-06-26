@@ -2,8 +2,8 @@
     min-height: 100vh;
     min-height: 100dvh;
     background:
-        radial-gradient(1200px 600px at 50% -10%, #f7ece7 0%, transparent 60%),
-        #faf6f3;
+        radial-gradient(1200px 600px at 50% -10%, var(--bg-f7ece7) 0%, transparent 60%),
+        var(--bg-faf6f3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,8 +12,8 @@
 
 .welcome-card {
     position: relative;
-    background: #ffffff;
-    border: 1px solid #ece6e2;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-ece6e2);
     border-radius: 24px;
     padding: 56px 48px;
     text-align: center;
@@ -30,7 +30,7 @@
     left: 0;
     right: 0;
     height: 6px;
-    background: linear-gradient(90deg, #e67e22, #993c1d);
+    background: linear-gradient(90deg, var(--bg-e67e22), var(--bg-993c1d));
 }
 
 .welcome-card::before {
@@ -40,21 +40,21 @@
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #993c1d;
+    color: var(--fg-993c1d);
     margin-bottom: 18px;
 }
 
 .welcome-table-number {
     font-size: 44px;
     font-weight: 800;
-    color: #1a1a1a;
+    color: var(--fg-1a1a1a);
     margin: 0 0 8px;
     letter-spacing: -1px;
 }
 
 .welcome-subtitle {
     font-size: 17px;
-    color: #6b7280;
+    color: var(--fg-6b7280);
     margin: 0 0 40px;
     line-height: 1.5;
 }
@@ -65,8 +65,8 @@
     justify-content: center;
     width: 100%;
     min-height: 60px;
-    background: #993c1d;
-    color: #ffffff;
+    background: var(--bg-993c1d);
+    color: var(--fg-ffffff);
     font-size: 17px;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -78,7 +78,7 @@
 }
 
 .welcome-btn:hover:not(:disabled) {
-    background: #7f3218;
+    background: var(--bg-7f3218);
 }
 
 .welcome-btn:active:not(:disabled) {
@@ -93,5 +93,5 @@
 .welcome-error {
     margin-top: 16px;
     font-size: 14px;
-    color: #c53030;
+    color: var(--fg-c53030);
 }

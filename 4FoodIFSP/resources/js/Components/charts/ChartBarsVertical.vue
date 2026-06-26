@@ -147,18 +147,18 @@ svg {
 }
 
 .v-grid line {
-    stroke: #eef0f2;
+    stroke: var(--fg-eef0f2);
     stroke-width: 1;
 }
 
 .axis-text {
-    fill: #9aa0ab;
+    fill: var(--fg-9aa0ab);
     font-size: 9px;
     font-family: 'JetBrains Mono', 'DM Mono', monospace;
 }
 
 .peak-label {
-    fill: #1d9e75;
+    fill: var(--fg-1d9e75);
     font-size: 10px;
     font-weight: 700;
     font-family: 'JetBrains Mono', 'DM Mono', monospace;
@@ -167,7 +167,7 @@ svg {
 .chart-empty {
     padding: 24px 12px;
     text-align: center;
-    color: #9aa0ab;
+    color: var(--fg-9aa0ab);
     font-size: 13px;
 }
 </style>

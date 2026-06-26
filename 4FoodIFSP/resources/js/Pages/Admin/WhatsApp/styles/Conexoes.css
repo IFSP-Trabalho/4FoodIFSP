@@ -1,7 +1,7 @@
 .shell {
     min-height: 100vh;
     display: flex;
-    background: #f6f7f9;
+    background: var(--bg-f6f7f9);
 }
 
 .main {
@@ -11,8 +11,8 @@
 
 .topbar {
     height: 62px;
-    border-bottom: 1px solid #eceef0;
-    background: #fff;
+    border-bottom: 1px solid var(--bd-eceef0);
+    background: var(--bg-ffffff);
     padding: 0 20px;
     display: flex;
     align-items: center;
@@ -22,7 +22,7 @@
 
 .topbar-text h1 {
     margin: 0;
-    color: #111827;
+    color: var(--fg-111827);
     font-size: 18px;
     font-weight: 700;
     line-height: 1.2;
@@ -30,7 +30,7 @@
 
 .topbar-text p {
     margin: 2px 0 0;
-    color: #6b7280;
+    color: var(--fg-6b7280);
     font-size: 12px;
 }
 
@@ -39,8 +39,8 @@
     border-radius: 8px;
     height: 36px;
     padding: 0 16px;
-    background: #993c1d;
-    color: #fff;
+    background: var(--bg-993c1d);
+    color: var(--fg-ffffff);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -49,7 +49,7 @@
 }
 
 .btn-add:hover {
-    background: #7f3218;
+    background: var(--bg-7f3218);
 }
 
 .content {
@@ -65,15 +65,15 @@
 }
 
 .feedback.success {
-    border: 1px solid #b8dfc4;
-    background: #ecf8f0;
-    color: #256f3d;
+    border: 1px solid var(--bd-b8dfc4);
+    background: var(--bg-ecf8f0);
+    color: var(--fg-256f3d);
 }
 
 .feedback.info {
-    border: 1px solid #bfdbfe;
-    background: #eff6ff;
-    color: #1d4ed8;
+    border: 1px solid var(--bd-bfdbfe);
+    background: var(--bg-eff6ff);
+    color: var(--fg-1d4ed8);
 }
 
 .connections-grid {
@@ -96,7 +96,7 @@
 }
 
 .confirm-delete-dialog {
-    background: #fff;
+    background: var(--bg-ffffff);
     border-radius: 16px;
     box-shadow: 0 8px 40px rgb(14 20 31 / 22%);
     padding: 28px 24px 22px;
@@ -111,7 +111,7 @@
 .confirm-delete-icon {
     width: 48px;
     height: 48px;
-    background: #fff2f2;
+    background: var(--bg-fff2f2);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -122,25 +122,25 @@
 .confirm-delete-icon svg {
     width: 22px;
     height: 22px;
-    fill: #c53030;
+    fill: var(--fg-c53030);
 }
 
 .confirm-delete-dialog h3 {
     margin: 0;
     font-size: 17px;
     font-weight: 700;
-    color: #1b1f29;
+    color: var(--fg-1b1f29);
 }
 
 .confirm-delete-dialog p {
     margin: 0;
     font-size: 13px;
-    color: #5f6572;
+    color: var(--fg-5f6572);
     line-height: 1.55;
 }
 
 .confirm-delete-dialog p strong {
-    color: #1b1f29;
+    color: var(--fg-1b1f29);
     font-weight: 600;
 }
 
@@ -164,14 +164,14 @@
 }
 
 .confirm-delete-actions button.secondary {
-    border: 1px solid #c6ccd5;
-    background: #fff;
-    color: #3d4654;
+    border: 1px solid var(--bd-c6ccd5);
+    background: var(--bg-ffffff);
+    color: var(--fg-3d4654);
 }
 
 .confirm-delete-actions button.danger {
-    background: #c53030;
-    color: #fff;
+    background: var(--bg-c53030);
+    color: var(--fg-ffffff);
 }
 
 .confirm-delete-actions button:disabled {

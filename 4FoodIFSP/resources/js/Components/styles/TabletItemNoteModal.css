@@ -10,7 +10,7 @@
 }
 
 .note-modal {
-    background: #ffffff;
+    background: var(--bg-ffffff);
     border-radius: 16px;
     padding: 28px;
     width: 100%;
@@ -23,34 +23,34 @@
 .note-title {
     font-size: 18px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--fg-1a1a1a);
     margin: 0;
 }
 
 .note-textarea {
     resize: none;
-    border: 1px solid #eceef0;
+    border: 1px solid var(--bd-eceef0);
     border-radius: 10px;
     padding: 12px;
     font-size: 14px;
-    color: #1a1a1a;
+    color: var(--fg-1a1a1a);
     font-family: inherit;
     outline: none;
     line-height: 1.5;
-    background: #f9fafb;
+    background: var(--bg-f9fafb);
     width: 100%;
     box-sizing: border-box;
 }
 
 .note-textarea:focus {
-    border-color: var(--brand, #993c1d);
+    border-color: var(--brand, var(--bd-993c1d));
     box-shadow: 0 0 0 3px rgba(153, 60, 29, 0.12);
-    background: #ffffff;
+    background: var(--bg-ffffff);
 }
 
 .note-counter {
     font-size: 12px;
-    color: #9ca3af;
+    color: var(--fg-9ca3af);
     text-align: right;
     margin-top: -8px;
 }
@@ -63,12 +63,12 @@
 .note-cancel {
     flex: 1;
     padding: 12px;
-    background: #f5f6f8;
-    border: 1px solid #eceef0;
+    background: var(--bg-f5f6f8);
+    border: 1px solid var(--bd-eceef0);
     border-radius: 10px;
     font-size: 15px;
     font-weight: 500;
-    color: #1a1a1a;
+    color: var(--fg-1a1a1a);
     cursor: pointer;
     min-height: 44px;
 }
@@ -76,17 +76,17 @@
 .note-save {
     flex: 2;
     padding: 12px;
-    background: var(--brand, #993c1d);
+    background: var(--brand, var(--bg-993c1d));
     border: none;
     border-radius: 10px;
     font-size: 15px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--fg-ffffff);
     cursor: pointer;
     min-height: 44px;
     transition: background 0.15s ease;
 }
 
 .note-save:hover {
-    background: var(--brand-strong, #7f3218);
+    background: var(--brand-strong, var(--bg-7f3218));
 }

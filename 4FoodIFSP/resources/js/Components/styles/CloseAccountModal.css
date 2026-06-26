@@ -1,7 +1,7 @@
 /* ── totals block ─────────────────────────────────── */
 .cam-totals {
-    background: #fafbfc;
-    border: 1px solid #eceef0;
+    background: var(--bg-fafbfc);
+    border: 1px solid var(--bd-eceef0);
     border-radius: 8px;
     padding: 14px 16px;
     display: flex;
@@ -18,41 +18,41 @@
 
 .cam-total-label {
     font-size: 13px;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
 }
 
 .cam-total-value {
     font-size: 13px;
-    color: #17181e;
+    color: var(--fg-17181e);
     font-weight: 500;
 }
 
-.cam-total-row--discount .cam-total-value { color: #1d9e75; }
-.cam-total-row--tip      .cam-total-value { color: #ef9f27; }
+.cam-total-row--discount .cam-total-value { color: var(--fg-1d9e75); }
+.cam-total-row--tip      .cam-total-value { color: var(--fg-ef9f27); }
 
 .cam-total-row--final {
     padding-top: 8px;
-    border-top: 1px solid #e2e5ea;
+    border-top: 1px solid var(--bd-e2e5ea);
     margin-top: 2px;
 }
 
 .cam-total-row--final .cam-total-label {
     font-size: 14px;
     font-weight: 600;
-    color: #17181e;
+    color: var(--fg-17181e);
 }
 
 .cam-total-row--final .cam-total-value {
     font-size: 20px;
     font-weight: 700;
-    color: #993c1d;
+    color: var(--fg-993c1d);
     letter-spacing: -0.3px;
 }
 
 /* ── pedidos cancelados na mesa ──────────────────── */
 .cam-cancelled {
-    background: #fbf2ee;
-    border: 1px solid #e7c3b8;
+    background: var(--bg-fbf2ee);
+    border: 1px solid var(--bd-e7c3b8);
     border-radius: 8px;
     padding: 12px 14px;
     display: flex;
@@ -69,14 +69,14 @@
 .cam-cancelled-title {
     font-size: 12px;
     font-weight: 600;
-    color: #993c1d;
+    color: var(--fg-993c1d);
     letter-spacing: 0.03em;
 }
 
 .cam-cancelled-badge {
     border-radius: 999px;
-    background: #993c1d;
-    color: #fff;
+    background: var(--bg-993c1d);
+    color: var(--fg-ffffff);
     font-size: 11px;
     font-weight: 600;
     padding: 1px 8px;
@@ -92,8 +92,8 @@
 }
 
 .cam-cancelled-item {
-    background: #fff;
-    border: 1px solid #efd9d1;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-efd9d1);
     border-radius: 6px;
     padding: 8px 10px;
 }
@@ -109,25 +109,25 @@
     font-family: 'JetBrains Mono', 'DM Mono', monospace;
     font-size: 12px;
     font-weight: 700;
-    color: #993c1d;
+    color: var(--fg-993c1d);
 }
 
 .cam-cancelled-time {
     font-size: 11px;
-    color: #9aa1ad;
+    color: var(--fg-9aa1ad);
 }
 
 .cam-cancelled-dishes {
     margin: 0;
     font-size: 13px;
-    color: #5c6370;
+    color: var(--fg-5c6370);
     text-decoration: line-through;
 }
 
 .cam-cancelled-reason {
     margin: 4px 0 0;
     font-size: 12px;
-    color: #8a4a36;
+    color: var(--fg-8a4a36);
 }
 
 /* ── fieldsets ───────────────────────────────────── */
@@ -143,16 +143,16 @@
 .cam-legend {
     font-size: 12px;
     font-weight: 600;
-    color: #5c6370;
+    color: var(--fg-5c6370);
     letter-spacing: 0.03em;
     margin-bottom: 2px;
 }
 
-.cam-required { color: #c53030; }
+.cam-required { color: var(--fg-c53030); }
 
 .cam-hint {
     font-weight: 400;
-    color: #9aa1ad;
+    color: var(--fg-9aa1ad);
 }
 
 /* ── payment method chips ────────────────────────── */
@@ -165,10 +165,10 @@
 .cam-method {
     height: 36px;
     padding: 0 16px;
-    border: 1px solid #d9dde3;
+    border: 1px solid var(--bd-d9dde3);
     border-radius: 999px;
-    background: #fff;
-    color: #5c6370;
+    background: var(--bg-ffffff);
+    color: var(--fg-5c6370);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -176,14 +176,14 @@
 }
 
 .cam-method:hover {
-    border-color: #993c1d;
-    color: #993c1d;
+    border-color: var(--bd-993c1d);
+    color: var(--fg-993c1d);
 }
 
 .cam-method--active {
-    background: #993c1d;
-    border-color: #993c1d;
-    color: #fff;
+    background: var(--bg-993c1d);
+    border-color: var(--bd-993c1d);
+    color: var(--fg-ffffff);
 }
 
 /* ── discount row ────────────────────────────────── */
@@ -195,7 +195,7 @@
 
 .cam-type-toggle {
     display: flex;
-    border: 1px solid #d9dde3;
+    border: 1px solid var(--bd-d9dde3);
     border-radius: 4px;
     overflow: hidden;
     flex-shrink: 0;
@@ -204,8 +204,8 @@
 .cam-toggle-btn {
     width: 40px;
     border: 0;
-    background: #fff;
-    color: #5c6370;
+    background: var(--bg-ffffff);
+    color: var(--fg-5c6370);
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -213,12 +213,12 @@
 }
 
 .cam-toggle-btn + .cam-toggle-btn {
-    border-left: 1px solid #d9dde3;
+    border-left: 1px solid var(--bd-d9dde3);
 }
 
 .cam-toggle-btn--active {
-    background: #17181e;
-    color: #fff;
+    background: var(--bg-17181e);
+    color: var(--fg-ffffff);
 }
 
 .cam-input-wrap {

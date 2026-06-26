@@ -4,6 +4,7 @@ import {
     deleteSession,
     disconnectSession,
     getStatus,
+    sendLocation,
     sendMessage,
     startSession,
 } from '../sessionManager.js';
@@ -59,6 +60,21 @@ router.post('/:id/send', async (req, res) => {
     }
     try {
         await sendMessage(id, to, body);
+        res.json({ ok: true });
+    } catch (err) {
+        res.status(422).json({ message: err.message });
+    }
+});
+
+// POST /sessions/:id/send-location — envia uma mensagem de localização (pin)
+router.post('/:id/send-location', async (req, res) => {
+    const { id } = req.params;
+    const { to, latitude, longitude } = req.body;
+    if (!to || latitude === undefined || longitude === undefined) {
+        return res.status(400).json({ message: 'to, latitude e longitude são obrigatórios.' });
+    }
+    try {
+        await sendLocation(id, to, latitude, longitude);
         res.json({ ok: true });
     } catch (err) {
         res.status(422).json({ message: err.message });

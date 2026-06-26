@@ -4,13 +4,13 @@
     gap: 10px;
     align-items: center;
     padding: 12px;
-    border-bottom: 1px solid #eceef0;
+    border-bottom: 1px solid var(--bd-eceef0);
 }
 
 .cell {
     min-width: 0;
     font-size: 13px;
-    color: #1f242e;
+    color: var(--fg-1f242e);
 }
 
 .name-cell {
@@ -33,7 +33,7 @@
 
 .color-hex {
     font-size: 13px;
-    color: #5f6572;
+    color: var(--fg-5f6572);
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -46,8 +46,8 @@
     width: 28px;
     height: 28px;
     border-radius: 8px;
-    border: 1px solid #eceef0;
-    background: #fff;
+    border: 1px solid var(--bd-eceef0);
+    background: var(--bg-ffffff);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -61,7 +61,7 @@
 }
 
 .icon-btn.edit {
-    color: #1e6ad6;
+    color: var(--fg-1e6ad6);
 }
 
 .icon-btn.edit.disabled {

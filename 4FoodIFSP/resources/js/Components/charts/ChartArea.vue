@@ -230,19 +230,19 @@ svg {
 }
 
 .grid line {
-    stroke: #eef0f2;
+    stroke: var(--fg-eef0f2);
     stroke-width: 1;
 }
 
 .grid text,
 .x-label {
-    fill: #9aa0ab;
+    fill: var(--fg-9aa0ab);
     font-size: 10px;
     font-family: 'JetBrains Mono', 'DM Mono', monospace;
 }
 
 .guide {
-    stroke: #c9ccd2;
+    stroke: var(--fg-c9ccd2);
     stroke-width: 1;
     stroke-dasharray: 4 4;
 }
@@ -252,8 +252,8 @@ svg {
     z-index: 5;
     pointer-events: none;
     transform: translate(-50%, calc(-100% - 14px));
-    background: #17181e;
-    color: #fff;
+    background: var(--bg-17181e);
+    color: var(--fg-ffffff);
     border-radius: 11px;
     padding: 8px 11px;
     box-shadow: 0 10px 26px rgba(15, 16, 22, 0.22);
@@ -270,7 +270,7 @@ svg {
     transform: translateX(-50%) rotate(45deg);
     width: 9px;
     height: 9px;
-    background: #17181e;
+    background: var(--bg-17181e);
     border-radius: 2px;
 }
 
@@ -278,7 +278,7 @@ svg {
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #b9bcc4;
+    color: var(--fg-b9bcc4);
 }
 
 .chart-tip strong {
@@ -288,7 +288,7 @@ svg {
 
 .chart-tip .tip-hint {
     font-size: 11px;
-    color: #c9ccd2;
+    color: var(--fg-c9ccd2);
 }
 
 .tip-enter-active,
@@ -304,7 +304,7 @@ svg {
 .chart-empty {
     padding: 30px 12px;
     text-align: center;
-    color: #9aa0ab;
+    color: var(--fg-9aa0ab);
     font-size: 13px;
 }
 </style>

@@ -94,12 +94,8 @@ async function onSelect(id) {
     if (!localClearedIds.value.includes(id)) {
         localClearedIds.value = [...localClearedIds.value, id];
     }
-    const ticket = allTickets.value.find((t) => t.id === id);
-    if (ticket && (ticket.status === 'in_progress' || ticket.status === 'closed')) {
-        await fetchMessages(id);
-    } else {
-        chatMessages.value = [];
-    }
+    // Carrega o histórico completo em qualquer aba (inclusive triagem).
+    await fetchMessages(id);
 }
 
 async function fetchMessages(ticketId) {
@@ -124,7 +120,7 @@ async function handleAccept(ticketId) {
         router.reload({ only: ['tickets'], preserveScroll: true });
         fetchMessages(ticketId);
     } catch (e) {
-        acceptError.value = e.response?.data?.message ?? 'Erro ao atender ticket.';
+        window.alert(e.response?.data?.message ?? 'Erro ao atender ticket.');
     } finally {
         isAccepting.value = false;
     }
@@ -296,7 +292,7 @@ watch(selectedTicket, (ticket) => {
         lastSelectedUpdated = null;
         return;
     }
-    const isChat = ticket.status === 'in_progress' || ticket.status === 'closed';
+    const isChat = ['in_progress', 'closed', 'triage'].includes(ticket.status);
     if (
         isChat &&
         lastSelectedUpdated !== null &&
@@ -469,7 +465,7 @@ onUnmounted(() => {
         </div>
 
         <!-- painel direito: detalhe -->
-        <div class="detail-panel" :class="{ 'detail-panel--chat': selectedTicket && selectedTicket.status !== 'triage' }">
+        <div class="detail-panel" :class="{ 'detail-panel--chat': !!selectedTicket }">
 
             <!-- vazio -->
             <div v-if="!selectedId || !selectedTicket" class="detail-empty">
@@ -479,41 +475,14 @@ onUnmounted(() => {
                 <p>Selecione um ticket para iniciar o atendimento</p>
             </div>
 
-            <!-- triagem selecionada -->
-            <div v-else-if="selectedTicket.status === 'triage'" class="triage-detail">
-                <div class="triage-detail-head">
-                    <span class="triage-avatar">{{ initials(selectedTicket.customer_name) }}</span>
-                    <div class="triage-contact-info">
-                        <strong>{{ displayName(selectedTicket) }}</strong>
-                        <span>{{ selectedTicket.phone_number }}</span>
-                    </div>
-                </div>
-
-                <div v-if="selectedTicket.last_message" class="triage-preview">
-                    <p class="triage-preview-label">Última mensagem</p>
-                    <p class="triage-preview-text">{{ selectedTicket.last_message }}</p>
-                </div>
-
-                <p v-if="acceptError" class="triage-error">{{ acceptError }}</p>
-
-                <div class="triage-actions">
-                    <button
-                        type="button"
-                        class="btn-atender-detail"
-                        :disabled="isAccepting"
-                        @click="handleAccept(selectedTicket.id)"
-                    >
-                        {{ isAccepting ? 'Atendendo…' : 'Atender' }}
-                    </button>
-                </div>
-            </div>
-
-            <!-- chat (in_progress ou closed) -->
+            <!-- chat completo (na triagem, o composer vira o botão Atender) -->
             <WaChatPanel
                 v-else
                 :ticket="selectedTicket"
                 :messages="chatMessages"
                 :loading="chatLoading"
+                :accepting="isAccepting"
+                @accept="handleAccept(selectedTicket.id)"
                 @message-sent="(msg) => chatMessages.push(msg)"
                 @close="handleClose(selectedTicket.id)"
                 @reopen="handleReopen(selectedTicket.id)"

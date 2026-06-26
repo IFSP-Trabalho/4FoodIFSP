@@ -4,17 +4,17 @@
     gap: 10px;
     align-items: center;
     padding: 10px 12px;
-    border-top: 1px solid #eef0f2;
+    border-top: 1px solid var(--bd-eef0f2);
     font-size: 12px;
 }
 
 .mesa {
-    color: #1a1b21;
+    color: var(--fg-1a1b21);
     font-weight: 600;
 }
 
 .itens {
-    color: #5e6270;
+    color: var(--fg-5e6270);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -29,24 +29,24 @@
 }
 
 .status.badge-amber {
-    background: #faeeda;
-    color: #633806;
+    background: var(--bg-faeeda);
+    color: var(--fg-633806);
 }
 
 .status.badge-green {
-    background: #e1f5ee;
-    color: #085041;
+    background: var(--bg-e1f5ee);
+    color: var(--fg-085041);
 }
 
 .status.badge-gray {
-    background: #eceef2;
-    color: #4c5360;
+    background: var(--bg-eceef2);
+    color: var(--fg-4c5360);
 }
 
 .total {
     justify-self: end;
     font-family: 'JetBrains Mono', 'DM Mono', monospace;
-    color: #121318;
+    color: var(--fg-121318);
     font-weight: 500;
 }
 

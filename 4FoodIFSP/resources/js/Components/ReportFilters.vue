@@ -67,8 +67,8 @@ function setRange(days, key) {
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 12px;
-    background: #fff;
-    border: 1px solid #eef0f2;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-eef0f2);
     border-radius: 16px;
     padding: 12px 14px;
     box-shadow: 0 1px 2px rgba(16, 17, 22, 0.04);
@@ -84,7 +84,7 @@ function setRange(days, key) {
 .cal-icon {
     width: 18px;
     height: 18px;
-    fill: #993c1d;
+    fill: var(--fg-993c1d);
     margin-bottom: 8px;
 }
 
@@ -99,33 +99,33 @@ function setRange(days, key) {
     text-transform: uppercase;
     letter-spacing: 0.06em;
     font-size: 10px;
-    color: #7f8391;
+    color: var(--fg-7f8391);
 }
 
 .report-filters-dates .dash {
-    color: #c4c8cf;
+    color: var(--fg-c4c8cf);
     margin-bottom: 8px;
 }
 
 .report-filters-dates input {
-    border: 1px solid #e1e3e7;
+    border: 1px solid var(--bd-e1e3e7);
     border-radius: 10px;
     padding: 8px 10px;
     font-size: 13px;
-    color: #17181e;
-    background: #fff;
+    color: var(--fg-17181e);
+    background: var(--bg-ffffff);
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .report-filters-dates input:focus {
     outline: none;
-    border-color: #993c1d;
+    border-color: var(--bd-993c1d);
     box-shadow: 0 0 0 3px rgba(153, 60, 29, 0.12);
 }
 
 .report-filters-presets {
     display: inline-flex;
-    background: #f4f5f7;
+    background: var(--bg-f4f5f7);
     border-radius: 999px;
     padding: 3px;
     gap: 2px;
@@ -138,18 +138,18 @@ function setRange(days, key) {
     padding: 7px 14px;
     font-size: 12px;
     font-weight: 600;
-    color: #6b7079;
+    color: var(--fg-6b7079);
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .report-filters-presets button:hover {
-    color: #993c1d;
+    color: var(--fg-993c1d);
 }
 
 .report-filters-presets button.on {
-    background: #fff;
-    color: #993c1d;
+    background: var(--bg-ffffff);
+    color: var(--fg-993c1d);
     box-shadow: 0 1px 3px rgba(16, 17, 22, 0.12);
 }
 </style>

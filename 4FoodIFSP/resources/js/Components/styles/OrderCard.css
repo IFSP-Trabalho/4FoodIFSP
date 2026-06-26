@@ -1,23 +1,23 @@
 .order-card {
-    background: #fff;
+    background: var(--bg-ffffff);
     border-radius: 8px;
     border-left: 3px solid transparent;
-    border: 1px solid #eceef0;
+    border: 1px solid var(--bd-eceef0);
     padding: 14px;
     margin-bottom: 12px;
 }
 
 .card--pending {
-    border-left-color: #d85a30;
+    border-left-color: var(--bd-d85a30);
 }
 
 .card--in-progress {
-    border-left-color: #ef9f27;
+    border-left-color: var(--bd-ef9f27);
 }
 
 .card--ready {
-    border-left-color: #1d9e75;
-    background: #e1f5ee;
+    border-left-color: var(--bd-1d9e75);
+    background: var(--bg-e1f5ee);
 }
 
 .card-head {
@@ -31,23 +31,72 @@
     font-size: 12px;
     font-weight: 700;
     font-family: 'JetBrains Mono', 'DM Mono', monospace;
-    color: #17181e;
+    color: var(--fg-17181e);
 }
 
 .badge-feito {
-    background: #1d9e75;
-    color: #fff;
+    background: var(--bg-1d9e75);
+    color: var(--fg-ffffff);
     font-size: 10px;
     font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
 }
 
+.card-head-badges {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Delivery — fortemente separado dos pedidos de mesa. */
+.order-card--delivery {
+    border: 1px solid var(--bd-993c1d);
+    border-left-width: 4px;
+    border-left-color: var(--bg-993c1d);
+    background: var(--bg-fff8f4);
+}
+
+.order-card--delivery.card--ready {
+    background: var(--bg-e1f5ee);
+}
+
+.badge-delivery {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-993c1d);
+    color: var(--fg-ffffff);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 3px 7px;
+    border-radius: 4px;
+}
+
+.badge-delivery svg {
+    width: 13px;
+    height: 13px;
+    fill: currentColor;
+}
+
 .mesa-label {
     margin: 0 0 10px;
     font-size: 13px;
     font-weight: 600;
-    color: #17181e;
+    color: var(--fg-17181e);
+}
+
+.mesa-label--delivery {
+    margin-bottom: 2px;
+    color: var(--fg-993c1d);
+    font-weight: 700;
+}
+
+.delivery-phone {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--fg-7b7f89);
 }
 
 .items-list {
@@ -60,7 +109,7 @@
 
 .item-row {
     font-size: 13px;
-    color: #1f242e;
+    color: var(--fg-1f242e);
 }
 
 .item-check {
@@ -74,7 +123,7 @@
     width: 15px;
     height: 15px;
     margin: 0;
-    accent-color: #1d9e75;
+    accent-color: var(--fg-1d9e75);
     cursor: pointer;
     flex-shrink: 0;
 }
@@ -87,7 +136,7 @@
 .note {
     margin: 8px 0 0;
     font-size: 12px;
-    color: #6d727f;
+    color: var(--fg-6d727f);
 }
 
 .item--done {
@@ -106,18 +155,18 @@
 }
 
 .action-btn--pending {
-    background: #1a1a1a;
-    color: #fff;
+    background: var(--bg-1a1a1a);
+    color: var(--fg-ffffff);
 }
 
 .action-btn--in_progress {
-    background: #1d9e75;
-    color: #fff;
+    background: var(--bg-1d9e75);
+    color: var(--fg-ffffff);
 }
 
 .action-btn--ready {
-    background: #e0e0e0;
-    color: #aaa;
+    background: var(--bg-e0e0e0);
+    color: var(--fg-aaaaaa);
     cursor: default;
 }
 
@@ -129,16 +178,16 @@
 .checklist-hint {
     margin: 10px 0 0;
     font-size: 11px;
-    color: #b45309;
+    color: var(--fg-b45309);
 }
 
 .cancel-btn {
     width: 100%;
     padding: 8px;
     border-radius: 6px;
-    border: 1px solid #e7c3b8;
-    background: #fff;
-    color: #993c1d;
+    border: 1px solid var(--bd-e7c3b8);
+    background: var(--bg-ffffff);
+    color: var(--fg-993c1d);
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
@@ -146,6 +195,6 @@
 }
 
 .cancel-btn:hover {
-    background: #faece7;
-    border-color: #993c1d;
+    background: var(--bg-faece7);
+    border-color: var(--bd-993c1d);
 }

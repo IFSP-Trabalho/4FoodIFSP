@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\WhatsApp;
 
+use App\Http\Controllers\Concerns\ResolvesTabletMenu;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,6 +14,8 @@ use Inertia\Response;
 
 class InboxController extends Controller
 {
+    use ResolvesTabletMenu;
+
     public function index(): Response
     {
         return Inertia::render('WhatsApp/Inbox', [
@@ -54,11 +57,14 @@ class InboxController extends Controller
         $messages = DB::table('wa_messages')
             ->where('wa_ticket_id', $ticket)
             ->orderByRaw('COALESCE(sent_at, created_at) ASC')
-            ->get(['id', 'direction', 'body', 'sent_at'])
+            ->get(['id', 'direction', 'type', 'body', 'latitude', 'longitude', 'sent_at'])
             ->map(fn($m) => [
                 'id'        => $m->id,
                 'direction' => $m->direction,
+                'type'      => $m->type ?? 'text',
                 'body'      => $m->body,
+                'latitude'  => $m->latitude !== null ? (float) $m->latitude : null,
+                'longitude' => $m->longitude !== null ? (float) $m->longitude : null,
                 'sent_at'   => $m->sent_at ? Carbon::parse($m->sent_at)->toIso8601String() : null,
             ])
             ->all();
@@ -132,10 +138,155 @@ class InboxController extends Controller
             'message' => [
                 'id'        => $messageId,
                 'direction' => 'outbound',
+                'type'      => 'text',
                 'body'      => $request->body,
                 'sent_at'   => $now->toIso8601String(),
             ],
         ]);
+    }
+
+    public function sendLocation(string $ticket, Request $request)
+    {
+        $request->validate([
+            'latitude'  => ['required', 'numeric', 'between:-90,90'],
+            'longitude' => ['required', 'numeric', 'between:-180,180'],
+        ]);
+
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+        abort_if($record->status !== 'in_progress', 422, 'Ticket não está em atendimento.');
+
+        $connection = $record->wa_connection_id
+            ? DB::table('wa_connections')->where('id', (string) $record->wa_connection_id)->first()
+            : null;
+
+        if (! $connection || $connection->connection_status !== 'connected' || ! $connection->baileys_session_id) {
+            $connection = DB::table('wa_connections')
+                ->where('connection_status', 'connected')
+                ->whereNotNull('baileys_session_id')
+                ->orderByDesc('last_status_at')
+                ->first();
+        }
+
+        abort_unless($connection, 422, 'Nenhuma conexão WhatsApp conectada disponível para envio.');
+        abort_unless($connection->baileys_session_id, 422, 'Sessão Baileys não configurada na conexão.');
+
+        if ((string) $record->wa_connection_id !== (string) $connection->id) {
+            DB::table('wa_tickets')->where('id', $ticket)->update(['wa_connection_id' => $connection->id]);
+        }
+
+        $latitude  = (float) $request->latitude;
+        $longitude = (float) $request->longitude;
+
+        $baileysUrl = rtrim(config('services.baileys.url', 'http://127.0.0.1:3001'), '/');
+        $response = Http::post("{$baileysUrl}/sessions/{$connection->baileys_session_id}/send-location", [
+            'to'        => $record->phone_number,
+            'latitude'  => $latitude,
+            'longitude' => $longitude,
+        ]);
+
+        abort_unless($response->successful(), 502, $response->json('message') ?? 'Falha ao enviar localização.');
+
+        $messageId = (string) Str::uuid();
+        $now = now();
+
+        DB::table('wa_messages')->insert([
+            'id'            => $messageId,
+            'wa_ticket_id'  => $ticket,
+            'direction'     => 'outbound',
+            'type'          => 'location',
+            'body'          => '📍 Localização',
+            'latitude'      => $latitude,
+            'longitude'     => $longitude,
+            'wa_message_id' => null,
+            'sent_at'       => $now,
+            'created_at'    => $now,
+            'updated_at'    => $now,
+        ]);
+
+        DB::table('wa_tickets')->where('id', $ticket)->update(['updated_at' => $now]);
+
+        return response()->json([
+            'message' => [
+                'id'        => $messageId,
+                'direction' => 'outbound',
+                'type'      => 'location',
+                'body'      => '📍 Localização',
+                'latitude'  => $latitude,
+                'longitude' => $longitude,
+                'sent_at'   => $now->toIso8601String(),
+            ],
+        ]);
+    }
+
+    public function menu()
+    {
+        return response()->json([
+            'categories' => $this->getTabletMenuCategories(),
+            'dishes'     => $this->getTabletMenuDishes(),
+        ]);
+    }
+
+    public function storeOrder(string $ticket, Request $request)
+    {
+        $validated = $request->validate([
+            'customer_name'    => ['required', 'string', 'max:255'],
+            'customer_phone'   => ['nullable', 'string', 'max:40'],
+            'items'            => ['required', 'array', 'min:1'],
+            'items.*.dish_id'  => ['required', 'uuid', 'exists:dishes,id'],
+            'items.*.quantity' => ['required', 'integer', 'min:1'],
+        ], [
+            'items.required' => 'Adicione ao menos um prato ao pedido.',
+            'items.min'      => 'Adicione ao menos um prato ao pedido.',
+        ]);
+
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+
+        $dishIds = array_column($validated['items'], 'dish_id');
+        $dishes  = DB::table('dishes')->whereIn('id', $dishIds)->get()->keyBy('id');
+
+        foreach ($validated['items'] as $item) {
+            $dish = $dishes->get($item['dish_id']);
+            abort_if(! $dish || ! $dish->active, 422, 'Prato indisponível no pedido.');
+        }
+
+        $orderId = DB::transaction(function () use ($validated, $record, $ticket, $dishes) {
+            $orderId = (string) Str::uuid();
+            $now = now();
+
+            DB::table('orders')->insert([
+                'id'             => $orderId,
+                'origin'         => 'delivery',
+                'status'         => 'pending',
+                'paid'           => false,
+                'wa_ticket_id'   => $ticket,
+                'customer_name'  => $validated['customer_name'],
+                'customer_phone' => $validated['customer_phone'] ?? $record->phone_number,
+                'created_at'     => $now,
+                'updated_at'     => $now,
+            ]);
+
+            foreach ($validated['items'] as $item) {
+                $dish = $dishes->get($item['dish_id']);
+                DB::table('order_items')->insert([
+                    'id'         => (string) Str::uuid(),
+                    'order_id'   => $orderId,
+                    'dish_id'    => $item['dish_id'],
+                    'quantity'   => $item['quantity'],
+                    'unit_price' => $dish->price,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            }
+
+            return $orderId;
+        });
+
+        return response()->json([
+            'order_id' => $orderId,
+            'message'  => 'Pedido registrado com sucesso.',
+        ], 201);
     }
 
     public function close(string $ticket, Request $request)

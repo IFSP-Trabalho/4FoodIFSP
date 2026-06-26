@@ -1,7 +1,7 @@
 .layout-switch {
     display: inline-flex;
     padding: 3px;
-    background: #eceef0;
+    background: var(--bg-eceef0);
     border-radius: 10px;
     gap: 2px;
 }
@@ -11,17 +11,17 @@
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
     text-decoration: none;
     transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
 
 .layout-switch-btn:hover {
-    color: #17181e;
+    color: var(--fg-17181e);
 }
 
 .layout-switch-btn--active {
-    background: #fff;
-    color: #17181e;
+    background: var(--bg-ffffff);
+    color: var(--fg-17181e);
     box-shadow: 0 1px 3px rgb(23 24 30 / 8%);
 }

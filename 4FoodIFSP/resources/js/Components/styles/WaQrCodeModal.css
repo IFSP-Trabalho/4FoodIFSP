@@ -16,7 +16,7 @@
     border: 0;
     background: transparent;
     cursor: pointer;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -27,7 +27,7 @@
 }
 
 .wa-qr-close:hover {
-    color: #1f242e;
+    color: var(--fg-1f242e);
 }
 
 .wa-qr-close svg {
@@ -51,13 +51,13 @@
 .wa-qr-image-wrap {
     width: 260px;
     height: 260px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--bd-e5e7eb);
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: #fafafa;
+    background: var(--bg-fafafa);
 }
 
 .wa-qr-image {
@@ -80,13 +80,13 @@
 .wa-qr-expired svg {
     width: 36px;
     height: 36px;
-    fill: #9ca3af;
+    fill: var(--fg-9ca3af);
 }
 
 .wa-qr-expired p {
     margin: 0;
     font-size: 13px;
-    color: #6b7280;
+    color: var(--fg-6b7280);
 }
 
 /* Steps */
@@ -102,7 +102,7 @@
 
 .wa-qr-steps li {
     font-size: 13px;
-    color: #374151;
+    color: var(--fg-374151);
     line-height: 1.5;
 }
 
@@ -111,12 +111,12 @@
 .wa-qr-countdown {
     margin: 0;
     font-size: 12px;
-    color: #6b7280;
+    color: var(--fg-6b7280);
     align-self: flex-start;
 }
 
 .wa-qr-countdown.expired {
-    color: #dc2626;
+    color: var(--fg-dc2626);
     font-weight: 600;
 }
 
@@ -133,14 +133,14 @@
 .wa-qr-loading p {
     margin: 0;
     font-size: 13px;
-    color: #6b7280;
+    color: var(--fg-6b7280);
 }
 
 .wa-qr-spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid #e5e7eb;
-    border-top-color: #993c1d;
+    border: 3px solid var(--bd-e5e7eb);
+    border-top-color: var(--bd-993c1d);
     border-radius: 50%;
     animation: wa-spin 0.7s linear infinite;
 }
@@ -159,21 +159,21 @@
 .wa-qr-error-state svg {
     width: 32px;
     height: 32px;
-    fill: #dc2626;
+    fill: var(--fg-dc2626);
 }
 
 .wa-qr-error-state p {
     margin: 0;
     font-size: 13px;
-    color: #dc2626;
+    color: var(--fg-dc2626);
 }
 
 .wa-qr-btn-retry {
-    border: 1px solid #993c1d;
+    border: 1px solid var(--bd-993c1d);
     border-radius: 6px;
     padding: 8px 16px;
     background: transparent;
-    color: #993c1d;
+    color: var(--fg-993c1d);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;

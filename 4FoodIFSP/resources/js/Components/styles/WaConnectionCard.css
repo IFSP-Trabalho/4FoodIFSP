@@ -1,6 +1,6 @@
 .wa-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-e5e7eb);
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     display: flex;
@@ -15,7 +15,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--bd-e5e7eb);
 }
 
 .wa-card-brand {
@@ -29,7 +29,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #25d366;
+    background: var(--bg-25d366);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,7 +51,7 @@
 .wa-card-name {
     font-weight: 600;
     font-size: 14px;
-    color: #111827;
+    color: var(--fg-111827);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -59,7 +59,7 @@
 
 .wa-card-phone {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--fg-6b7280);
 }
 
 /* Kebab menu */
@@ -79,14 +79,14 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #6b7280;
+    color: var(--fg-6b7280);
     padding: 0;
     transition: background 0.12s ease;
 }
 
 .wa-card-kebab:hover {
-    background: #f3f4f6;
-    color: #111827;
+    background: var(--bg-f3f4f6);
+    color: var(--fg-111827);
 }
 
 .wa-card-kebab svg {
@@ -100,8 +100,8 @@
     top: calc(100% + 4px);
     right: 0;
     z-index: 30;
-    background: #fff;
-    border: 1px solid #e5e7eb;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-e5e7eb);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     min-width: 130px;
@@ -121,11 +121,11 @@
 }
 
 .wa-card-kebab-item.danger {
-    color: #dc2626;
+    color: var(--fg-dc2626);
 }
 
 .wa-card-kebab-item:hover {
-    background: #f9fafb;
+    background: var(--bg-f9fafb);
 }
 
 /* Body */
@@ -152,18 +152,18 @@
 }
 
 .wa-card-status-icon.connected {
-    background: #dcfce7;
-    color: #16a34a;
+    background: var(--bg-dcfce7);
+    color: var(--fg-16a34a);
 }
 
 .wa-card-status-icon.disconnected {
-    background: #f3f4f6;
-    color: #9ca3af;
+    background: var(--bg-f3f4f6);
+    color: var(--fg-9ca3af);
 }
 
 .wa-card-status-icon.pairing {
-    background: #fef3c7;
-    color: #f59e0b;
+    background: var(--bg-fef3c7);
+    color: var(--fg-f59e0b);
 }
 
 .wa-card-status-icon svg {
@@ -182,41 +182,41 @@
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: #111827;
+    color: var(--fg-111827);
 }
 
 .wa-card-status-title.connected {
-    color: #16a34a;
+    color: var(--fg-16a34a);
 }
 
 .wa-card-status-title.disconnected {
-    color: #111827;
+    color: var(--fg-111827);
 }
 
 .wa-card-status-title.pairing {
-    color: #d97706;
+    color: var(--fg-d97706);
 }
 
 .wa-card-status-desc {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--fg-6b7280);
 }
 
 .wa-card-timestamp {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--fg-6b7280);
     margin-top: 2px;
 }
 
 .wa-card-timestamp-label {
-    color: #6b7280;
+    color: var(--fg-6b7280);
 }
 
 /* Footer */
 
 .wa-card-footer {
     padding: 12px 16px;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--bd-e5e7eb);
     display: flex;
     justify-content: center;
 }
@@ -233,28 +233,28 @@
 }
 
 .wa-card-action.disconnect {
-    border: 1px solid #dc2626;
-    color: #dc2626;
+    border: 1px solid var(--bd-dc2626);
+    color: var(--fg-dc2626);
 }
 
 .wa-card-action.disconnect:hover {
-    background: #fef2f2;
+    background: var(--bg-fef2f2);
 }
 
 .wa-card-action.request-qr {
-    border: 1px solid #378add;
-    color: #378add;
+    border: 1px solid var(--bd-378add);
+    color: var(--fg-378add);
 }
 
 .wa-card-action.request-qr:hover {
-    background: #eff6ff;
+    background: var(--bg-eff6ff);
 }
 
 .wa-card-action.cancel-pairing {
-    border: 1px solid #d97706;
-    color: #d97706;
+    border: 1px solid var(--bd-d97706);
+    color: var(--fg-d97706);
 }
 
 .wa-card-action.cancel-pairing:hover {
-    background: #fffbeb;
+    background: var(--bg-fffbeb);
 }

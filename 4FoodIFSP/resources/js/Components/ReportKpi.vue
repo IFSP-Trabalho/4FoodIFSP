@@ -21,8 +21,8 @@ defineProps({
 <style scoped>
 .kpi {
     position: relative;
-    background: #fff;
-    border: 1px solid #eef0f2;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-eef0f2);
     border-radius: 16px;
     padding: 16px;
     box-shadow: 0 1px 2px rgba(16, 17, 22, 0.04);
@@ -51,7 +51,7 @@ defineProps({
 
 .kpi-label {
     margin: 0;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
     font-family: 'JetBrains Mono', 'DM Mono', monospace;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -63,7 +63,7 @@ defineProps({
     margin: 0;
     font-size: 25px;
     font-weight: 700;
-    color: #17181e;
+    color: var(--fg-17181e);
     line-height: 1.05;
     letter-spacing: -0.01em;
 }
@@ -71,6 +71,6 @@ defineProps({
 .kpi-hint {
     margin: 6px 0 0;
     font-size: 11px;
-    color: #9aa0ab;
+    color: var(--fg-9aa0ab);
 }
 </style>

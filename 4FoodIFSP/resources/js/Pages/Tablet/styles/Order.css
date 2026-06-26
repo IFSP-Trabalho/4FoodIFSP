@@ -51,13 +51,13 @@
 .order-dish-empty-title {
     font-size: 16px;
     font-weight: 600;
-    color: #374151;
+    color: var(--fg-374151);
     margin: 0;
 }
 
 .order-dish-empty-sub {
     font-size: 14px;
-    color: #9ca3af;
+    color: var(--fg-9ca3af);
     margin: 0;
 }
 
@@ -66,8 +66,8 @@
 .order-cart-sidebar {
     width: 360px;
     min-width: 320px;
-    border-left: 1px solid var(--border, #eceef0);
-    background: var(--surface, #ffffff);
+    border-left: 1px solid var(--border, var(--bd-eceef0));
+    background: var(--surface, var(--bg-ffffff));
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -80,7 +80,7 @@
     gap: 8px;
     font-size: 15px;
     font-weight: 700;
-    color: var(--ink, #1a1a1a);
+    color: var(--ink, var(--fg-1a1a1a));
     padding: 18px 16px 4px;
     margin: 0;
     flex-shrink: 0;
@@ -91,7 +91,7 @@
     width: 4px;
     height: 16px;
     border-radius: 2px;
-    background: linear-gradient(180deg, var(--accent, #e67e22), var(--brand, #993c1d));
+    background: linear-gradient(180deg, var(--accent, var(--bg-e67e22)), var(--brand, var(--bg-993c1d)));
 }
 
 /* ── FAB (mobile only) ── */
@@ -101,8 +101,8 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    background: var(--brand, #993c1d);
-    color: #ffffff;
+    background: var(--brand, var(--bg-993c1d));
+    color: var(--fg-ffffff);
     border: none;
     border-radius: 32px;
     padding: 14px 24px;
@@ -131,7 +131,7 @@
 .order-drawer {
     width: 100%;
     max-height: 85vh;
-    background: #ffffff;
+    background: var(--bg-ffffff);
     border-radius: 20px 20px 0 0;
     display: flex;
     flex-direction: column;
@@ -143,21 +143,21 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    border-bottom: 1px solid #eceef0;
+    border-bottom: 1px solid var(--bd-eceef0);
     flex-shrink: 0;
 }
 
 .order-drawer-title {
     font-size: 17px;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--fg-1a1a1a);
 }
 
 .order-drawer-close {
     background: none;
     border: none;
     cursor: pointer;
-    color: #6b7280;
+    color: var(--fg-6b7280);
     min-width: 44px;
     min-height: 44px;
     display: flex;
@@ -181,7 +181,7 @@
 }
 
 .order-confirm-modal {
-    background: #ffffff;
+    background: var(--bg-ffffff);
     border-radius: 16px;
     padding: 32px;
     max-width: 400px;
@@ -191,30 +191,30 @@
 .order-confirm-title {
     font-size: 20px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--fg-1a1a1a);
     margin: 0 0 8px;
 }
 
 .order-confirm-meta {
     font-size: 14px;
-    color: #6b7280;
+    color: var(--fg-6b7280);
     margin: 0 0 4px;
 }
 
 .order-confirm-total {
     font-size: 24px;
     font-weight: 800;
-    color: var(--brand, #993c1d);
+    color: var(--brand, var(--fg-993c1d));
     margin: 0 0 28px;
     letter-spacing: -0.01em;
 }
 
 .order-confirm-error {
     font-size: 13px;
-    color: #c0392b;
+    color: var(--fg-c0392b);
     margin: 0 0 16px;
-    background: #fdf2f2;
-    border: 1px solid #f5c6cb;
+    background: var(--bg-fdf2f2);
+    border: 1px solid var(--bd-f5c6cb);
     border-radius: 8px;
     padding: 10px 12px;
 }
@@ -227,12 +227,12 @@
 .order-confirm-cancel {
     flex: 1;
     padding: 12px;
-    background: #f5f6f8;
-    border: 1px solid #eceef0;
+    background: var(--bg-f5f6f8);
+    border: 1px solid var(--bd-eceef0);
     border-radius: 10px;
     font-size: 15px;
     font-weight: 500;
-    color: #1a1a1a;
+    color: var(--fg-1a1a1a);
     cursor: pointer;
     min-height: 44px;
 }
@@ -240,19 +240,19 @@
 .order-confirm-send {
     flex: 2;
     padding: 12px;
-    background: var(--brand, #993c1d);
+    background: var(--brand, var(--bg-993c1d));
     border: none;
     border-radius: 10px;
     font-size: 15px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--fg-ffffff);
     cursor: pointer;
     min-height: 44px;
     transition: background 0.15s ease;
 }
 
 .order-confirm-send:hover:not(:disabled) {
-    background: var(--brand-strong, #7f3218);
+    background: var(--brand-strong, var(--bg-7f3218));
 }
 
 .order-confirm-send:disabled {
@@ -270,8 +270,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #1f7a4d;
-    color: #ffffff;
+    background: var(--bg-1f7a4d);
+    color: var(--fg-ffffff);
     padding: 14px 22px;
     border-radius: 12px;
     font-size: 14px;

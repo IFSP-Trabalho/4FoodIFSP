@@ -2,14 +2,14 @@
     width: 220px;
     min-width: 220px;
     height: 100vh;
-    background: #fff;
-    border-right: 1px solid #eceef0;
+    background: var(--bg-ffffff);
+    border-right: 1px solid var(--bd-eceef0);
     padding: 14px 10px;
 }
 
 .submenu-title {
     margin: 0 0 10px;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -21,7 +21,7 @@
     border: 0;
     background: transparent;
     border-radius: 10px;
-    color: #2a303b;
+    color: var(--fg-2a303b);
     padding: 10px;
     margin-bottom: 4px;
     display: flex;
@@ -33,15 +33,15 @@
 }
 
 .submenu-item.active {
-    background: #faece7;
-    color: #993c1d;
+    background: var(--bg-faece7);
+    color: var(--fg-993c1d);
 }
 
 .soon-badge {
     border-radius: 999px;
-    border: 1px solid #eceef0;
-    background: #f5f6f8;
-    color: #666c79;
+    border: 1px solid var(--bd-eceef0);
+    background: var(--bg-f5f6f8);
+    color: var(--fg-666c79);
     font-size: 10px;
     padding: 2px 8px;
 }

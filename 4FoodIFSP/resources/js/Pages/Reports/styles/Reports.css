@@ -1,6 +1,6 @@
 .shell {
     min-height: 100vh;
-    background: #f6f7f9;
+    background: var(--bg-f6f7f9);
     display: flex;
 }
 
@@ -51,7 +51,7 @@
 
 .section-label {
     margin: 0 0 10px;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
     font-family: 'JetBrains Mono', 'DM Mono', monospace;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -73,8 +73,8 @@
 }
 
 .report-panel {
-    background: #fff;
-    border: 1px solid #eef0f2;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-eef0f2);
     border-radius: 18px;
     overflow: hidden;
     box-shadow: 0 1px 2px rgba(16, 17, 22, 0.04);
@@ -92,14 +92,14 @@
     margin: 0;
     font-size: 15px;
     font-weight: 600;
-    color: #17181e;
+    color: var(--fg-17181e);
     letter-spacing: -0.01em;
 }
 
 .report-panel-head p {
     margin: 3px 0 0;
     font-size: 12px;
-    color: #9aa0ab;
+    color: var(--fg-9aa0ab);
 }
 
 .report-panel-tag {
@@ -107,8 +107,8 @@
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.02em;
-    color: #993c1d;
-    background: #f6ece7;
+    color: var(--fg-993c1d);
+    background: var(--bg-f6ece7);
     border-radius: 999px;
     padding: 5px 11px;
     white-space: nowrap;
@@ -121,16 +121,16 @@
     padding: 12px 16px;
     font-size: 12px;
     line-height: 1.45;
-    color: #8a6d3b;
-    background: #fdf6e3;
-    border-top: 1px solid #f3e9c9;
+    color: var(--fg-8a6d3b);
+    background: var(--bg-fdf6e3);
+    border-top: 1px solid var(--bd-f3e9c9);
 }
 
 .report-note svg {
     width: 15px;
     height: 15px;
     flex-shrink: 0;
-    fill: #c79a3a;
+    fill: var(--fg-c79a3a);
     margin-top: 1px;
 }
 

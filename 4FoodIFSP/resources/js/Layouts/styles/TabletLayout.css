@@ -24,7 +24,7 @@
     top: 0;
     z-index: 10;
     height: 60px;
-    background: #ffffff;
+    background: var(--bg-ffffff);
     border-bottom: 1px solid var(--border);
     box-shadow: 0 1px 0 rgba(153, 60, 29, 0.04);
     display: flex;

@@ -1,7 +1,7 @@
 .shell {
     min-height: 100vh;
     display: flex;
-    background: #f6f7f9;
+    background: var(--bg-f6f7f9);
 }
 
 .main {
@@ -11,8 +11,8 @@
 
 .topbar {
     height: 52px;
-    border-bottom: 1px solid #eceef0;
-    background: #fff;
+    border-bottom: 1px solid var(--bd-eceef0);
+    background: var(--bg-ffffff);
     padding: 0 16px;
     display: flex;
     align-items: center;
@@ -22,7 +22,7 @@
 
 .topbar h1 {
     margin: 0;
-    color: #17181e;
+    color: var(--fg-17181e);
     font-size: 20px;
     font-weight: 600;
 }
@@ -34,7 +34,7 @@
 }
 
 .head-actions input {
-    border: 1px solid #d9dde3;
+    border: 1px solid var(--bd-d9dde3);
     border-radius: 8px;
     height: 36px;
     min-width: 220px;
@@ -55,14 +55,14 @@
 }
 
 .feedback.success {
-    border: 1px solid #b8dfc4;
-    background: #ecf8f0;
-    color: #256f3d;
+    border: 1px solid var(--bd-b8dfc4);
+    background: var(--bg-ecf8f0);
+    color: var(--fg-256f3d);
 }
 
 .table-card {
-    background: #fff;
-    border: 1px solid #eceef0;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-eceef0);
     border-radius: 14px;
     overflow: hidden;
 }
@@ -72,12 +72,12 @@
     grid-template-columns: minmax(200px, 1fr) minmax(160px, 0.8fr) 80px;
     gap: 10px;
     padding: 12px;
-    border-bottom: 1px solid #eceef0;
+    border-bottom: 1px solid var(--bd-eceef0);
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #7b7f89;
+    color: var(--fg-7b7f89);
 }
 
 .empty-state {
@@ -87,13 +87,13 @@
 
 .empty-state p {
     margin: 0;
-    color: #5f6572;
+    color: var(--fg-5f6572);
 }
 
 .search-empty {
     margin: 0;
     padding: 22px 16px;
-    color: #5f6572;
+    color: var(--fg-5f6572);
     font-size: 14px;
 }
 

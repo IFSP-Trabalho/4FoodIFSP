@@ -542,7 +542,10 @@ onUnmounted(() => {
                             <tbody>
                                 <tr v-for="entry in filteredHistory" :key="entry.id">
                                     <td>{{ entry.id }}</td>
-                                    <td>{{ entry.mesa }}</td>
+                                    <td>
+                                        <span v-if="entry.origin === 'delivery'" class="origin-chip">Delivery</span>
+                                        {{ entry.mesa }}
+                                    </td>
                                     <td>{{ entry.items.join(', ') }}</td>
                                     <td>
                                         <span

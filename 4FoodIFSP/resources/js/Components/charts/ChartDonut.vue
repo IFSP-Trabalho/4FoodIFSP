@@ -143,13 +143,13 @@ const tipStyle = computed(() => {
 }
 
 .donut-total {
-    fill: #17181e;
+    fill: var(--fg-17181e);
     font-size: 20px;
     font-weight: 700;
 }
 
 .donut-cap {
-    fill: #9aa0ab;
+    fill: var(--fg-9aa0ab);
     font-size: 9px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -170,14 +170,14 @@ const tipStyle = computed(() => {
     align-items: center;
     gap: 9px;
     font-size: 13px;
-    color: #2b2d35;
+    color: var(--fg-2b2d35);
     padding: 5px 7px;
     border-radius: 8px;
     transition: background 0.15s ease;
 }
 
 .legend li.on {
-    background: #faf6f4;
+    background: var(--bg-faf6f4);
 }
 
 .dot {
@@ -196,7 +196,7 @@ const tipStyle = computed(() => {
 }
 
 .legend-val {
-    color: #555a66;
+    color: var(--fg-555a66);
     font-weight: 600;
     white-space: nowrap;
 }
@@ -206,8 +206,8 @@ const tipStyle = computed(() => {
     z-index: 5;
     pointer-events: none;
     transform: translate(-50%, calc(-100% - 14px));
-    background: #17181e;
-    color: #fff;
+    background: var(--bg-17181e);
+    color: var(--fg-ffffff);
     border-radius: 11px;
     padding: 8px 11px;
     box-shadow: 0 10px 26px rgba(15, 16, 22, 0.22);
@@ -224,7 +224,7 @@ const tipStyle = computed(() => {
     transform: translateX(-50%) rotate(45deg);
     width: 9px;
     height: 9px;
-    background: #17181e;
+    background: var(--bg-17181e);
     border-radius: 2px;
 }
 
@@ -232,7 +232,7 @@ const tipStyle = computed(() => {
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #b9bcc4;
+    color: var(--fg-b9bcc4);
 }
 
 .chart-tip strong {
@@ -242,7 +242,7 @@ const tipStyle = computed(() => {
 
 .chart-tip .tip-hint {
     font-size: 11px;
-    color: #c9ccd2;
+    color: var(--fg-c9ccd2);
 }
 
 .tip-enter-active,
@@ -258,7 +258,7 @@ const tipStyle = computed(() => {
 .chart-empty {
     padding: 30px 12px;
     text-align: center;
-    color: #9aa0ab;
+    color: var(--fg-9aa0ab);
     font-size: 13px;
 }
 </style>

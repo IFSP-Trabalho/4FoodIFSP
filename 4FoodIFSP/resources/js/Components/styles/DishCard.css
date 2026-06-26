@@ -1,6 +1,6 @@
 .dish-card {
-    background: #fff;
-    border: 1px solid #eceef0;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-eceef0);
     border-radius: 14px;
     overflow: hidden;
     display: flex;
@@ -14,7 +14,7 @@
 .dish-photo-wrap {
     position: relative;
     aspect-ratio: 4 / 3;
-    background: #f0f1f3;
+    background: var(--bg-f0f1f3);
     border-radius: 12px;
     margin: 10px 10px 0;
     overflow: hidden;
@@ -33,7 +33,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #9aa3af;
+    color: var(--fg-9aa3af);
 }
 
 .dish-photo-placeholder svg {
@@ -47,10 +47,10 @@
     top: 8px;
     left: 8px;
     z-index: 2;
-    background: #fff;
-    border: 1px solid #eceef0;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-eceef0);
     border-radius: 999px;
-    color: #5e6b7a;
+    color: var(--fg-5e6b7a);
     font-size: 11px;
     font-weight: 600;
     padding: 2px 8px;
@@ -75,10 +75,10 @@
 .dish-card-actions-btn {
     width: 32px;
     height: 32px;
-    border: 1px solid #eceef0;
+    border: 1px solid var(--bd-eceef0);
     border-radius: 8px;
-    background: #fff;
-    color: #17181e;
+    background: var(--bg-ffffff);
+    color: var(--fg-17181e);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -98,8 +98,8 @@
     top: calc(100% + 4px);
     right: 0;
     min-width: 140px;
-    background: #fff;
-    border: 1px solid #eceef0;
+    background: var(--bg-ffffff);
+    border: 1px solid var(--bd-eceef0);
     border-radius: 10px;
     padding: 4px 0;
     box-shadow: 0 4px 16px rgb(0 0 0 / 10%);
@@ -114,16 +114,16 @@
     padding: 8px 14px;
     font-size: 13px;
     font-weight: 600;
-    color: #17181e;
+    color: var(--fg-17181e);
     cursor: pointer;
 }
 
 .dish-card-actions-item:hover {
-    background: #f6f7f9;
+    background: var(--bg-f6f7f9);
 }
 
 .dish-card-actions-item.danger {
-    color: #c53030;
+    color: var(--fg-c53030);
 }
 
 @media (hover: none) {
@@ -145,7 +145,7 @@
     margin: 0;
     font-size: 15px;
     font-weight: 600;
-    color: #17181e;
+    color: var(--fg-17181e);
     line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -161,8 +161,8 @@
 }
 
 .dish-category-tag {
-    background: #fff4ed;
-    color: #c05621;
+    background: var(--bg-fff4ed);
+    color: var(--fg-c05621);
     border-radius: 999px;
     padding: 2px 8px;
     font-size: 12px;
@@ -174,6 +174,6 @@
     margin-left: auto;
     font-size: 16px;
     font-weight: 700;
-    color: #17181e;
+    color: var(--fg-17181e);
     white-space: nowrap;
 }

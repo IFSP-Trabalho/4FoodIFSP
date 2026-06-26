@@ -2,6 +2,9 @@
 import { usePage } from '@inertiajs/vue3';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { useTheme } from '../composables/useTheme';
+
+const { isDark, toggle: toggleTheme } = useTheme();
 
 const props = defineProps({
     active: {
@@ -189,6 +192,18 @@ onBeforeUnmount(() => {
             </button>
 
             <div v-if="isUserMenuOpen" class="user-menu">
+                <button
+                    type="button"
+                    class="theme-toggle"
+                    role="switch"
+                    :aria-checked="isDark"
+                    @click="toggleTheme"
+                >
+                    <span class="theme-toggle-label">Modo escuro</span>
+                    <span class="theme-switch" :class="{ on: isDark }">
+                        <span class="theme-switch-knob" />
+                    </span>
+                </button>
                 <button type="button" class="user-menu-item logout" @click="logout">Sair</button>
                 <p class="user-menu-version">versão 1.0.0</p>
             </div>
