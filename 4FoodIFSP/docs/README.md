@@ -14,6 +14,7 @@ Comece por [project_overview.md](project_overview.md) — visão técnica de tod
 ## 🗄️ Base de dados
 
 - [database/schema.md](database/schema.md) — tabelas, enums e relações (referência de todas as features)
+- [database/diagrama.md](database/diagrama.md) — diagrama ER (Mermaid) gerado do banco atual · imagem: [database/diagrama.png](database/diagrama.png)
 
 ## 🚀 Deploy
 

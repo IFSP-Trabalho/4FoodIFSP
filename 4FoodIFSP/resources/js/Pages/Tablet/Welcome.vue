@@ -34,7 +34,7 @@ async function iniciarPedido() {
 </script>
 
 <template>
-    <div class="welcome-screen">
+    <div class="welcome-screen theme-force-light">
         <div class="welcome-card">
             <h1 class="welcome-table-number">{{ mesa_label || 'Mesa ' + mesa }}</h1>
             <p class="welcome-subtitle">Bem-vindo! Toque para começar seu pedido.</p>

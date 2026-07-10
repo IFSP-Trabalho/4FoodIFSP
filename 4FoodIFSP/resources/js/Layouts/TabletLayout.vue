@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="tablet-layout">
+    <div class="tablet-layout theme-force-light">
         <header class="tablet-header">
             <span class="tablet-header-brand">4Food</span>
             <span class="tablet-header-sep">&middot;</span>

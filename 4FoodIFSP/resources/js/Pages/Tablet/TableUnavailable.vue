@@ -7,7 +7,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="table-unavailable">
+    <div class="table-unavailable theme-force-light">
         <div class="table-unavailable-card">
             <div class="table-unavailable-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true">

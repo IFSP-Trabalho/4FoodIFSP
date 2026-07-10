@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\TablesController;
 use App\Http\Controllers\Admin\ChatbotController;
+use App\Http\Controllers\Admin\PaymentLinksController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\WaClosureReasonsController;
 use App\Http\Controllers\Admin\WhatsApp\ConnectionsController;
@@ -68,6 +69,11 @@ Route::middleware('firebase.auth')->group(function () {
                     Route::post('/wa-motivos', [WaClosureReasonsController::class, 'store'])->name('wa-motivos.store');
                     Route::put('/wa-motivos/{reason}', [WaClosureReasonsController::class, 'update'])->name('wa-motivos.update');
                     Route::delete('/wa-motivos/{reason}', [WaClosureReasonsController::class, 'destroy'])->name('wa-motivos.destroy');
+
+                    Route::get('/links-pagamento', [PaymentLinksController::class, 'index'])->name('links-pagamento.index');
+                    Route::post('/links-pagamento', [PaymentLinksController::class, 'store'])->name('links-pagamento.store');
+                    Route::put('/links-pagamento/{link}', [PaymentLinksController::class, 'update'])->name('links-pagamento.update');
+                    Route::delete('/links-pagamento/{link}', [PaymentLinksController::class, 'destroy'])->name('links-pagamento.destroy');
                 });
 
                 Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot.index');
@@ -163,6 +169,8 @@ Route::middleware('firebase.auth')->group(function () {
             Route::post('/inbox/tickets/{ticket}/send-location', [InboxController::class, 'sendLocation'])->name('inbox.sendLocation');
             Route::get('/inbox/menu', [InboxController::class, 'menu'])->name('inbox.menu');
             Route::post('/inbox/tickets/{ticket}/order', [InboxController::class, 'storeOrder'])->name('inbox.storeOrder');
+            Route::get('/inbox/tickets/{ticket}/orders', [InboxController::class, 'contactOrders'])->name('inbox.contactOrders');
+            Route::post('/inbox/tickets/{ticket}/send-payment', [InboxController::class, 'sendPayment'])->name('inbox.sendPayment');
         });
     });
 });

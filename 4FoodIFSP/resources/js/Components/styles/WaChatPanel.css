@@ -39,6 +39,17 @@ html.theme-dark .chat-panel {
     flex-shrink: 0;
 }
 
+.chat-avatar--btn {
+    border: 0;
+    cursor: pointer;
+    transition: filter 0.12s ease, box-shadow 0.12s ease;
+}
+
+.chat-avatar--btn:hover {
+    filter: brightness(0.97);
+    box-shadow: 0 0 0 2px var(--bd-f0d7ce);
+}
+
 .chat-contact {
     flex: 1;
     display: flex;

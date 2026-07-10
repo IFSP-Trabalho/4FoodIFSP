@@ -6,7 +6,9 @@
       "Bash(Sort-Object)",
       "Bash(php -l app/Services/WhatsApp/IncomingWhatsAppMessageService.php)",
       "Bash(php -l app/Services/WhatsApp/ChatbotEngine.php)",
-      "Bash(php -l app/Http/Controllers/Webhooks/BaileysMessageWebhookController.php)"
+      "Bash(php -l app/Http/Controllers/Webhooks/BaileysMessageWebhookController.php)",
+      "Bash(sed '1d;$d')",
+      "Bash(timeout 240 npx -y @mermaid-js/mermaid-cli -i docs/database/diagrama.mmd -o docs/database/diagrama.png -b white --width 2000)"
     ]
   }
 }

@@ -30,6 +30,12 @@
     cursor: pointer;
 }
 
+.avatar svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--fg-993c1d);
+}
+
 .avatar:hover {
     filter: brightness(0.98);
 }
@@ -77,11 +83,12 @@
 
 .user-menu-wrapper {
     position: relative;
+    margin-top: auto;
 }
 
 .user-menu {
     position: absolute;
-    top: 38px;
+    bottom: calc(100% + 6px);
     left: 0;
     width: 164px;
     background: var(--bg-ffffff);

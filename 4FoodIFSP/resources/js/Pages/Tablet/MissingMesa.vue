@@ -3,7 +3,7 @@ import './styles/MissingMesa.css';
 </script>
 
 <template>
-    <div class="missing-mesa">
+    <div class="missing-mesa theme-force-light">
         <div class="missing-mesa-card">
             <div class="missing-mesa-icon-wrap">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#E67E22" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">

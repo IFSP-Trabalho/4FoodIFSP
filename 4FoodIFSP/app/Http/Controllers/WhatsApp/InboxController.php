@@ -4,6 +4,7 @@ namespace App\Http\Controllers\WhatsApp;
 
 use App\Http\Controllers\Concerns\ResolvesTabletMenu;
 use App\Http\Controllers\Controller;
+use App\Support\PaymentLinkMessage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -219,11 +220,146 @@ class InboxController extends Controller
         ]);
     }
 
+    public function sendPayment(string $ticket)
+    {
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+        abort_if($record->status !== 'in_progress', 422, 'Ticket não está em atendimento.');
+
+        $link = DB::table('payment_links')->where('active', true)->first();
+        abort_unless($link, 422, 'Nenhum link de pagamento ativo. Cadastre em Cadastros → Links de pagamento.');
+
+        $connection = $record->wa_connection_id
+            ? DB::table('wa_connections')->where('id', (string) $record->wa_connection_id)->first()
+            : null;
+
+        if (! $connection || $connection->connection_status !== 'connected' || ! $connection->baileys_session_id) {
+            $connection = DB::table('wa_connections')
+                ->where('connection_status', 'connected')
+                ->whereNotNull('baileys_session_id')
+                ->orderByDesc('last_status_at')
+                ->first();
+        }
+
+        abort_unless($connection, 422, 'Nenhuma conexão WhatsApp conectada disponível para envio.');
+        abort_unless($connection->baileys_session_id, 422, 'Sessão Baileys não configurada na conexão.');
+
+        if ((string) $record->wa_connection_id !== (string) $connection->id) {
+            DB::table('wa_tickets')->where('id', $ticket)->update(['wa_connection_id' => $connection->id]);
+        }
+
+        $body = PaymentLinkMessage::compose($link);
+
+        $baileysUrl = rtrim(config('services.baileys.url', 'http://127.0.0.1:3001'), '/');
+        $response = Http::post("{$baileysUrl}/sessions/{$connection->baileys_session_id}/send", [
+            'to'   => $record->phone_number,
+            'body' => $body,
+        ]);
+
+        abort_unless($response->successful(), 502, $response->json('message') ?? 'Falha ao enviar o link de pagamento.');
+
+        $messageId = (string) Str::uuid();
+        $now = now();
+
+        DB::table('wa_messages')->insert([
+            'id'            => $messageId,
+            'wa_ticket_id'  => $ticket,
+            'direction'     => 'outbound',
+            'type'          => 'text',
+            'body'          => $body,
+            'wa_message_id' => null,
+            'sent_at'       => $now,
+            'created_at'    => $now,
+            'updated_at'    => $now,
+        ]);
+
+        DB::table('wa_tickets')->where('id', $ticket)->update(['updated_at' => $now]);
+
+        return response()->json([
+            'message' => [
+                'id'        => $messageId,
+                'direction' => 'outbound',
+                'type'      => 'text',
+                'body'      => $body,
+                'sent_at'   => $now->toIso8601String(),
+            ],
+        ]);
+    }
+
     public function menu()
     {
         return response()->json([
             'categories' => $this->getTabletMenuCategories(),
             'dishes'     => $this->getTabletMenuDishes(),
+        ]);
+    }
+
+    public function contactOrders(string $ticket)
+    {
+        $record = DB::table('wa_tickets')->where('id', $ticket)->first();
+        abort_unless($record, 404);
+
+        // Todos os tickets do mesmo contato (mesmo telefone) → todos os pedidos dele.
+        $ticketIds = DB::table('wa_tickets')
+            ->where('phone_number', $record->phone_number)
+            ->pluck('id');
+
+        $rows = DB::table('orders')
+            ->leftJoin('order_items', 'order_items.order_id', '=', 'orders.id')
+            ->leftJoin('dishes', 'dishes.id', '=', 'order_items.dish_id')
+            ->whereIn('orders.wa_ticket_id', $ticketIds)
+            ->orderByDesc('orders.created_at')
+            ->get([
+                'orders.id',
+                'orders.status',
+                'orders.created_at',
+                'order_items.quantity',
+                'order_items.unit_price',
+                'dishes.name as dish_name',
+            ]);
+
+        $statusLabels = [
+            'pending'     => 'Em andamento',
+            'in_progress' => 'Em andamento',
+            'ready'       => 'Entregue',
+            'cancelled'   => 'Cancelado',
+        ];
+
+        $orders = [];
+        foreach ($rows as $row) {
+            if (! isset($orders[$row->id])) {
+                $orders[$row->id] = [
+                    'id'           => substr(str_replace('-', '', $row->id), 0, 4),
+                    'status'       => $row->status,
+                    'status_label' => $statusLabels[$row->status] ?? $row->status,
+                    'created_at'   => $row->created_at ? Carbon::parse($row->created_at)->toIso8601String() : null,
+                    'items'        => [],
+                    'total'        => 0.0,
+                ];
+            }
+
+            if ($row->dish_name !== null) {
+                $orders[$row->id]['items'][] = [
+                    'name' => (string) $row->dish_name,
+                    'qty'  => (int) $row->quantity,
+                ];
+                $orders[$row->id]['total'] += (float) $row->unit_price * (int) $row->quantity;
+            }
+        }
+
+        $orders = array_values($orders);
+
+        // Total geral desconsidera pedidos cancelados.
+        $grandTotal = array_reduce($orders, function ($sum, $o) {
+            return $sum + ($o['status'] === 'cancelled' ? 0 : $o['total']);
+        }, 0.0);
+
+        return response()->json([
+            'customer_name' => $record->customer_name,
+            'phone'         => $record->phone_number,
+            'count'         => count($orders),
+            'total'         => round($grandTotal, 2),
+            'orders'        => $orders,
         ]);
     }
 
@@ -258,7 +394,7 @@ class InboxController extends Controller
             DB::table('orders')->insert([
                 'id'             => $orderId,
                 'origin'         => 'delivery',
-                'status'         => 'pending',
+                'status'         => 'in_progress',
                 'paid'           => false,
                 'wa_ticket_id'   => $ticket,
                 'customer_name'  => $validated['customer_name'],

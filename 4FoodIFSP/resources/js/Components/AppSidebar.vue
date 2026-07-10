@@ -19,9 +19,9 @@ const userRole = page.props.auth?.user?.role ?? '';
 // Tela inicial (ícone Home) de cada departamento.
 const homeRouteByRole = {
     admin: '/admin/dashboard',
-    kitchen: '/admin/orders',
-    finance: '/admin/orders',
-    waiter: '/admin/mesas',
+    kitchen: '/kitchen/dashboard',
+    finance: '/finance/dashboard',
+    waiter: '/waiter/dashboard',
     whatsapp_agent: '/whatsapp/inbox',
 };
 
@@ -41,11 +41,9 @@ const reportsOptions = [
 
 const items = [
     { key: 'home', label: 'Home', icon: 'home', route: homeRouteByRole[userRole] ?? '/admin/dashboard' },
-    { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', route: null, roles: ['admin'] },
     { key: 'orders', label: 'Orders', icon: 'orders', route: '/admin/orders', roles: ['admin', 'kitchen', 'finance', 'waiter'] },
     { key: 'tables', label: 'Mesas', icon: 'tables', route: '/admin/mesas', roles: ['admin', 'finance', 'waiter'] },
     { key: 'cadastros', label: 'Cadastros', icon: 'cadastros', route: null, roles: ['admin'] },
-    { key: 'finance', label: 'Financeiro', icon: 'finance', route: null, roles: ['admin'] },
     { key: 'reports', label: 'Relatorios', icon: 'reports', route: null },
     { key: 'whatsapp-conexoes', label: 'Conexoes', icon: 'whatsapp-conexoes', route: '/admin/whatsapp/conexoes', roles: ['admin'] },
     { key: 'whatsapp', label: 'Atendimento', icon: 'whatsapp', route: '/whatsapp/inbox', roles: ['admin', 'whatsapp_agent'] },
@@ -68,13 +66,14 @@ const cadastrosOptions = [
     { key: 'departments', label: 'Departamentos', icon: 'departments', route: '/admin/cadastros/departments' },
     { key: 'dishes', label: 'Pratos', icon: 'dishes', route: '/admin/cadastros/dishes' },
     { key: 'wa-motivos', label: 'Motivos WA', icon: 'wa-motivos', route: '/admin/cadastros/wa-motivos' },
+    { key: 'payment-links', label: 'Links de pagamento', icon: 'payment', route: '/admin/cadastros/links-pagamento' },
 ];
 
 const chatbotOptions = [
     { key: 'chatbot', label: 'ChatBot', icon: 'robot', route: '/admin/chatbot' },
 ];
 
-const splitAfter = new Set(['dashboard', 'cadastros']);
+const splitAfter = new Set(['home', 'cadastros']);
 const isCadastrosMenuOpen = ref(false);
 const isReportsMenuOpen = ref(false);
 const isChatbotMenuOpen = ref(false);
@@ -186,29 +185,6 @@ onBeforeUnmount(() => {
 
 <template>
     <aside class="sidebar">
-        <div class="user-menu-wrapper">
-            <button type="button" class="avatar" aria-label="Menu do usuário" @click.stop="toggleUserMenu">
-                A
-            </button>
-
-            <div v-if="isUserMenuOpen" class="user-menu">
-                <button
-                    type="button"
-                    class="theme-toggle"
-                    role="switch"
-                    :aria-checked="isDark"
-                    @click="toggleTheme"
-                >
-                    <span class="theme-toggle-label">Modo escuro</span>
-                    <span class="theme-switch" :class="{ on: isDark }">
-                        <span class="theme-switch-knob" />
-                    </span>
-                </button>
-                <button type="button" class="user-menu-item logout" @click="logout">Sair</button>
-                <p class="user-menu-version">versão 1.0.0</p>
-            </div>
-        </div>
-
         <template v-for="item in items" :key="item.key">
             <div v-if="item.key === 'cadastros'" class="cadastros-wrapper">
                 <button
@@ -246,6 +222,9 @@ onBeforeUnmount(() => {
                         </svg>
                         <svg v-else-if="option.icon === 'wa-motivos'" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z" />
+                        </svg>
+                        <svg v-else-if="option.icon === 'payment'" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
                         </svg>
                         <svg v-else viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z" />
@@ -363,6 +342,31 @@ onBeforeUnmount(() => {
             </button>
             <hr v-if="splitAfter.has(item.key)" class="divider">
         </template>
+
+        <div class="user-menu-wrapper">
+            <button type="button" class="avatar" aria-label="Menu do usuário" @click.stop="toggleUserMenu">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.42 0-8 2.69-8 6v2h16v-2c0-3.31-3.58-6-8-6Z" />
+                </svg>
+            </button>
+
+            <div v-if="isUserMenuOpen" class="user-menu">
+                <button
+                    type="button"
+                    class="theme-toggle"
+                    role="switch"
+                    :aria-checked="isDark"
+                    @click="toggleTheme"
+                >
+                    <span class="theme-toggle-label">Modo escuro</span>
+                    <span class="theme-switch" :class="{ on: isDark }">
+                        <span class="theme-switch-knob" />
+                    </span>
+                </button>
+                <button type="button" class="user-menu-item logout" @click="logout">Sair</button>
+                <p class="user-menu-version">versão 1.0.0</p>
+            </div>
+        </div>
     </aside>
 </template>
 

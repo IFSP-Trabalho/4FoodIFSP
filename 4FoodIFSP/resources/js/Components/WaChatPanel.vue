@@ -3,6 +3,7 @@ import axios from 'axios';
 import { nextTick, ref, watch } from 'vue';
 import { formatPhoneE164 } from '../utils/formatPhoneE164.js';
 import OrderInformModal from './OrderInformModal.vue';
+import ContactOrdersModal from './ContactOrdersModal.vue';
 
 const props = defineProps({
     ticket:    { type: Object,  required: true },
@@ -23,8 +24,6 @@ function toggleMenu() {
 const attachOpen = ref(false);
 
 const attachOptions = [
-    { key: 'cardapio',  label: 'Enviar cardápio',          color: '#0a7c6e', icon: 'menu' },
-    { key: 'agendar',   label: 'Agendamento de mensagem',  color: '#3b82c4', icon: 'clock' },
     { key: 'pedido',    label: 'Informar pedido',          color: '#e08e2a', icon: 'receipt' },
     { key: 'local',     label: 'Enviar localização',       color: '#d23f3f', icon: 'location' },
     { key: 'pagamento', label: 'Link de pagamento',        color: '#22a559', icon: 'payment' },
@@ -37,6 +36,7 @@ function toggleAttach() {
 const sendingLocation = ref(false);
 
 const orderModalOpen = ref(false);
+const contactOrdersOpen = ref(false);
 
 function onAttachSelect(key) {
     attachOpen.value = false;
@@ -44,8 +44,28 @@ function onAttachSelect(key) {
         sendLocation();
     } else if (key === 'pedido') {
         orderModalOpen.value = true;
+    } else if (key === 'pagamento') {
+        sendPayment();
     }
     // Demais opções ainda são visuais (sem ação).
+}
+
+const sendingPayment = ref(false);
+
+async function sendPayment() {
+    if (props.ticket.status !== 'in_progress' || sendingPayment.value) return;
+
+    sendingPayment.value = true;
+    sendError.value = null;
+
+    try {
+        const { data } = await axios.post(`/whatsapp/inbox/tickets/${props.ticket.id}/send-payment`);
+        emit('message-sent', data.message);
+    } catch (e) {
+        sendError.value = e.response?.data?.message ?? 'Erro ao enviar o link de pagamento.';
+    } finally {
+        sendingPayment.value = false;
+    }
 }
 
 function sendLocation() {
@@ -156,13 +176,20 @@ function onKeydown(e) {
 
 watch(() => props.messages, scrollToBottom, { deep: true, immediate: true });
 watch(() => props.loading, (v) => { if (!v) scrollToBottom(); });
-watch(() => props.ticket, () => { menuOpen.value = false; attachOpen.value = false; orderModalOpen.value = false; });
+watch(() => props.ticket, () => { menuOpen.value = false; attachOpen.value = false; orderModalOpen.value = false; contactOrdersOpen.value = false; });
 </script>
 
 <template>
     <div class="chat-panel" @click="menuOpen = false; attachOpen = false">
         <header class="chat-head">
-            <span class="chat-avatar">{{ initials(ticket.customer_name) }}</span>
+            <button
+                type="button"
+                class="chat-avatar chat-avatar--btn"
+                title="Ver pedidos do contato"
+                @click="contactOrdersOpen = true"
+            >
+                {{ initials(ticket.customer_name) }}
+            </button>
             <div class="chat-contact">
                 <strong>{{ ticket.customer_name || 'Cliente' }}</strong>
                 <span>{{ formatPhoneE164(ticket.phone_number) || ticket.phone_number }}</span>
@@ -354,6 +381,12 @@ watch(() => props.ticket, () => { menuOpen.value = false; attachOpen.value = fal
             :ticket="ticket"
             @close="orderModalOpen = false"
             @saved="orderModalOpen = false"
+        />
+
+        <ContactOrdersModal
+            v-if="contactOrdersOpen"
+            :ticket="ticket"
+            @close="contactOrdersOpen = false"
         />
     </div>
 </template>
